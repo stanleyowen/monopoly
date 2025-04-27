@@ -1,5 +1,6 @@
 #include "Map.h"
 #include <iostream>
+#include <iomanip>
 
 Map::Map() {}
 
@@ -38,37 +39,47 @@ void Map::setupBoard() {
 			setTile(i, j, ' ');
 		}
 	}
-
-	// Drawing the board right after setting it up
-	drawBoard();
 }
 
-void Map::drawBoard() const {
+void Map::drawBoard(const std::vector<Player>& players) const {
+	std::cout << "+--------------+--------------+--------------+--------------+--------------+--------------+--------------+--------------+\n";
 	for (int i = 0; i < 8; ++i) {
+		// Print the row of tiles
 		for (int j = 0; j < 8; ++j) {
-			// Only border tiles have numbers
-			int tileNumber = -1;
-			if (i == 0) {
-				tileNumber = j;
+			bool playerPrinted = false;
+			for (const auto& player : players) {
+				if (player.getX() == i && player.getY() == j) {
+					std::cout << "| " << std::setw(6) << "[" + std::string(1, player.getSymbol()) + "]" << std::setw(10);
+					playerPrinted = true;
+					break;
+				}
 			}
-			else if (j == 7) {
-				tileNumber = 7 + i;
-			}
-			else if (i == 7) {
-				tileNumber = 7 + 7 + (7 - j);
-			}
-			else if (j == 0) {
-				tileNumber = 7 + 7 + 7 + (7 - i);
-			}
+			if (!playerPrinted) {
+				int tileNumber = -1;
+				if (i == 0) tileNumber = j;                        // Top row
+				else if (j == 7) tileNumber = 7 + i;               // Right column
+				else if (i == 7) tileNumber = 7 + 7 + (7 - j);     // Bottom row
+				else if (j == 0) tileNumber = 7 + 7 + 7 + (7 - i); // Left column
 
-			if (tileNumber != -1) {
-				std::cout << "[" << tileNumber << "]" << board[i][j].getSymbol() << "\t";
-			}
-			else {
-				std::cout << " " << " \t";
+				if (tileNumber != -1) {
+					std::cout << "| " << std::setw(5) << tileNumber << " " << board[i][j].getSymbol() << std::setw(6) << " "; // Properly center tile number
+				}
+				else {
+					std::cout << "| " << std::setw(13) << " "; // Empty tile space
+				}
 			}
 		}
-		std::cout << "\n";
+		std::cout << "|\n";
+
+		// Empty lines for padding
+		for (int k = 0; k < 2; ++k) {
+			for (int j = 0; j < 8; ++j) {
+				std::cout << "|              "; // Padding
+			}
+			std::cout << "|\n";
+		}
+
+		// Bottom border of each row
+		std::cout << "+--------------+--------------+--------------+--------------+--------------+--------------+--------------+--------------+\n";
 	}
 }
-

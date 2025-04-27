@@ -13,6 +13,7 @@ public:
 	void subtractMoney(int amount);
 	int getMoney() const;
 
+	char getSymbol() const { return symbol; };
 	void addHouse();
 	int getHouseCount() const;
 
@@ -27,6 +28,7 @@ public:
 private:
 	int x, y;
 	std::string name;
+	char symbol;
 	int money;
 	int houseCount;
 	std::vector<Card> cards;

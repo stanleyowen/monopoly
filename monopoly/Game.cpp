@@ -33,6 +33,7 @@ void Game::start() {
 	std::cout << "\nStart!\n";
 
 	map.setupBoard();
+	map.drawBoard(players);
 
 	while (gameRunning) {
 		processTurn();
@@ -48,7 +49,7 @@ void Game::processTurn() {
 
 		std::cout << currentPlayer.getName() << "'s turn!\n\n";
 
-		std::cout << "Please choose an action:" << std::endl;
+		std::cout << "Please choose one of the following actions:" << std::endl;
 		std::cout << "T: Roll the dice." << std::endl;
 		std::cout << "I: View player info." << std::endl;
 

@@ -14,7 +14,7 @@ public:
 	Tile& getTile(int x, int y);
 
 	void setupBoard();
-	void drawBoard() const;
+	void drawBoard(const std::vector<Player>& players) const;
 };
 
 #endif // MAP_H
