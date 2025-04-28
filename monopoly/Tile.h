@@ -20,6 +20,7 @@ public:
 
 	// Event handling methods for random events, etc.
 	void handleEvent(Player& player);
+	void enterShop(Player& player);
 };
 
 #endif

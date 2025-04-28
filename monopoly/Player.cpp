@@ -67,7 +67,7 @@ int Player::getHouseCount() const {
 	return houseCount;
 }
 
-void Player::addCard(const Card& card) {  // Adds card to the player's inventory
+void Player::addCard(const Card& card) {
 	cards.push_back(card);
 }
 
