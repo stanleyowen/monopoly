@@ -7,12 +7,14 @@ class Game {
 public:
 	Game();
 	void initializePlayers();
+	std::vector<Player>& getPlayers();
 	void start();
 	void processTurn();
 
 	int rollDice();
 	void handleTileEvents(Player& player);
 	void checkWinCondition();
+
 private:
 	Map map;
 	std::vector<std::vector<Tile>> board;

@@ -1,5 +1,8 @@
-#include "Command.h"
+﻿#include "Command.h"
 #include "Game.h"
+#include "Player.h"
+#include "Map.h"
+#include "Card.h"
 #include <iostream>
 #include <sstream>
 
@@ -11,32 +14,58 @@ void Command::execute(Game& game, const std::string& input) {
 	if (cmd == "/move") {
 		int playerIndex, x, y;
 		iss >> playerIndex >> x >> y;
-		// Move player manually
+		if (playerIndex >= 0 && playerIndex < game.getPlayers().size()) {
+			Player& player = game.getPlayers()[playerIndex];
+			player.setPosition(x, y);
+			std::cout << "[Cheat] " << player.getName() << " moved to (" << x << ", " << y << ")\n";
+		}
 	}
 	else if (cmd == "/get") {
 		int playerIndex, amount;
 		iss >> playerIndex >> amount;
-		// Give money
+		if (playerIndex >= 0 && playerIndex < game.getPlayers().size()) {
+			Player& player = game.getPlayers()[playerIndex];
+			player.addMoney(amount);
+			std::cout << "[Cheat] " << player.getName() << " received $" << amount << "\n";
+		}
 	}
 	else if (cmd == "/give") {
 		int from, to, amount;
 		iss >> from >> to >> amount;
-		// Transfer money
+		auto& players = game.getPlayers();
+		if (from >= 0 && from < players.size() && to >= 0 && to < players.size()) {
+			Player& pFrom = players[from];
+			Player& pTo = players[to];
+			if (pFrom.getMoney() >= amount) {
+				pFrom.subtractMoney(amount);
+				pTo.addMoney(amount);
+				std::cout << "[Cheat] $" << amount << " transferred from " << pFrom.getName() << " to " << pTo.getName() << "\n";
+			}
+			else {
+				std::cout << "[Cheat] Not enough money to transfer!\n";
+			}
+		}
 	}
 	else if (cmd == "/card") {
 		int playerIndex;
 		std::string cardName;
-		iss >> playerIndex >> cardName;
-		// Play card
+		iss >> playerIndex;
+		std::getline(iss, cardName);
+		cardName = cardName.substr(cardName.find_first_not_of(" "));
+		if (playerIndex >= 0 && playerIndex < game.getPlayers().size()) {
+			Player& player = game.getPlayers()[playerIndex];
+			player.addCard(Card(cardName));  // Directly add a Card
+			std::cout << "[Cheat] Gave card \"" << cardName << "\" to " << player.getName() << "\n";
+		}
 	}
 	else if (cmd == "/info") {
-		// Show player info
-	}
-	else if (cmd == "/refresh") {
-		// Refresh map
+		for (const Player& p : game.getPlayers()) {
+			std::cout << p.getName() << " | $" << p.getMoney()
+				<< " | Pos: (" << p.getX() << ", " << p.getY() << ") | Houses: " << p.getHouseCount() << "\n";
+		}
 	}
 	else if (cmd == "/list" || cmd == "/help") {
-		std::cout << "Commands: /move, /get, /give, /card, /info, /refresh, /list\n";
+		std::cout << "Commands: /move <i> <x> <y>, /get <i> <amount>, /give <from> <to> <amount>, /card <i> <name>, /info, /list\n";
 	}
 	else {
 		std::cout << "Unknown command.\n";

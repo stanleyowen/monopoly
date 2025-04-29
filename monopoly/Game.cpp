@@ -1,6 +1,7 @@
-#include "Game.h"
+﻿#include "Game.h"
 #include "Player.h"
 #include "Map.h"
+#include "GameConfig.h"
 #include <iostream>
 #include <cstdlib>
 #include <chrono>
@@ -19,6 +20,10 @@ void Game::initializePlayers() {
 	// Random starting cards
 	players[0].addCard(Card("Dice Control"));
 	players[1].addCard(Card("Special"));
+}
+
+std::vector<Player>& Game::getPlayers() {
+	return players;
 }
 
 void Game::start() {
@@ -100,12 +105,24 @@ void Game::handleTileEvents(Player& player) {
 }
 
 void Game::checkWinCondition() {
-	for (const auto& player : players) {
-		// Example win condition
-		if (player.getMoney() >= 10000) {
-			std::cout << player.getName() << " has won the game!\n";
-			gameRunning = false;  // End the game
-			break;
+	int winMoney = GameConfig::getInstance().getWinMoney();
+	int aliveCount = 0;
+	int richestIndex = -1;
+
+	for (int i = 0; i < players.size(); ++i) {
+		if (players[i].getMoney() >= winMoney) {
+			std::cout << "🏆 " << players[i].getName() << " wins with $" << players[i].getMoney() << "!\n";
+			gameRunning = false;
+			return;
 		}
+		if (players[i].getMoney() > 0) {
+			aliveCount++;
+			richestIndex = i;
+		}
+	}
+
+	if (aliveCount == 1) {
+		std::cout << "🏆 " << players[richestIndex].getName() << " wins by survival!\n";
+		gameRunning = false;
 	}
 }
