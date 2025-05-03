@@ -67,6 +67,18 @@ int Player::getHouseCount() const {
 	return houseCount;
 }
 
+void Player::addProperty(int x, int y) {
+	ownedTiles.emplace_back(x, y);
+}
+
+const std::vector<std::pair<int, int>>& Player::getProperties() const {
+	return ownedTiles;
+}
+
+const std::vector<Card>& Player::getCards() const {
+	return cards;
+}
+
 void Player::addCard(const Card& card) {
 	cards.push_back(card);
 }

@@ -130,6 +130,46 @@ void Map::drawBoard(const std::vector<Player>& players) const {
 
 		std::cout << BOLD << "+--------------+--------------+--------------+--------------+--------------+--------------+--------------+--------------+" << RESET << "\n";
 	}
+
+	// === Display Player Info Below the Board ===
+	std::cout << "\n";
+	std::cout << "+--------------+----------+------------------------------+----------------+\n";
+	std::cout << "| Player Name  |  Assets  | Property                     | Cards          |\n";
+	std::cout << "+--------------+----------+------------------------------+----------------+\n";
+
+	for (const auto& player : players) {
+		// Cards: convert to comma-separated string
+		std::stringstream cardList;
+		for (const auto& card : player.getCards()) {
+			cardList << card.getType() << ", ";
+		}
+		std::string cardsStr = cardList.str();
+		if (!cardsStr.empty()) cardsStr.pop_back(), cardsStr.pop_back(); // Remove trailing comma
+
+		// Properties: convert (x,y) to tile numbers
+		std::stringstream propList;
+		for (const auto& coord : player.getProperties()) {
+			int x = coord.first;
+			int y = coord.second;
+			int index = -1;
+			if (x == 0) index = y;
+			else if (y == 7) index = 7 + x;
+			else if (x == 7) index = 7 + 7 + (7 - y);
+			else if (y == 0) index = 7 + 7 + 7 + (7 - x);
+			if (index != -1) propList << index << ", ";
+		}
+
+		std::string propsStr = propList.str();
+		if (!propsStr.empty()) propsStr.pop_back(), propsStr.pop_back(); // Remove trailing comma
+
+		std::cout << "| " << std::left << std::setw(13) << player.getName()
+			<< "| " << std::right << std::setw(8) << player.getMoney()
+			<< " | " << std::left << std::setw(29) << propsStr
+			<< "| " << std::left << std::setw(15) << cardsStr << "|\n";
+	}
+
+	std::cout << "+--------------+----------+------------------------------+----------------+\n";
+
 }
 
 

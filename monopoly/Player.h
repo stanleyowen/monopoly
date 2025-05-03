@@ -17,6 +17,10 @@ public:
 	void addHouse();
 	int getHouseCount() const;
 
+	void addProperty(int x, int y);
+	const std::vector<std::pair<int, int>>& getProperties() const;
+	const std::vector<Card>& getCards() const;
+
 	void addCard(const Card& card);
 
 	int getX() const;
@@ -31,5 +35,6 @@ private:
 	char symbol;
 	int money;
 	int houseCount;
+	std::vector<std::pair<int, int>> ownedTiles;  // stores (x, y) coords of owned properties
 	std::vector<Card> cards;
 };
