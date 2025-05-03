@@ -49,42 +49,46 @@ void Game::start() {
 
 void Game::processTurn() {
 	// Check that there are players
-	if (players.size() > 0) {
-		Player& currentPlayer = players[currentPlayerIndex];
+	if (players.empty()) {
+		std::cerr << "No players available!\n";
+		return;
+	}
 
-		std::cout << currentPlayer.getName() << "'s turn!\n\n";
+	Player& currentPlayer = players[currentPlayerIndex];
 
-		std::cout << "Please choose one of the following actions:" << std::endl;
-		std::cout << "T: Roll the dice." << std::endl;
-		std::cout << "I: View player info." << std::endl;
+	std::cout << currentPlayer.getName() << "'s turn!\n\n";
+	std::cout << "Please choose one of the following actions:\n";
+	std::cout << "T: Roll the dice\n";
+	std::cout << "I: View player info\n";
+	std::cout << "(Or type /list for all available commands)\n";
 
-		char action;
-		std::cout << "> ";
-		std::cin >> action;
+	std::string input;
+	std::cout << "> ";
 
-		if (action == 'T' || action == 't') {
-			int diceRoll = rollDice();
-			std::cout << "Rolled: " << diceRoll << std::endl;
+	if (std::cin.peek() == '\n') std::cin.ignore(); // ignore leftover newline
+	std::getline(std::cin, input);
 
-			currentPlayer.move(diceRoll);
-			handleTileEvents(currentPlayer);
-			checkWinCondition();
-		}
-		else if (action == 'I' || action == 'i') {
-			currentPlayer.showInfo();
+	if (input == "T" || input == "t") {
+		int diceRoll = rollDice();
+		std::cout << "Rolled: " << diceRoll << std::endl;
 
-			// Can add more info here later
-		}
-		else {
-			std::cout << "Invalid choice. Please select 'T' to roll the dice or 'I' for player info.\n\n";
-		}
-
-		// Move to the next player
-		currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+		currentPlayer.move(diceRoll);
+		handleTileEvents(currentPlayer);
+		checkWinCondition();
+	}
+	else if (input == "I" || input == "i") {
+		currentPlayer.showInfo();
+	}
+	else if (!input.empty() && input[0] == '/') {
+		Command command;
+		command.execute(*this, input);
 	}
 	else {
-		std::cerr << "No players available!\n";
+		std::cout << "Invalid choice. Please select 'T', 'I', or a valid slash command.\n\n";
 	}
+
+	// Move to the next player
+	currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
 }
 
 int Game::rollDice() {

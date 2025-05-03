@@ -6,6 +6,7 @@
 class Game {
 public:
 	Game();
+	Map& getMap() { return map; }
 	void initializePlayers();
 	std::vector<Player>& getPlayers();
 	void start();

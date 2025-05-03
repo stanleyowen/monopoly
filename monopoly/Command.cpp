@@ -64,8 +64,27 @@ void Command::execute(Game& game, const std::string& input) {
 				<< " | Pos: (" << p.getX() << ", " << p.getY() << ") | Houses: " << p.getHouseCount() << "\n";
 		}
 	}
+	// [!!] Incomplete commands, need to implement
+	else if (cmd == "/refresh") {
+		game.getMap().drawBoard(game.getPlayers());
+	}
+	else if (cmd == "/gamestate") {
+		std::cout << "[Cheat] Changed game state (placeholder function).\n";
+	}
+	else if (cmd == "/minigame") {
+		std::cout << "[Minigame] Entered a demo minigame (not yet implemented).\n";
+	}
 	else if (cmd == "/list" || cmd == "/help") {
-		std::cout << "Commands: /move <i> <x> <y>, /get <i> <amount>, /give <from> <to> <amount>, /card <i> <name>, /info, /list\n";
+		std::cout << "\n";
+		std::cout << "/card       - Retrieve a specific card by name.\n";
+		std::cout << "/gamestate  - Change the game state.\n";
+		std::cout << "/get        - Get money from the system.\n";
+		std::cout << "/give       - Give money to another player.\n";
+		std::cout << "/info       - Display information about all players.\n";
+		std::cout << "/minigame   - Enter a minigame.\n";
+		std::cout << "/move       - Move to a specific position on the board.\n";
+		std::cout << "/refresh    - Refresh the game board.\n";
+		std::cout << "\n";
 	}
 	else {
 		std::cout << "Unknown command.\n";
