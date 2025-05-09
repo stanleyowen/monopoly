@@ -3,5 +3,5 @@
 
 class MiniGame {
 public:
-	static void play(Player& player);
+	static void playHorseRace(Player& player);
 };

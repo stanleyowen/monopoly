@@ -13,6 +13,14 @@ Game::Game() : currentPlayerIndex(0), gameRunning(true) {
 	initializePlayers();
 }
 
+void clearScreen() {
+#ifdef _WIN32
+	system("cls");
+#else
+	system("clear");
+#endif
+}
+
 void Game::initializePlayers() {
 	players.push_back(Player("Player 1"));  // Adding Player 1
 	players.push_back(Player("Player 2"));  // Adding Player 2
@@ -70,10 +78,10 @@ void Game::processTurn() {
 
 	if (input == "T" || input == "t") {
 		int diceRoll = rollDice();
-		std::cout << "Rolled: " << diceRoll << std::endl;
-
 		currentPlayer.move(diceRoll);
+
 		handleTileEvents(currentPlayer);
+		std::cout << "Rolled: " << diceRoll << std::endl << std::endl;
 		checkWinCondition();
 	}
 	else if (input == "I" || input == "i") {
@@ -104,8 +112,11 @@ void Game::handleTileEvents(Player& player) {
 	int y = player.getY();
 
 	Tile& currentTile = map.getTile(x, y);
-
 	currentTile.handleEvent(player);
+
+	clearScreen();
+	map.drawBoard(players);
+	map.getTile(player.getX(), player.getY()).handleEvent(player);
 }
 
 void Game::checkWinCondition() {

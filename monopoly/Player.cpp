@@ -25,11 +25,12 @@ void Player::move(int diceRoll) {
 	int currentY = getY();
 
 	std::vector<std::pair<int, int>> outerGrid = {
-		{0,0}, {1, 0}, {2, 0}, {3, 0}, {4, 0}, {5, 0}, {6, 0}, {7, 0},		// Top row
-		{7, 1}, {7, 2}, {7, 3}, {7, 4}, {7, 5}, {7, 6}, {7, 7},				// Right column
-		{6, 7}, {5, 7}, {4, 7}, {3, 7}, {2, 7}, {1, 7}, {0, 7},				// Bottom row
-		{0, 6}, {0, 5}, {0, 4}, {0, 3}, {0, 2}, {0, 1}                      // Left column
+		{0,0}, {0,1}, {0,2}, {0,3}, {0,4}, {0,5}, {0,6}, {0,7},  // Top row (left to right)
+		{1,7}, {2,7}, {3,7}, {4,7}, {5,7}, {6,7}, {7,7},         // Right column (top to bottom)
+		{7,6}, {7,5}, {7,4}, {7,3}, {7,2}, {7,1}, {7,0},         // Bottom row (right to left)
+		{6,0}, {5,0}, {4,0}, {3,0}, {2,0}, {1,0}                 // Left column (bottom to top)
 	};
+
 
 	// Find the index of the current position in the outer grid
 	int currentIndex = -1;
@@ -41,7 +42,6 @@ void Player::move(int diceRoll) {
 	}
 
 	int newIndex = (currentIndex + diceRoll) % outerGrid.size();
-
 	int newX = outerGrid[newIndex].first;
 	int newY = outerGrid[newIndex].second;
 	setPosition(newX, newY);

@@ -1,5 +1,6 @@
 #include "Tile.h"
 #include "Player.h"
+#include "MiniGame.h"
 #include <iostream>
 
 Tile::Tile() : symbol(' '), isOccupied(false) {}
@@ -23,20 +24,15 @@ void Tile::setOccupied(bool occupied) {
 }
 
 void Tile::handleEvent(Player& player) {
-	// Check player position using X and Y coordinates
 	int x = player.getX();
 	int y = player.getY();
 
-	// Check if the player has landed on a special tile based on coordinates
 	if (x == 0 && y == 0) {
 		std::cout << player.getName() << " landed on the Start tile!\n";
-		// Handle start tile logic here
-		player.addMoney(200); // Example: Give player a bonus for landing on Start
+		player.addMoney(200);
 	}
 	else if (x == 0 && y == 3) {
 		std::cout << player.getName() << " landed on the Item Shop tile!\n";
-		// Handle item shop logic here
-
 		std::cout << "Please choose an action:\n";
 		std::cout << "E: Enter the shop\n";
 		std::cout << "I: View Player Info\n";
@@ -56,26 +52,22 @@ void Tile::handleEvent(Player& player) {
 			std::cout << "You chose to pass.\n";
 		}
 	}
-	else if (x == 7 && y == 7) {
+	else if ((x == 7 && y == 7) || (x == 3 && y == 7)) {
 		std::cout << player.getName() << " landed on a Chance tile!\n";
-		// Handle chance tile logic here
-		int chance = rand() % 2;
-		if (chance == 0) {
-			std::cout << "You found a treasure! Gain $500.\n";
-			player.addMoney(500);
+		if (rand() % 2 == 0) {
+			std::cout << "Luck dares you to gamble on a horse...\n";
+			MiniGame::playHorseRace(player);
 		}
 		else {
-			std::cout << "You lost your wallet! Lose $300.\n";
-			player.subtractMoney(300);
-		}
-	}
-	else if (x == 3 && y == 7) {
-		std::cout << player.getName() << " landed on a Chance tile!\n";
-		// Handle chance tile logic here
-		int chance = rand() % 2;
-		if (chance == 0) {
 			std::cout << "You found a treasure! Gain $500.\n";
 			player.addMoney(500);
+		}
+	}
+	else if ((x == 0 && y == 2) || (x == 7 && y == 5)) {
+		std::cout << player.getName() << " landed on a Fate tile!\n";
+		if (rand() % 2 == 0) {
+			std::cout << "The gods challenge you to a horse race...\n";
+			MiniGame::playHorseRace(player);
 		}
 		else {
 			std::cout << "You lost your wallet! Lose $300.\n";
@@ -83,9 +75,7 @@ void Tile::handleEvent(Player& player) {
 		}
 	}
 	else if (x == 0 || x == 7 || y == 0 || y == 7) {
-		// These are still "edge" tiles
 		std::cout << player.getName() << " landed on a Property tile!\n";
-		// Handle property tile logic here
 		if (!getOccupied()) {
 			std::cout << "This property is available for purchase.\n";
 			player.subtractMoney(100);

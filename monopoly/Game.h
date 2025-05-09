@@ -3,6 +3,12 @@
 #include "Map.h"
 #include "Command.h"
 
+#ifdef _WIN32
+#include <windows.h>
+#else
+#include <cstdlib>
+#endif
+
 class Game {
 public:
 	Game();
@@ -23,3 +29,5 @@ private:
 	int currentPlayerIndex;
 	bool gameRunning;
 };
+
+void clearScreen();
