@@ -68,12 +68,15 @@ void Game::initializePlayers()
 	const auto &config = GameConfig::getInstance();
 	const auto &playerNames = config.getPlayerNames();
 	const auto &playerIcons = config.getPlayerIcons();
+	const auto &playerColors = config.getPlayerColors();
 	int startMoney = config.getStartMoney();
 
 	for (size_t i = 0; i < playerNames.size(); ++i)
 	{
 		std::string symbol = (i < playerIcons.size()) ? playerIcons[i] : "?";
+		std::string color = (i < playerColors.size()) ? playerColors[i] : "\033[0m"; // Default to no color
 		players.emplace_back(playerNames[i], symbol, startMoney);
+		players.back().setColor(color);
 	}
 }
 

@@ -5,6 +5,18 @@
 
 class Player
 {
+private:
+	int x, y;
+	std::string name;
+	std::string symbol;
+	std::string color;
+
+	int money;
+	int houseCount;
+
+	std::vector<std::pair<int, int>> ownedTiles; // stores (x, y) coords of owned properties
+	std::vector<Card> cards;
+
 public:
 	Player(const std::string &name);
 	Player(const std::string &name, std::string symbol, int startMoney);
@@ -14,6 +26,8 @@ public:
 	void addMoney(int amount);
 	void subtractMoney(int amount);
 	int getMoney() const;
+	void setColor(const std::string &color);
+	std::string getColor() const;
 
 	std::string getSymbol() const { return symbol; };
 	void addHouse();
@@ -30,13 +44,4 @@ public:
 	void setPosition(int newX, int newY);
 
 	std::string getName() const;
-
-private:
-	int x, y;
-	std::string name;
-	std::string symbol;
-	int money;
-	int houseCount;
-	std::vector<std::pair<int, int>> ownedTiles; // stores (x, y) coords of owned properties
-	std::vector<Card> cards;
 };

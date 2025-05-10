@@ -155,3 +155,13 @@ void Player::setPosition(int newX, int newY)
 	y = newY;
 	std::cout << name << " moved to position (" << x << ", " << y << ").\n";
 }
+
+void Player::setColor(const std::string &color)
+{
+	this->color = color;
+}
+
+std::string Player::getColor() const
+{
+	return color;
+}

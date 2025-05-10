@@ -154,11 +154,11 @@ void Map::drawBoard(const std::vector<Player> &players) const
 				const auto &player = players[playerIndex];
 				if (player.getX() == i && player.getY() == j)
 				{
-					// Fetch player symbol from config
-					std::string playerSymbol = (playerIndex < playerSymbols.size()) ? playerSymbols[playerIndex] : "?";
+					// Fetch player symbol and color
+					std::string playerSymbol = player.getSymbol();
+					std::string color = player.getColor(); // Use the player's color
 
-					// Assign color based on player symbol
-					std::string color = (playerSymbol == "A") ? "\033[31m" : "\033[34m";
+					// Append the colored symbol
 					rawIcons << color << playerSymbol << RESET;
 				}
 			}
@@ -233,13 +233,13 @@ void Map::drawBoard(const std::vector<Player> &players) const
 		if (!propsStr.empty())
 			propsStr.pop_back(), propsStr.pop_back(); // Remove trailing comma
 
-		std::string playerIcon = "?";
-		if (!player.getSymbol().empty())
-		{
-			playerIcon = player.getSymbol();
-		}
+		// Fetch player's symbol and color
+		std::string playerSymbol = player.getSymbol();
+		std::string color = player.getColor(); // Use the player's color
 
-		std::cout << "| " << std::left << std::setw(13) << (playerIcon + " " + player.getName())
+		// Display player information with colored symbol
+		std::cout << "| " << std::left << std::setw(22)
+				  << (color + playerSymbol + RESET + " " + player.getName())
 				  << "| " << std::right << std::setw(8) << player.getMoney()
 				  << " | " << std::left << std::setw(29) << propsStr
 				  << "| " << std::left << std::setw(15) << cardsStr << "|\n";
