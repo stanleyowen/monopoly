@@ -102,13 +102,94 @@ void Game::processTurn()
 	// Move to the next player
 	currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
 }
+const std::vector<std::string> diceFaces = {
+	R"(
+     +-------+
+     |       |
+     |   o   |
+     |       |
+     +-------+
+    )",
+	R"(
+     +-------+
+     | o     |
+     |       |
+     |     o |
+     +-------+
+    )",
+	R"(
+     +-------+
+     | o     |
+     |   o   |
+     |     o |
+     +-------+
+    )",
+	R"(
+     +-------+
+     | o   o |
+     |       |
+     | o   o |
+     +-------+
+    )",
+	R"(
+     +-------+
+     | o   o |
+     |   o   |
+     | o   o |
+     +-------+
+    )",
+	R"(
+     +-------+
+     | o   o |
+     | o   o |
+     | o   o |
+     +-------+
+    )"};
 
+// Function to display dice rolling animation for two dice
+void displayDiceAnimation(int dice1, int dice2, const std::vector<Player> &players)
+{
+	// Show rolling animation for a fixed duration
+	for (int i = 0; i < 10; ++i)
+	{
+		int randomFace1 = rand() % 6; // Random face for dice 1
+		int randomFace2 = rand() % 6; // Random face for dice 2
+
+		// Clear the console
+		std::cout << "\033[2J\033[H";
+
+		// Draw the map on top
+		map.drawBoard(players);
+
+		// Display the two dice side by side
+		std::cout << diceFaces[randomFace1] << "    " << diceFaces[randomFace2] << std::endl;
+
+		// Pause for 200ms
+		std::this_thread::sleep_for(std::chrono::milliseconds(200));
+	}
+
+	// Clear the console and display the final result
+	std::cout << "\033[2J\033[H";
+	std::cout << "Final Dice Roll:\n";
+	std::cout << diceFaces[dice1 - 1] << "    " << diceFaces[dice2 - 1] << std::endl;
+
+	std::cout << "Total: " << (dice1 + dice2) << std::endl;
+	std::cout << "Press Enter to continue...\n";
+	std::cin.get();
+}
+
+// Function to roll two dice and return the sum
 int Game::rollDice()
 {
-	static std::random_device rd;
-	static std::mt19937 gen(rd());
-	static std::uniform_int_distribution<> dis(1, 6);
-	return dis(gen) + dis(gen);
+	srand(time(0));
+
+	int dice1 = rand() % 6 + 1;
+	int dice2 = rand() % 6 + 1;
+
+	// Display the animation and final result
+	displayDiceAnimation(dice1, dice2, players);
+
+	return dice1 + dice2; // Return the sum of the two dice
 }
 
 void Game::handleTileEvents(Player &player)
