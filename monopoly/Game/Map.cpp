@@ -1,43 +1,52 @@
 #include "Map.h"
+#include "GameConfig.h"
 #include <iostream>
 #include <iomanip>
 #include <sstream>
 
 Map::Map() {}
 
-void Map::setTile(int x, int y, char tileSymbol) {
+void Map::setTile(int x, int y, char tileSymbol)
+{
 	board[x][y].setSymbol(tileSymbol);
 }
 
-Tile& Map::getTile(int x, int y) {
+Tile &Map::getTile(int x, int y)
+{
 	return board[x][y];
 }
 
-void Map::setupBoard() {
+void Map::setupBoard()
+{
 	// Set default to Property tile
-	for (int i = 0; i < 8; ++i) {
-		for (int j = 0; j < 8; ++j) {
+	for (int i = 0; i < 8; ++i)
+	{
+		for (int j = 0; j < 8; ++j)
+		{
 			setTile(i, j, 'P');
 		}
 	}
 
 	// Empty inner tiles
-	for (int i = 1; i < 7; ++i) {
-		for (int j = 1; j < 7; ++j) {
+	for (int i = 1; i < 7; ++i)
+	{
+		for (int j = 1; j < 7; ++j)
+		{
 			setTile(i, j, ' ');
 		}
 	}
 
-	setTile(0, 0, 'S');  // Start
-	setTile(0, 2, 'F');  // Fate
-	setTile(0, 4, 'I');  // Item Shop
-	setTile(3, 7, 'C');  // Chance
-	setTile(7, 6, 'H');  // Hospital
-	setTile(4, 0, 'C');  // Chance
-	setTile(7, 5, 'F');  // Fate
+	setTile(0, 0, 'S'); // Start
+	setTile(0, 2, 'F'); // Fate
+	setTile(0, 4, 'I'); // Item Shop
+	setTile(3, 7, 'C'); // Chance
+	setTile(7, 6, 'H'); // Hospital
+	setTile(4, 0, 'C'); // Chance
+	setTile(7, 5, 'F'); // Fate
 }
 
-void Map::drawBoard(const std::vector<Player>& players) const {
+void Map::drawBoard(const std::vector<Player> &players) const
+{
 	// ANSI color codes
 	const std::string RESET = "\033[0m";
 	const std::string RED_BG = "\033[41m";
@@ -48,49 +57,87 @@ void Map::drawBoard(const std::vector<Player>& players) const {
 	const std::string BLACK_BG = "\033[40m";
 	const std::string BOLD = "\033[1m";
 
-	auto getTileColor = [&](char sym) -> std::string {
-		switch (sym) {
-		case 'S': return GREEN_BG;
-		case 'I': return YELLOW_BG;
-		case 'C': return MAGENTA_BG;
-		case 'H': return RED_BG;
-		case 'F': return CYAN_BG;
-		case 'P': return BLACK_BG;
-		default: return BLACK_BG;
+	// Access GameConfig instance
+	const auto &config = GameConfig::getInstance();
+	const auto &propertyLabels = config.getLocationMap();
+
+	auto getTileColor = [&](char sym) -> std::string
+	{
+		switch (sym)
+		{
+		case 'S':
+			return GREEN_BG;
+		case 'I':
+			return YELLOW_BG;
+		case 'C':
+			return MAGENTA_BG;
+		case 'H':
+			return RED_BG;
+		case 'F':
+			return CYAN_BG;
+		case 'P':
+			return BLACK_BG;
+		default:
+			return BLACK_BG;
 		}
 	};
 
-	auto getTileLabel = [&](char sym) -> std::string {
-		switch (sym) {
-		case 'S': return "START";
-		case 'I': return "SHOP";
-		case 'C': return "CHANCE";
-		case 'H': return "HOSP";
-		case 'F': return "FATE";
-		case 'P': return "PROP";
-		default:  return "????";
+	auto getTileLabel = [&](char sym, int tileNumber) -> std::string
+	{
+		// Fetch the label from the configuration map
+		auto it = propertyLabels.find(tileNumber);
+		if (it != propertyLabels.end())
+		{
+			return it->second; // Return the label if found
+		}
+
+		// Fallback labels for specific symbols if not found in the configuration
+		switch (sym)
+		{
+		case 'S':
+			return "START";
+		case 'I':
+			return "SHOP";
+		case 'C':
+			return "CHANCE";
+		case 'H':
+			return "HOSP";
+		case 'F':
+			return "FATE";
+		case 'P':
+			return "PROP";
+		default:
+			return "????";
 		}
 	};
 
 	std::cout << BOLD << "+--------------+--------------+--------------+--------------+--------------+--------------+--------------+--------------+" << RESET << "\n";
-	for (int i = 0; i < 8; ++i) {
+	for (int i = 0; i < 8; ++i)
+	{
 		// First row: tile number + label
-		for (int j = 0; j < 8; ++j) {
+		for (int j = 0; j < 8; ++j)
+		{
 			int tileNumber = -1;
-			if (i == 0) tileNumber = j;
-			else if (j == 7) tileNumber = 7 + i;
-			else if (i == 7) tileNumber = 7 + 7 + (7 - j);
-			else if (j == 0) tileNumber = 7 + 7 + 7 + (7 - i);
+			if (i == 0)
+				tileNumber = j;
+			else if (j == 7)
+				tileNumber = 7 + i;
+			else if (i == 7)
+				tileNumber = 7 + 7 + (7 - j);
+			else if (j == 0)
+				tileNumber = 7 + 7 + 7 + (7 - i);
 
 			char symbol = board[i][j].getSymbol();
 			std::string tileColor = getTileColor(symbol);
-			std::string label = getTileLabel(symbol);
+			std::string label = getTileLabel(symbol, tileNumber);
 
 			std::stringstream top;
-			if (tileNumber != -1) {
+			if (tileNumber != -1)
+			{
 				top << std::setw(2) << tileNumber << " " << label;
 			}
-			else {
+			else
+			{
 				top << " ";
 			}
 			std::cout << "| " << tileColor << std::setw(13) << std::left << top.str() << RESET;
@@ -98,10 +145,13 @@ void Map::drawBoard(const std::vector<Player>& players) const {
 		std::cout << "|\n";
 
 		// Second row: player icons
-		for (int j = 0; j < 8; ++j) {
+		for (int j = 0; j < 8; ++j)
+		{
 			std::stringstream rawIcons;
-			for (const auto& player : players) {
-				if (player.getX() == i && player.getY() == j) {
+			for (const auto &player : players)
+			{
+				if (player.getX() == i && player.getY() == j)
+				{
 					std::string color = (player.getSymbol() == 'A') ? "\033[31m" : "\033[34m";
 					rawIcons << color << "[" << player.getSymbol() << "]" << RESET;
 				}
@@ -109,11 +159,15 @@ void Map::drawBoard(const std::vector<Player>& players) const {
 
 			std::string iconStr = rawIcons.str();
 			int visualLength = 0;
-			for (size_t k = 0; k < iconStr.size(); ++k) {
-				if (iconStr[k] == '\033') {
-					while (k < iconStr.size() && iconStr[k] != 'm') ++k;
+			for (size_t k = 0; k < iconStr.size(); ++k)
+			{
+				if (iconStr[k] == '\033')
+				{
+					while (k < iconStr.size() && iconStr[k] != 'm')
+						++k;
 				}
-				else {
+				else
+				{
 					++visualLength;
 				}
 			}
@@ -125,7 +179,8 @@ void Map::drawBoard(const std::vector<Player>& players) const {
 		std::cout << "|\n";
 
 		// Third row: empty visual padding
-		for (int j = 0; j < 8; ++j) std::cout << "|              ";
+		for (int j = 0; j < 8; ++j)
+			std::cout << "|              ";
 		std::cout << "|\n";
 
 		std::cout << BOLD << "+--------------+--------------+--------------+--------------+--------------+--------------+--------------+--------------+" << RESET << "\n";
@@ -137,39 +192,46 @@ void Map::drawBoard(const std::vector<Player>& players) const {
 	std::cout << "| Player Name  |  Assets  | Property                     | Cards          |\n";
 	std::cout << "+--------------+----------+------------------------------+----------------+\n";
 
-	for (const auto& player : players) {
+	for (const auto &player : players)
+	{
 		// Cards: convert to comma-separated string
 		std::stringstream cardList;
-		for (const auto& card : player.getCards()) {
+		for (const auto &card : player.getCards())
+		{
 			cardList << card.getType() << ", ";
 		}
 		std::string cardsStr = cardList.str();
-		if (!cardsStr.empty()) cardsStr.pop_back(), cardsStr.pop_back(); // Remove trailing comma
+		if (!cardsStr.empty())
+			cardsStr.pop_back(), cardsStr.pop_back(); // Remove trailing comma
 
 		// Properties: convert (x,y) to tile numbers
 		std::stringstream propList;
-		for (const auto& coord : player.getProperties()) {
+		for (const auto &coord : player.getProperties())
+		{
 			int x = coord.first;
 			int y = coord.second;
 			int index = -1;
-			if (x == 0) index = y;
-			else if (y == 7) index = 7 + x;
-			else if (x == 7) index = 7 + 7 + (7 - y);
-			else if (y == 0) index = 7 + 7 + 7 + (7 - x);
-			if (index != -1) propList << index << ", ";
+			if (x == 0)
+				index = y;
+			else if (y == 7)
+				index = 7 + x;
+			else if (x == 7)
+				index = 7 + 7 + (7 - y);
+			else if (y == 0)
+				index = 7 + 7 + 7 + (7 - x);
+			if (index != -1)
+				propList << index << ", ";
 		}
 
 		std::string propsStr = propList.str();
-		if (!propsStr.empty()) propsStr.pop_back(), propsStr.pop_back(); // Remove trailing comma
+		if (!propsStr.empty())
+			propsStr.pop_back(), propsStr.pop_back(); // Remove trailing comma
 
 		std::cout << "| " << std::left << std::setw(13) << player.getName()
-			<< "| " << std::right << std::setw(8) << player.getMoney()
-			<< " | " << std::left << std::setw(29) << propsStr
-			<< "| " << std::left << std::setw(15) << cardsStr << "|\n";
+				  << "| " << std::right << std::setw(8) << player.getMoney()
+				  << " | " << std::left << std::setw(29) << propsStr
+				  << "| " << std::left << std::setw(15) << cardsStr << "|\n";
 	}
 
 	std::cout << "+--------------+----------+------------------------------+----------------+\n";
-
 }
-
-

@@ -1,10 +1,10 @@
-#ifndef TILE_H
-#define TILE_H
+#pragma once
 
 #include <iostream>
 #include "Game/Player.h"
 
-class Tile {
+class Tile
+{
 private:
 	char symbol;
 	bool isOccupied;
@@ -19,8 +19,6 @@ public:
 	void setOccupied(bool occupied);
 
 	// Event handling methods for random events, etc.
-	void handleEvent(Player& player);
-	void enterShop(Player& player);
+	void handleEvent(Player &player);
+	void enterShop(Player &player);
 };
-
-#endif
