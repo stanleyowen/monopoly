@@ -1,19 +1,36 @@
 #include "Player.h"
 #include <iostream>
+#include <iomanip>
 
 Player::Player(const std::string& name) : name(name), money(5000), x(0), y(0), houseCount(0) {}
 
-void Player::showInfo() const {  // Player information shown here
-	std::cout << "Player: " << name << "\n";
-	std::cout << "Money: $" << money << "\n";
-	std::cout << "Houses: " << houseCount << "\n";
-	std::cout << "Cards: ";
+void Player::showInfo() const {
+	std::cout << name << "'s Cards:\n";
+	std::cout << "+----------------------------------------------------------------------------+\n";
+	std::cout << "| No. | Card Name             | Effect                                       |\n";
+	std::cout << "+----------------------------------------------------------------------------+\n";
 
-	for (const auto& card : cards) {
-		std::cout << card.getType() << " ";
+	for (size_t i = 0; i < cards.size(); ++i) {
+		std::string name = cards[i].getType(); // assuming getType() returns name
+		std::string effect;
+
+		// Match known effects — feel free to expand this list
+		if (name == "Barrier Card")       effect = "Place a barrier on a tile to blcok players..";
+		else if (name == "Dice Card")     effect = "Choose the number you roll on the dice.";
+		else if (name == "Destroy Card")  effect = "Destroy another player's property.";
+		else if (name == "Fate Card")     effect = "Trigger a Fate event.";
+		else if (name == "Rocket Card")   effect = "Send a player to the hospital for 2 turns.";
+		else                              effect = "Unknown card effect.";
+
+		// Format line (fixed-width using std::setw)
+		std::cout << "| " << std::setw(3) << (i + 1) << " | "
+			<< std::setw(21) << std::left << name << " | "
+			<< std::setw(43) << std::left << effect << "|\n";
 	}
-	std::cout << "\n";
+
+	std::cout << "+----------------------------------------------------------------------------+\n";
 }
+
 
 std::string Player::getName() const {
 	return name;

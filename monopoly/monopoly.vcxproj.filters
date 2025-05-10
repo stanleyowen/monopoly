@@ -51,6 +51,9 @@
     <ClCompile Include="GameConfig.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="WelcomingScreen\WelcomingScreen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -86,5 +89,16 @@
     <ClInclude Include="GameConfig.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="WelcomingScreen\WelcomingScreen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nlohmann\json.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="json\config.json" />
+    <CopyFileToFolders Include="json\command.json" />
+    <CopyFileToFolders Include="json\dialogue.json" />
   </ItemGroup>
 </Project>

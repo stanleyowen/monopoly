@@ -29,7 +29,7 @@ void Game::initializePlayers()
 	players[1].addCard(Card("Special"));
 }
 
-std::vector<Player> &Game::getPlayers()
+std::vector<Player>& Game::getPlayers()
 {
 	return players;
 }
@@ -56,7 +56,7 @@ void Game::processTurn()
 		return;
 	}
 
-	Player &currentPlayer = players[currentPlayerIndex];
+	Player& currentPlayer = players[currentPlayerIndex];
 
 	std::cout << currentPlayer.getName() << "'s turn!\n\n";
 	std::cout << "Please choose one of the following actions:\n";
@@ -78,7 +78,7 @@ void Game::processTurn()
 
 		handleTileEvents(currentPlayer);
 		std::cout << "Rolled: " << diceRoll << std::endl
-				  << std::endl;
+			<< std::endl;
 		checkWinCondition();
 	}
 	else if (input == "I" || input == "i")
@@ -107,13 +107,9 @@ int Game::rollDice()
 	return dis(gen) + dis(gen);
 }
 
-void Game::handleTileEvents(Player &player)
+void Game::handleTileEvents(Player& player)
 {
-	// Get the player's position
-	int x = player.getX();
-	int y = player.getY();
-
-	Tile &currentTile = map.getTile(x, y);
+	Tile& currentTile = map.getTile(player.getX(), player.getY());
 	currentTile.handleEvent(player);
 
 	clearScreen();
@@ -124,6 +120,7 @@ void Game::handleTileEvents(Player &player)
 void Game::checkWinCondition()
 {
 	int winMoney = GameConfig::getInstance().getWinMoney();
+	if (winMoney == 0) winMoney = 300000;
 	int aliveCount = 0;
 	int richestIndex = -1;
 

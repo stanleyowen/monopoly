@@ -2,6 +2,7 @@
 #include "Player.h"
 #include "MiniGame.h"
 #include <iostream>
+#include <algorithm>
 
 Tile::Tile() : symbol(' '), isOccupied(false) {}
 
@@ -52,26 +53,23 @@ void Tile::handleEvent(Player& player) {
 			std::cout << "You chose to pass.\n";
 		}
 	}
-	else if ((x == 7 && y == 7) || (x == 3 && y == 7)) {
-		std::cout << player.getName() << " landed on a Chance tile!\n";
-		if (rand() % 2 == 0) {
-			std::cout << "Luck dares you to gamble on a horse...\n";
+	else if ((x == 7 && y == 7) || (x == 3 && y == 7) || (x == 0 && y == 2) || (x == 7 && y == 5)) {
+		std::cout << player.getName() << " landed on a ";
+		if ((x == 0 && y == 2) || (x == 7 && y == 5))
+			std::cout << "Fate";
+		else
+			std::cout << "Chance";
+		std::cout << " tile!\n";
+
+		int rng = rand() % 3;
+		if (rng == 0) {
 			MiniGame::playHorseRace(player);
 		}
-		else {
-			std::cout << "You found a treasure! Gain $500.\n";
-			player.addMoney(500);
-		}
-	}
-	else if ((x == 0 && y == 2) || (x == 7 && y == 5)) {
-		std::cout << player.getName() << " landed on a Fate tile!\n";
-		if (rand() % 2 == 0) {
-			std::cout << "The gods challenge you to a horse race...\n";
-			MiniGame::playHorseRace(player);
+		else if (rng == 1) {
+			MiniGame::playDragonGate(player);
 		}
 		else {
-			std::cout << "You lost your wallet! Lose $300.\n";
-			player.subtractMoney(300);
+			std::cout << "Nothing happens... this time.\n";
 		}
 	}
 	else if (x == 0 || x == 7 || y == 0 || y == 7) {

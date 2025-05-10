@@ -116,6 +116,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -151,10 +152,12 @@
     <ClCompile Include="MiniGame.cpp" />
     <ClCompile Include="Card.cpp" />
     <ClCompile Include="Command.cpp" />
+    <ClCompile Include="WelcomingScreen\WelcomingScreen.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameConfig.h" />
+    <ClInclude Include="include\nlohmann\json.hpp" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Player.h" />
@@ -164,6 +167,21 @@
     <ClInclude Include="MiniGame.h" />
     <ClInclude Include="Card.h" />
     <ClInclude Include="Command.h" />
+    <ClInclude Include="WelcomingScreen\WelcomingScreen.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="json\command.json">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="json\config.json">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="json\dialogue.json">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

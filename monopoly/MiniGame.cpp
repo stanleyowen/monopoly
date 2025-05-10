@@ -5,6 +5,11 @@
 #include <ctime>
 #include <thread>
 #include <chrono>
+#include <algorithm>
+#include <string>
+#include <limits>
+
+void clearScreen();
 
 void MiniGame::playHorseRace(Player& player) {
 	clearScreen();
@@ -56,7 +61,119 @@ void MiniGame::playHorseRace(Player& player) {
 	}
 
 	std::cout << "Press Enter to return to the game...";
-	std::cin.ignore();
+	std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
+	std::cin.get();
+	clearScreen();
+}
+
+void MiniGame::playDragonGate(Player& player) {
+	clearScreen();
+	srand(static_cast<unsigned>(time(nullptr)));
+	std::cout << "--- MiniGame: Dragon Gate ---\n";
+	int card1 = rand() % 13 + 1;
+	int card2 = rand() % 13 + 1;
+	std::cout << "First card: " << card1 << ", Second card: " << card2 << "\n";
+
+	int wager = 0;
+	while (true) {
+		std::cout << "Enter your bet (up to $1000): ";
+		std::cin >> wager;
+
+		if (std::cin.fail()) {
+			std::cin.clear();
+			std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n'); // flush bad input
+			std::cout << "Invalid input. Please enter a number.\n";
+			continue;
+		}
+
+		if (wager <= 0) {
+			std::cout << "Bet must be greater than zero.\n";
+		}
+		else if (wager > 1000) {
+			std::cout << "Bet must not be greater than 1000.\n";
+		}
+		else {
+			std::cout << "You bet $" << wager << ".\n";
+			break;
+		}
+	}
+
+	int nextCard = rand() % 13 + 1;
+	bool correct = false;
+	bool pillarHit = (nextCard == card1 || nextCard == card2);
+
+	if (card1 != card2) {
+		int low, high;
+		if (card1 < card2) {
+			low = card1;
+			high = card2;
+		}
+		else {
+			low = card2;
+			high = card1;
+		}
+
+		std::string guess;
+		std::cout << "Do you think the next card will be [inside] or [outside] the range? ";
+		std::cin >> guess;
+
+		std::cout << "Next card: " << nextCard << "\n";
+
+		if (pillarHit) {
+			std::cout << "Pillar hit! You lose 2x your bet!\n";
+			player.subtractMoney(wager * 2);
+			return;
+		}
+
+		if (guess == "inside") {
+			correct = (nextCard > low && nextCard < high);
+		}
+		else {
+			correct = (nextCard < low || nextCard > high);
+		}
+
+		if (correct) {
+			std::cout << "You guessed right! You win your bet!\n";
+			player.addMoney(wager);
+		}
+		else {
+			std::cout << "Wrong guess! You lose your bet.\n";
+			player.subtractMoney(wager);
+		}
+
+	}
+	else {
+		std::string guess;
+		std::cout << "Cards are equal. Will the next card be [higher] or [lower]? ";
+		std::cin >> guess;
+
+		std::cout << "Next card: " << nextCard << "\n";
+
+		if (pillarHit) {
+			std::cout << "Pillar hit! You lose 3x your bet!\n";
+			player.subtractMoney(wager * 3);
+			return;
+		}
+
+		if (guess == "higher") {
+			correct = (nextCard > card1);
+		}
+		else {
+			correct = (nextCard < card1);
+		}
+
+		if (correct) {
+			std::cout << "You guessed right! You win your bet!\n";
+			player.addMoney(wager);
+		}
+		else {
+			std::cout << "Wrong guess! You lose your bet.\n";
+			player.subtractMoney(wager);
+		}
+	}
+
+	std::cout << "Press Enter to return to the game...";
+	std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
 	std::cin.get();
 	clearScreen();
 }
