@@ -8,13 +8,13 @@
       "args": [
         "-std=c++17",
         "-o",
-        "monopoly/monopoly", // Output executable in the monopoly folder
-        "monopoly/*.cpp", // Compile all .cpp files in the monopoly folder
-        "monopoly/WelcomingScreen/*.cpp", // Include .cpp files in subfolders
+        "monopoly/monopoly",
+        "monopoly/*.cpp",
+        "monopoly/WelcomingScreen/*.cpp",
         "-I",
-        "monopoly", // Include the monopoly folder for headers
+        "monopoly",
         "-I",
-        "monopoly/WelcomingScreen" // Include subfolder for headers
+        "monopoly/WelcomingScreen"
       ],
       "group": {
         "kind": "build",
@@ -27,6 +27,7 @@
       "label": "Run Monopoly",
       "type": "shell",
       "command": "./monopoly/monopoly", // Path to the executable
+      "dependsOn": ["Build Monopoly"], // Ensure it waits for the build to finish
       "group": {
         "kind": "test",
         "isDefault": false
@@ -39,7 +40,7 @@
     },
     {
       "label": "Build and Run Monopoly",
-      "dependsOn": ["Build Monopoly", "Run Monopoly"],
+      "dependsOn": ["Build Monopoly", "Run Monopoly"], // Sequential execution
       "group": {
         "kind": "build",
         "isDefault": true // Set this compound task as the default build task

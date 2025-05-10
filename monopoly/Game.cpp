@@ -16,11 +16,7 @@ Game::Game() : currentPlayerIndex(0), gameRunning(true)
 
 void clearScreen()
 {
-#ifdef _WIN32
-	system("cls");
-#else
-	system("clear");
-#endif
+	std::system("cls||clear"); // Use system command to clear the screen
 }
 
 void Game::initializePlayers()

@@ -2,12 +2,12 @@
 #include <iostream>
 #include <thread>
 #include <chrono>
+#include <cstdlib>
 
 // Clear the console screen
 void WelcomingScreen::clearScreen()
 {
-    // Use ANSI escape codes to clear the screen and move the cursor to the top-left corner
-    std::cout << "\033[2J\033[1;1H" << std::flush;
+    std::system("cls||clear");
 }
 
 // Display the welcoming screen with ASCII art
