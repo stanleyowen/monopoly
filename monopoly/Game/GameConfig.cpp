@@ -35,9 +35,9 @@ void GameConfig::loadConfig()
 	fileConfig >> config;
 	fileDialogue >> dialogue;
 
-	// If the mode is not release, read all the value from the specified mode
 	// If the mode is release, ask the user to input the number of players and the player names
-	std::string mode = config["mode"].get<std::string>();
+	// If the mode is not release, read all the value from the specified mode in config.json
+	std::string mode = config["defaultMode"].get<std::string>();
 	if (mode == "RELEASE")
 	{
 		std::cout << dialogue["input_player_num"].get<std::string>() << "\n";
@@ -53,14 +53,14 @@ void GameConfig::loadConfig()
 	else
 	{
 		// Parse the built-in player-related configurations
-		playersNum = config["mode"][mode]["playersNum"].get<int>();
-		playerNames = config["playerNames"].get<std::vector<std::string>>();
+		playersNum = config["modes"][mode]["playersNum"].get<int>();
+		playerNames = config["modes"][mode]["playersName"].get<std::vector<std::string>>();
 	}
 
 	// Parse game mode configurations
-	startMoney = config["mode"][mode]["startMoney"].get<int>();
-	winMoney = config["mode"][mode]["winMoney"].get<int>();
-	passingStartBonus = config["mode"][mode]["passingStartBonus"].get<int>();
+	startMoney = config["modes"][mode]["startMoney"].get<int>();
+	winMoney = config["modes"][mode]["winMoney"].get<int>();
+	passingStartBonus = config["modes"][mode]["passingStartBonus"].get<int>();
 
 	// Parse default player-related configurations
 	playerIcons = config["playerIcons"].get<std::vector<std::string>>();
@@ -82,6 +82,7 @@ void GameConfig::loadConfig()
 		tileConfig.price = tile["price"].get<int>();
 		tileConfig.toll = tile["toll"].get<int>();
 		boardTiles.push_back(tileConfig);
+		locationMap[tileConfig.id] = tileConfig.name;
 	}
 
 	// Parse the cards
@@ -95,10 +96,13 @@ void GameConfig::loadConfig()
 		cards.push_back(cardConfig);
 	}
 
-	// Parse the location map
-	for (const auto &location : config["locationMap"].items())
+	// Parse eventValueRange
+	for (const auto &event : config["eventValueRange"].items())
 	{
-		locationMap[std::stoi(location.key())] = location.value().get<std::string>();
+		std::string eventName = event.key();
+		int minValue = event.value()[0].get<int>(),
+			maxValue = event.value()[1].get<int>();
+		eventValueRange[eventName] = std::make_pair(minValue, maxValue);
 	}
 }
 
