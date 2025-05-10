@@ -1,0 +1,83 @@
+{
+  "move": {
+    "description": "Move to a specific position on the board.",
+    "usage": "/move [location] or /move to [0-31]",
+    "examples": [
+      "/move 5",
+      "/move to 10"
+    ],
+    "prompt": "Moving player to position {location}."
+  },
+  "give": {
+    "description": "Give money to another player.",
+    "usage": "/give [playerName] [money]",
+    "examples": [
+      "/give Alice 500"
+    ],
+    "prompt": "{playerName} received {money} dollars from you."
+  },
+  "get": {
+    "description": "Get money from the system.",
+    "usage": "/get [playerName] [money] or /get [money]",
+    "examples": [
+      "/get Bob 100",
+      "/get 100"
+    ],
+    "prompt": "{playerName} received {money} dollars from the system."
+  },
+  "card": {
+    "description": "Retrieve a specific card by name.",
+    "usage": "/card [card_name]",
+    "examples": [
+      "/card Lucky",
+      "/card Rocket"
+    ],
+    "prompt": "You received the card: {card_name}."
+  },
+  "minigame": {
+    "description": "Enter a minigame.",
+    "usage": "/minigame",
+    "examples": [
+      "/minigame"
+    ],
+    "prompt": "Entering the minigame."
+  },
+  "gamestate": {
+    "description": "Change the game state.",
+    "usage": "/gamestate [state]",
+    "examples": [
+      "/gamestate INIT",
+      "/gamestate START",
+      "/gamestate MOVED",
+      "/gamestate FINISH"
+    ],
+    "prompt": "Game state changed to {state}."
+  },
+  "info": {
+    "description": "Display information about all players.",
+    "usage": "/info",
+    "examples": [
+      "/info"
+    ],
+    "prompt": "Displaying information for all players."
+  },
+  "refresh": {
+    "description": "Refresh the game board.",
+    "usage": "/refresh",
+    "examples": [
+      "/refresh"
+    ],
+    "prompt": "The game board has been refreshed."
+  },
+  "list": {
+    "description": "List all available commands.",
+    "usage": "/list",
+    "examples": [
+      "/list"
+    ],
+    "prompt": "Available commands:"
+  },
+  "invalid_command": {
+    "prompt": "Invalid command. Type /list to see available commands."
+  }
+}

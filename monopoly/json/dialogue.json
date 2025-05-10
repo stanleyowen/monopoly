@@ -1,0 +1,197 @@
+﻿{
+  "input_player_num": {
+    "prompt": "Please enter the number of players (2-4):"
+  },
+  "input_player_name": {
+    "prompt": "Please enter the name of player"
+  },
+  "player_action": {
+    "init": {
+      "prompt": "Welcome to Monopoly!",
+      "options": []
+    },
+    "start": {
+      "option_prompt": "Please choose an action:",
+      "options": [
+        {
+          "key": "T",
+          "description": "Roll the dice"
+        },
+        {
+          "key": "I",
+          "description": "View Player Info"
+        }
+      ],
+      "default": {
+        "prompt": "",
+        "options": [
+          {
+            "key": "T",
+            "description": "Roll the dice"
+          },
+          {
+            "key": "I",
+            "description": "View Player Info"
+          }
+        ]
+      }
+    },
+    "moved": {
+      "option_prompt": "Please choose an action:",
+      "options": [
+        {
+          "key": "I",
+          "description": "View Player Info"
+        },
+        {
+          "key": "*",
+          "description": "Press any key to PASS"
+        }
+      ],
+      "default": {
+        "prompt": "",
+        "options": [
+          {
+            "key": "I",
+            "description": "View Player Info"
+          },
+          {
+            "key": "*",
+            "description": "Press any key to PASS"
+          }
+        ]
+      },
+      "event": {
+        "prompt": "Something exciting is about to happen! Press any key to uncover the secret.",
+        "options": [
+          {
+            "key": "I",
+            "description": "View Player Info"
+          },
+          {
+            "key": "*",
+            "description": "Press any key to Continue"
+          }
+        ]
+      },
+      "start_point": {
+        "prompt": "You have landed on the start tile.",
+        "options": [
+          {
+            "key": "I",
+            "description": "View Player Info"
+          },
+          {
+            "key": "*",
+            "description": "Press any key to Continue"
+          }
+        ]
+      },
+      "store": {
+        "prompt": "You have landed on the item shop.",
+        "options": [
+          {
+            "key": "E",
+            "description": "Enter the shop"
+          },
+          {
+            "key": "I",
+            "description": "View Player Info"
+          },
+          {
+            "key": "*",
+            "description": "Press any key to PASS"
+          }
+        ]
+      },
+      "hospital": {
+        "prompt": "You are in the hospital. You can't move.",
+        "options": [
+          {
+            "key": "R",
+            "description": "Pay the medical bills and early leave."
+          },
+          {
+            "key": "I",
+            "description": "View Player Info"
+          },
+          {
+            "key": "*",
+            "description": "Press any key to PASS"
+          }
+        ]
+      },
+      "jail": {
+        "prompt": "You are in jail.",
+        "options": [
+          {
+            "key": "R",
+            "description": "Pay to roll the dice and escape."
+          },
+          {
+            "key": "I",
+            "description": "View Player Info"
+          },
+          {
+            "key": "*",
+            "description": "Press any key to PASS"
+          }
+        ]
+      },
+      "property_unowned": {
+        "prompt": "You have landed on an unowned property. You can choose to buy it or pass.",
+        "options": [
+          {
+            "key": "R",
+            "description": "Buy property"
+          },
+          {
+            "key": "I",
+            "description": "View Player Info"
+          },
+          {
+            "key": "*",
+            "description": "Press any key to PASS"
+          }
+        ]
+      },
+      "property_owned": {
+        "prompt": "You have landed on your own property. You can choose to upgrade, sell, or pass.",
+        "options": [
+          {
+            "key": "R",
+            "description": "Upgrade property"
+          },
+          {
+            "key": "S",
+            "description": "Sell property"
+          },
+          {
+            "key": "I",
+            "description": "View Player Info"
+          },
+          {
+            "key": "*",
+            "description": "Press any key to PASS"
+          }
+        ]
+      },
+      "property_toll": {
+        "prompt": "You have landed on a property owned by another player. You must pay rent or take other actions.",
+        "options": [
+          {
+            "key": "I",
+            "description": "View Player Info"
+          },
+          {
+            "key": "*",
+            "description": "Pay toll"
+          }
+        ]
+      }
+    }
+  },
+  "invalid_input": {
+    "prompt": "Invalid input. Please try again."
+  }
+}

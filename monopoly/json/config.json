@@ -1,0 +1,306 @@
+﻿{
+  "playerIcons": [
+    "[A]",
+    "[B]",
+    "[C]",
+    "[D]"
+  ],
+  "playerColors": [
+    "\u001b[91m",
+    "\u001b[92m",
+    "\u001b[93m",
+    "\u001b[94m"
+  ],
+  "propertyLevelIcons": [
+    " ",
+    "O",
+    "OO",
+    "OOO"
+  ],
+  "tileWidth": 14,
+  "animation": true,
+  "animationTime": 200,
+  "eventValueRange": {
+    "FATE": [
+      500,
+      1000
+    ],
+    "CHANCE": [
+      2000,
+      5000
+    ]
+  },
+  "defaultMode": "DEBUG",
+  "modes": {
+    "DEBUG": {
+      "playersNum": 4,
+      "playersName": [
+        "Alice",
+        "Bob",
+        "Charlie",
+        "David"
+      ],
+      "startMoney": 100000,
+      "winMoney": 300000,
+      "passingStartBonus": 10000
+    },
+    "DUEL": {
+      "playersNum": 2,
+      "playersName": [
+        "Player1",
+        "Player2"
+      ],
+      "startMoney": 100000,
+      "winMoney": 300000,
+      "passingStartBonus": 10000
+    },
+    "CUSTOM": {
+      "playersNum": 4,
+      "playersName": [
+        "Player1",
+        "Player2",
+        "Player3",
+        "Player4"
+      ],
+      "startMoney": 100000,
+      "winMoney": 300000,
+      "passingStartBonus": 10000
+    },
+    "RELEASE": {
+      "startMoney": 100000,
+      "winMoney": 300000,
+      "passingStartBonus": 10000
+    }
+  },
+  "mapSize": 8,
+  "boardTiles": [
+    {
+      "index": 0,
+      "type": "start",
+      "name": "START",
+      "price": 0,
+      "toll": 0
+    },
+    {
+      "index": 1,
+      "type": "property",
+      "name": "USA",
+      "price": 2000,
+      "toll": 200
+    },
+    {
+      "index": 2,
+      "type": "fate",
+      "name": "Fate",
+      "price": 0,
+      "toll": 0
+    },
+    {
+      "index": 3,
+      "type": "property",
+      "name": "France",
+      "price": 3000,
+      "toll": 300
+    },
+    {
+      "index": 4,
+      "type": "store",
+      "name": "Item Shop",
+      "price": 0,
+      "toll": 0
+    },
+    {
+      "index": 5,
+      "type": "property",
+      "name": "Japan",
+      "price": 5000,
+      "toll": 500
+    },
+    {
+      "index": 6,
+      "type": "property",
+      "name": "Mexico",
+      "price": 6000,
+      "toll": 600
+    },
+    {
+      "index": 7,
+      "type": "property",
+      "name": "Sweden",
+      "price": 7000,
+      "toll": 700
+    },
+    {
+      "index": 8,
+      "type": "property",
+      "name": "Germany",
+      "price": 8000,
+      "toll": 800
+    },
+    {
+      "index": 9,
+      "type": "property",
+      "name": "UK",
+      "price": 8500,
+      "toll": 850
+    },
+    {
+      "index": 10,
+      "type": "chance",
+      "name": "Chance",
+      "price": 0,
+      "toll": 0
+    },
+    {
+      "index": 11,
+      "type": "property",
+      "name": "Canada",
+      "price": 9000,
+      "toll": 900
+    },
+    {
+      "index": 12,
+      "type": "property",
+      "name": "Australia",
+      "price": 9500,
+      "toll": 950
+    },
+    {
+      "index": 13,
+      "type": "property",
+      "name": "Egypt",
+      "price": 9800,
+      "toll": 980
+    },
+    {
+      "index": 14,
+      "type": "property",
+      "name": "Italy",
+      "price": 10000,
+      "toll": 1000
+    },
+    {
+      "index": 15,
+      "type": "hospital",
+      "name": "Hospital",
+      "price": 0,
+      "toll": 0
+    },
+    {
+      "index": 16,
+      "type": "fate",
+      "name": "Fate",
+      "price": 0,
+      "toll": 0
+    },
+    {
+      "index": 17,
+      "type": "property",
+      "name": "Spain",
+      "price": 11000,
+      "toll": 1100
+    },
+    {
+      "index": 18,
+      "type": "property",
+      "name": "China",
+      "price": 11500,
+      "toll": 1150
+    },
+    {
+      "index": 19,
+      "type": "property",
+      "name": "Turkey",
+      "price": 12200,
+      "toll": 1220
+    },
+    {
+      "index": 20,
+      "type": "property",
+      "name": "Korea",
+      "price": 12000,
+      "toll": 1200
+    },
+    {
+      "index": 21,
+      "type": "property",
+      "name": "Brazil",
+      "price": 12500,
+      "toll": 1250
+    },
+    {
+      "index": 22,
+      "type": "property",
+      "name": "Uganda",
+      "price": 12700,
+      "toll": 1270
+    },
+    {
+      "index": 23,
+      "type": "property",
+      "name": "Russia",
+      "price": 13000,
+      "toll": 1300
+    },
+    {
+      "index": 24,
+      "type": "chance",
+      "name": "Chance",
+      "price": 0,
+      "toll": 0
+    },
+    {
+      "index": 25,
+      "type": "property",
+      "name": "India",
+      "price": 13500,
+      "toll": 1350
+    },
+    {
+      "index": 26,
+      "type": "property",
+      "name": "England",
+      "price": 13800,
+      "toll": 1380
+    },
+    {
+      "index": 27,
+      "type": "property",
+      "name": "Africa",
+      "price": 14000,
+      "toll": 1400
+    }
+  ],
+  "cards": [
+    {
+      "name": "Barrier Card",
+      "icon": "B",
+      "price": 1500,
+      "effect": "Place a barrier on a tile to blcok players.."
+    },
+    {
+      "name": "Dice Card",
+      "icon": "Di",
+      "price": 2000,
+      "effect": "Choose the number you roll on the dice."
+    },
+    {
+      "name": "Destroy Card",
+      "icon": "De",
+      "price": 2500,
+      "effect": "Destroy another player's property."
+    },
+    {
+      "name": "Fate Card",
+      "icon": "F",
+      "price": 1000,
+      "effect": "Trigger a Fate event."
+    },
+    {
+      "name": "Rocket Card",
+      "icon": "R",
+      "price": 3000,
+      "effect": "Send a player to the hospital for 2 turns."
+    }
+  ]
+}
