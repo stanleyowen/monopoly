@@ -14,7 +14,9 @@
         "-I",
         "monopoly",
         "-I",
-        "monopoly/WelcomingScreen"
+        "monopoly/WelcomingScreen",
+        "-I",
+        "monopoly/include"
       ],
       "group": {
         "kind": "build",
