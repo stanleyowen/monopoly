@@ -17,10 +17,10 @@ public:
 	void initializePlayers();
 	std::vector<Player> &getPlayers();
 	void start();
-	void animatePlayerMovement(Player &player, int steps);
+	void animatePlayerMovement(Player &player, int steps, int dice1, int dice2);
+	void displayDiceAnimation(int dice1, int dice2, const std::vector<Player> &players);
 	void processTurn();
 
-	int rollDice();
 	void handleTileEvents(Player &player);
 	void checkWinCondition();
 

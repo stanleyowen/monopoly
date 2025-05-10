@@ -9,6 +9,50 @@
 #include <random>
 #include <ctime>
 
+const std::vector<std::string> diceFaces = {
+	R"(
+	 +-------+
+	 |       |
+	 |   o   |
+	 |       |
+	 +-------+
+	)",
+	R"(
+	 +-------+
+	 | o     |
+	 |       |
+	 |     o |
+	 +-------+
+	)",
+	R"(
+	 +-------+
+	 | o     |
+	 |   o   |
+	 |     o |
+	 +-------+
+	)",
+	R"(
+	 +-------+
+	 | o   o |
+	 |       |
+	 | o   o |
+	 +-------+
+	)",
+	R"(
+	 +-------+
+	 | o   o |
+	 |   o   |
+	 | o   o |
+	 +-------+
+	)",
+	R"(
+	 +-------+
+	 | o   o |
+	 | o   o |
+	 | o   o |
+	 +-------+
+	)"};
+
 Game::Game() : currentPlayerIndex(0), gameRunning(true)
 {
 	initializePlayers();
@@ -51,7 +95,7 @@ void Game::start()
 	std::cout << "\nGame Over!" << std::endl;
 }
 
-void Game::animatePlayerMovement(Player &player, int steps)
+void Game::animatePlayerMovement(Player &player, int steps, int dice1, int dice2)
 {
 	for (int i = 0; i < steps; ++i)
 	{
@@ -63,6 +107,10 @@ void Game::animatePlayerMovement(Player &player, int steps)
 
 		// Redraw the board with the updated player position
 		map.drawBoard(players);
+
+		// Display the dice result below the board
+		std::cout << "\nDice Result:\n";
+		std::cout << diceFaces[dice1 - 1] << "    " << diceFaces[dice2 - 1] << std::endl;
 
 		// Pause for a short duration to create the animation effect
 		std::this_thread::sleep_for(std::chrono::milliseconds(300));
@@ -95,14 +143,21 @@ void Game::processTurn()
 
 	if (input == "T" || input == "t")
 	{
-		int diceRoll = rollDice();
+		// Roll the dice and get the result
+		int dice1 = rand() % 6 + 1;
+		int dice2 = rand() % 6 + 1;
+
+		// Display the dice animation
+		displayDiceAnimation(dice1, dice2, players);
+
+		// Calculate the total dice roll
+		int diceRoll = dice1 + dice2;
 
 		// Animate the player's movement
-		animatePlayerMovement(currentPlayer, diceRoll);
+		animatePlayerMovement(currentPlayer, diceRoll, dice1, dice2);
 
 		handleTileEvents(currentPlayer);
-		std::cout << "Rolled: " << diceRoll << std::endl
-				  << std::endl;
+
 		checkWinCondition();
 	}
 	else if (input == "I" || input == "i")
@@ -123,52 +178,8 @@ void Game::processTurn()
 	currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
 }
 
-const std::vector<std::string> diceFaces = {
-	R"(
-     +-------+
-     |       |
-     |   o   |
-     |       |
-     +-------+
-    )",
-	R"(
-     +-------+
-     | o     |
-     |       |
-     |     o |
-     +-------+
-    )",
-	R"(
-     +-------+
-     | o     |
-     |   o   |
-     |     o |
-     +-------+
-    )",
-	R"(
-     +-------+
-     | o   o |
-     |       |
-     | o   o |
-     +-------+
-    )",
-	R"(
-     +-------+
-     | o   o |
-     |   o   |
-     | o   o |
-     +-------+
-    )",
-	R"(
-     +-------+
-     | o   o |
-     | o   o |
-     | o   o |
-     +-------+
-    )"};
-
 // Function to display dice rolling animation for two dice
-void displayDiceAnimation(int dice1, int dice2, const std::vector<Player> &players)
+void Game::displayDiceAnimation(int dice1, int dice2, const std::vector<Player> &players)
 {
 	// Show rolling animation for a fixed duration
 	for (int i = 0; i < 10; ++i)
@@ -196,20 +207,6 @@ void displayDiceAnimation(int dice1, int dice2, const std::vector<Player> &playe
 	std::cout << diceFaces[dice1 - 1] << "    " << diceFaces[dice2 - 1] << std::endl;
 
 	std::cout << "Total: " << (dice1 + dice2) << std::endl;
-}
-
-// Function to roll two dice and return the sum
-int Game::rollDice()
-{
-	srand(time(0));
-
-	int dice1 = rand() % 6 + 1;
-	int dice2 = rand() % 6 + 1;
-
-	// Display the animation and final result
-	displayDiceAnimation(dice1, dice2, players);
-
-	return dice1 + dice2; // Return the sum of the two dice
 }
 
 void Game::handleTileEvents(Player &player)
