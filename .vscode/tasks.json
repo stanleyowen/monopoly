@@ -1,0 +1,50 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build Monopoly",
+      "type": "shell",
+      "command": "/usr/bin/g++",
+      "args": [
+        "-std=c++17",
+        "-o",
+        "monopoly/monopoly", // Output executable in the monopoly folder
+        "monopoly/*.cpp", // Compile all .cpp files in the monopoly folder
+        "monopoly/WelcomingScreen/*.cpp", // Include .cpp files in subfolders
+        "-I",
+        "monopoly", // Include the monopoly folder for headers
+        "-I",
+        "monopoly/WelcomingScreen" // Include subfolder for headers
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "problemMatcher": ["$gcc"],
+      "detail": "Build task for compiling all .cpp files in the Monopoly project."
+    },
+    {
+      "label": "Run Monopoly",
+      "type": "shell",
+      "command": "./monopoly/monopoly", // Path to the executable
+      "group": {
+        "kind": "test",
+        "isDefault": false
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "detail": "Task for running the Monopoly executable."
+    },
+    {
+      "label": "Build and Run Monopoly",
+      "dependsOn": ["Build Monopoly", "Run Monopoly"],
+      "group": {
+        "kind": "build",
+        "isDefault": true // Set this compound task as the default build task
+      },
+      "detail": "Compound task for building and running the Monopoly project."
+    }
+  ]
+}
