@@ -21,15 +21,19 @@ void clearScreen()
 
 void Game::initializePlayers()
 {
-	players.push_back(Player("Player 1")); // Adding Player 1
-	players.push_back(Player("Player 2")); // Adding Player 2
+	const auto &config = GameConfig::getInstance();
+	const auto &playerNames = config.getPlayerNames();
+	const auto &playerIcons = config.getPlayerIcons();
+	int startMoney = config.getStartMoney();
 
-	// Random starting cards
-	players[0].addCard(Card("Dice Control"));
-	players[1].addCard(Card("Special"));
+	for (size_t i = 0; i < playerNames.size(); ++i)
+	{
+		std::string symbol = (i < playerIcons.size()) ? playerIcons[i] : "?";
+		players.emplace_back(playerNames[i], symbol, startMoney);
+	}
 }
 
-std::vector<Player>& Game::getPlayers()
+std::vector<Player> &Game::getPlayers()
 {
 	return players;
 }
@@ -56,7 +60,7 @@ void Game::processTurn()
 		return;
 	}
 
-	Player& currentPlayer = players[currentPlayerIndex];
+	Player &currentPlayer = players[currentPlayerIndex];
 
 	std::cout << currentPlayer.getName() << "'s turn!\n\n";
 	std::cout << "Please choose one of the following actions:\n";
@@ -78,7 +82,7 @@ void Game::processTurn()
 
 		handleTileEvents(currentPlayer);
 		std::cout << "Rolled: " << diceRoll << std::endl
-			<< std::endl;
+				  << std::endl;
 		checkWinCondition();
 	}
 	else if (input == "I" || input == "i")
@@ -107,9 +111,9 @@ int Game::rollDice()
 	return dis(gen) + dis(gen);
 }
 
-void Game::handleTileEvents(Player& player)
+void Game::handleTileEvents(Player &player)
 {
-	Tile& currentTile = map.getTile(player.getX(), player.getY());
+	Tile &currentTile = map.getTile(player.getX(), player.getY());
 	currentTile.handleEvent(player);
 
 	clearScreen();
@@ -120,7 +124,8 @@ void Game::handleTileEvents(Player& player)
 void Game::checkWinCondition()
 {
 	int winMoney = GameConfig::getInstance().getWinMoney();
-	if (winMoney == 0) winMoney = 300000;
+	if (winMoney == 0)
+		winMoney = 300000;
 	int aliveCount = 0;
 	int richestIndex = -1;
 

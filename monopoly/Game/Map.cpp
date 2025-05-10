@@ -60,6 +60,7 @@ void Map::drawBoard(const std::vector<Player> &players) const
 	// Access GameConfig instance
 	const auto &config = GameConfig::getInstance();
 	const auto &propertyLabels = config.getLocationMap();
+	const auto &playerSymbols = config.getPlayerIcons();
 
 	auto getTileColor = [&](char sym) -> std::string
 	{
@@ -148,12 +149,17 @@ void Map::drawBoard(const std::vector<Player> &players) const
 		for (int j = 0; j < 8; ++j)
 		{
 			std::stringstream rawIcons;
-			for (const auto &player : players)
+			for (size_t playerIndex = 0; playerIndex < players.size(); ++playerIndex)
 			{
+				const auto &player = players[playerIndex];
 				if (player.getX() == i && player.getY() == j)
 				{
-					std::string color = (player.getSymbol() == 'A') ? "\033[31m" : "\033[34m";
-					rawIcons << color << "[" << player.getSymbol() << "]" << RESET;
+					// Fetch player symbol from config
+					std::string playerSymbol = (playerIndex < playerSymbols.size()) ? playerSymbols[playerIndex] : "?";
+
+					// Assign color based on player symbol
+					std::string color = (playerSymbol == "A") ? "\033[31m" : "\033[34m";
+					rawIcons << color << playerSymbol << RESET;
 				}
 			}
 
@@ -227,7 +233,13 @@ void Map::drawBoard(const std::vector<Player> &players) const
 		if (!propsStr.empty())
 			propsStr.pop_back(), propsStr.pop_back(); // Remove trailing comma
 
-		std::cout << "| " << std::left << std::setw(13) << player.getName()
+		std::string playerIcon = "?";
+		if (!player.getSymbol().empty())
+		{
+			playerIcon = player.getSymbol();
+		}
+
+		std::cout << "| " << std::left << std::setw(13) << (playerIcon + " " + player.getName())
 				  << "| " << std::right << std::setw(8) << player.getMoney()
 				  << " | " << std::left << std::setw(29) << propsStr
 				  << "| " << std::left << std::setw(15) << cardsStr << "|\n";
