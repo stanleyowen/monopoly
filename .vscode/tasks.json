@@ -31,7 +31,10 @@
     {
       "label": "Run Monopoly",
       "type": "shell",
-      "command": "./monopoly/monopoly", // Path to the executable
+      "command": "./monopoly", // Path to the executable
+      "options": {
+        "cwd": "${workspaceFolder}/monopoly" // Set the working directory to the monopoly folder
+      },
       "dependsOn": ["Build Monopoly"], // Ensure it waits for the build to finish
       "group": {
         "kind": "test",

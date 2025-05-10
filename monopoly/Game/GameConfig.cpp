@@ -15,8 +15,8 @@ GameConfig &GameConfig::getInstance()
 // Load configuration from JSON file
 void GameConfig::loadConfig()
 {
-	std::string configPath = "monopoly/json/config.json";
-	std::string dialoguePath = "monopoly/json/dialogue.json";
+	std::string configPath = "json/config.json";
+	std::string dialoguePath = "json/dialogue.json";
 	std::ifstream fileConfig(configPath);
 	std::ifstream fileDialogue(dialoguePath);
 

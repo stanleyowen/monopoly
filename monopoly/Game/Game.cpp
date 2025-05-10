@@ -159,7 +159,8 @@ void displayDiceAnimation(int dice1, int dice2, const std::vector<Player> &playe
 		std::cout << "\033[2J\033[H";
 
 		// Draw the map on top
-		map.drawBoard(players);
+		Map map;
+		map.drawBoard(players); // Correct.drawBoard(players);
 
 		// Display the two dice side by side
 		std::cout << diceFaces[randomFace1] << "    " << diceFaces[randomFace2] << std::endl;
