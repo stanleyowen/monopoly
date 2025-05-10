@@ -1,7 +1,7 @@
 ﻿#include "Command.h"
-#include "Game.h"
-#include "Player.h"
-#include "Map.h"
+#include "Game/Game.h"
+#include "Game/Player.h"
+#include "Game/Map.h"
 #include "Card.h"
 #include <iostream>
 #include <sstream>

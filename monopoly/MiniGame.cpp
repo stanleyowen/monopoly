@@ -1,5 +1,5 @@
 #include "MiniGame.h"
-#include "Game.h"
+#include "Game/Game.h"
 #include <iostream>
 #include <cstdlib>
 #include <ctime>

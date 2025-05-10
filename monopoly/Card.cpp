@@ -1,5 +1,5 @@
 #include "Card.h"
-#include "Player.h"
+#include "Game/Player.h"
 #include <iostream>
 
 Card::Card(const std::string& type) : type(type) {}

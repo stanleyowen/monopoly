@@ -140,12 +140,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Game.cpp" />
+    <ClCompile Include="Game\GameConfig.cpp" />
+    <ClCompile Include="Game\Map.cpp" />
+    <ClCompile Include="Game\Player.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Game.cpp" />
-    <ClCompile Include="Map.cpp" />
-    <ClCompile Include="GameConfig.cpp" />
     <ClCompile Include="Utils.cpp" />
-    <ClCompile Include="Player.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="Event.cpp" />
     <ClCompile Include="Store.cpp" />
@@ -155,12 +155,12 @@
     <ClCompile Include="WelcomingScreen\WelcomingScreen.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Game.h" />
-    <ClInclude Include="GameConfig.h" />
+    <ClInclude Include="Game\Game.h" />
+    <ClInclude Include="Game\GameConfig.h" />
+    <ClInclude Include="Game\Map.h" />
+    <ClInclude Include="Game\Player.h" />
     <ClInclude Include="include\nlohmann\json.hpp" />
-    <ClInclude Include="Map.h" />
     <ClInclude Include="Utils.h" />
-    <ClInclude Include="Player.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="Store.h" />

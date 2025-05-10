@@ -1,5 +1,5 @@
-#include "Game.h"
-#include "GameConfig.h"
+#include "Game/Game.h"
+#include "Game/GameConfig.h"
 #include "WelcomingScreen/WelcomingScreen.h"
 
 int main()

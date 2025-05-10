@@ -2,7 +2,7 @@
 #define TILE_H
 
 #include <iostream>
-#include "Player.h"
+#include "Game/Player.h"
 
 class Tile {
 private:

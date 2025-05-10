@@ -1,5 +1,5 @@
 #include "Tile.h"
-#include "Player.h"
+#include "Game/Player.h"
 #include "MiniGame.h"
 #include <iostream>
 #include <algorithm>
