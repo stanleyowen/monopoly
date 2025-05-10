@@ -17,6 +17,7 @@ public:
 	void initializePlayers();
 	std::vector<Player> &getPlayers();
 	void start();
+	void animatePlayerMovement(Player &player, int steps);
 	void processTurn();
 
 	int rollDice();

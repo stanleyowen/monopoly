@@ -51,6 +51,24 @@ void Game::start()
 	std::cout << "\nGame Over!" << std::endl;
 }
 
+void Game::animatePlayerMovement(Player &player, int steps)
+{
+	for (int i = 0; i < steps; ++i)
+	{
+		// Move the player one step
+		player.move(1);
+
+		// Clear the screen
+		clearScreen();
+
+		// Redraw the board with the updated player position
+		map.drawBoard(players);
+
+		// Pause for a short duration to create the animation effect
+		std::this_thread::sleep_for(std::chrono::milliseconds(300));
+	}
+}
+
 void Game::processTurn()
 {
 	// Check that there are players
@@ -78,7 +96,9 @@ void Game::processTurn()
 	if (input == "T" || input == "t")
 	{
 		int diceRoll = rollDice();
-		currentPlayer.move(diceRoll);
+
+		// Animate the player's movement
+		animatePlayerMovement(currentPlayer, diceRoll);
 
 		handleTileEvents(currentPlayer);
 		std::cout << "Rolled: " << diceRoll << std::endl
@@ -102,6 +122,7 @@ void Game::processTurn()
 	// Move to the next player
 	currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
 }
+
 const std::vector<std::string> diceFaces = {
 	R"(
      +-------+
@@ -156,7 +177,7 @@ void displayDiceAnimation(int dice1, int dice2, const std::vector<Player> &playe
 		int randomFace2 = rand() % 6; // Random face for dice 2
 
 		// Clear the console
-		std::cout << "\033[2J\033[H";
+		std::system("cls||clear");
 
 		// Draw the map on top
 		Map map;
@@ -170,13 +191,11 @@ void displayDiceAnimation(int dice1, int dice2, const std::vector<Player> &playe
 	}
 
 	// Clear the console and display the final result
-	std::cout << "\033[2J\033[H";
+	std::system("cls||clear");
 	std::cout << "Final Dice Roll:\n";
 	std::cout << diceFaces[dice1 - 1] << "    " << diceFaces[dice2 - 1] << std::endl;
 
 	std::cout << "Total: " << (dice1 + dice2) << std::endl;
-	std::cout << "Press Enter to continue...\n";
-	std::cin.get();
 }
 
 // Function to roll two dice and return the sum
