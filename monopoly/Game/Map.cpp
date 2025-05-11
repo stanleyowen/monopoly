@@ -193,9 +193,24 @@ void Map::drawBoard(const std::vector<Player> &players) const
 		}
 		std::cout << "|\n";
 
-		// Third row: empty visual padding
+		// Third row: property level as 0's
 		for (int j = 0; j < 8; ++j)
-			std::cout << "|              ";
+		{
+			std::stringstream levelDisplay;
+			const Tile &tile = board[i][j];
+
+			if (tile.getOccupied()) // Check if the property is owned
+			{
+				int level = tile.getPropertyLevel();	 // Get the property level
+				levelDisplay << std::string(level, '0'); // Add '0's based on the level
+			}
+
+			int visualLength = levelDisplay.str().size();
+			int padLeft = (13 - visualLength) / 2;
+			int padRight = 13 - visualLength - padLeft;
+
+			std::cout << "| " << std::string(padLeft, ' ') << levelDisplay.str() << std::string(padRight, ' ');
+		}
 		std::cout << "|\n";
 
 		std::cout << BOLD << "+--------------+--------------+--------------+--------------+--------------+--------------+--------------+--------------+" << RESET << "\n";

@@ -160,13 +160,20 @@ void Tile::handleEvent(Player &player)
 		}
 		else if (getOccupied() && getOwner() != player.getName())
 		{
-			Utils::displayDialogue("player_action.moved.property_toll");
-			std::cout << "You have to pay a toll of $" << tileConfig.toll << " to " << getOwner() << ".\n";
+			int totalToll = tileConfig.toll * getPropertyLevel();
 
-			if (player.getMoney() < tileConfig.toll)
+			Utils::displayDialogue("player_action.moved.property_toll");
+			std::cout << "You have to pay a toll of $" << totalToll << " to " << getOwner() << ".\n";
+
+			if (player.getMoney() < totalToll)
 			{
 				std::cout << "You don't have enough money to pay the toll!\n";
 				player.subtractMoney(player.getMoney());
+			}
+			else
+			{
+				player.subtractMoney(totalToll);
+				std::cout << "You paid $" << totalToll << " to " << getOwner() << ".\n";
 			}
 		}
 		else if (getOccupied() && getOwner() == player.getName())
