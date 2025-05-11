@@ -145,10 +145,11 @@ void Game::processTurn()
 	Player &currentPlayer = players[currentPlayerIndex];
 
 	// Display dialogue for the current player's turn
+	std::cout << "\nIt's " << currentPlayer.getSymbol() << " " << currentPlayer.getName() << "'s turn:\n\n";
 	Utils::displayDialogue("player_action.start");
 	std::string input;
 	std::cout << "> ";
-	std::cin >> input;
+	std::getline(std::cin, input);
 
 	if (input == "T" || input == "t")
 	{
