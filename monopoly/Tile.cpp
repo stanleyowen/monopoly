@@ -111,7 +111,10 @@ void Tile::handleEvent(Player &player)
 	else if (tileConfig.type == "fate" || tileConfig.type == "chance")
 	{
 		std::cout << "You triggered a " << tileConfig.type << " event!\n";
-		int rng = rand() % 3;
+
+		srand(static_cast<unsigned>(time(nullptr)));
+		int rng = rand() % 4;
+
 		if (rng == 0)
 		{
 			MiniGame::playHorseRace(player);
@@ -120,9 +123,17 @@ void Tile::handleEvent(Player &player)
 		{
 			MiniGame::playDragonGate(player);
 		}
+		else if (rng == 2)
+		{
+			MiniGame::playMazeEscape(player);
+		}
+		else if (rng == 3)
+		{
+			MiniGame::playTreasureHunt(player);
+		}
 		else
 		{
-			std::cout << "Nothing happens... this time.\n";
+			std::cout << "You found nothing special.\n";
 		}
 	}
 	else if (tileConfig.type == "property")
