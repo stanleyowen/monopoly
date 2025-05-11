@@ -8,31 +8,42 @@ Tile::Tile() : symbol(' '), isOccupied(false) {}
 
 Tile::Tile(char symbol) : symbol(symbol), isOccupied(false) {}
 
-char Tile::getSymbol() const {
+char Tile::getSymbol() const
+{
 	return symbol;
 }
 
-void Tile::setSymbol(char newSymbol) {
+void Tile::setSymbol(char newSymbol)
+{
 	symbol = newSymbol;
 }
 
-bool Tile::getOccupied() const {
+bool Tile::getOccupied() const
+{
+
 	return isOccupied;
 }
 
-void Tile::setOccupied(bool occupied) {
+void Tile::setOccupied(bool occupied)
+{
 	isOccupied = occupied;
 }
 
-void Tile::handleEvent(Player& player) {
+void Tile::handleEvent(Player &player)
+{
+	std::cout << "Debug: Player " << player.getName() << " interacting with Tile. Symbol: " << symbol
+			  << ", isOccupied: " << isOccupied << "\n";
+
 	int x = player.getX();
 	int y = player.getY();
 
-	if (x == 0 && y == 0) {
+	if (x == 0 && y == 0)
+	{
 		std::cout << player.getName() << " landed on the Start tile!\n";
 		player.addMoney(200);
 	}
-	else if (x == 0 && y == 3) {
+	else if (x == 0 && y == 3)
+	{
 		std::cout << player.getName() << " landed on the Item Shop tile!\n";
 		std::cout << "Please choose an action:\n";
 		std::cout << "E: Enter the shop\n";
@@ -43,17 +54,21 @@ void Tile::handleEvent(Player& player) {
 		std::cout << "> ";
 		std::cin >> choice;
 
-		if (choice == 'E' || choice == 'e') {
+		if (choice == 'E' || choice == 'e')
+		{
 			enterShop(player);
 		}
-		else if (choice == 'I' || choice == 'i') {
+		else if (choice == 'I' || choice == 'i')
+		{
 			player.showInfo();
 		}
-		else {
+		else
+		{
 			std::cout << "You chose to pass.\n";
 		}
 	}
-	else if ((x == 7 && y == 7) || (x == 3 && y == 7) || (x == 0 && y == 2) || (x == 7 && y == 5)) {
+	else if ((x == 7 && y == 7) || (x == 3 && y == 7) || (x == 0 && y == 2) || (x == 7 && y == 5))
+	{
 		std::cout << player.getName() << " landed on a ";
 		if ((x == 0 && y == 2) || (x == 7 && y == 5))
 			std::cout << "Fate";
@@ -62,34 +77,74 @@ void Tile::handleEvent(Player& player) {
 		std::cout << " tile!\n";
 
 		int rng = rand() % 3;
-		if (rng == 0) {
+		if (rng == 0)
+		{
 			MiniGame::playHorseRace(player);
 		}
-		else if (rng == 1) {
+		else if (rng == 1)
+		{
 			MiniGame::playDragonGate(player);
 		}
-		else {
+		else
+		{
 			std::cout << "Nothing happens... this time.\n";
 		}
 	}
-	else if (x == 0 || x == 7 || y == 0 || y == 7) {
+	else if (x == 0 || x == 7 || y == 0 || y == 7)
+	{
 		std::cout << player.getName() << " landed on a Property tile!\n";
-		if (!getOccupied()) {
+		if (!getOccupied())
+		{
+			char choice;
 			std::cout << "This property is available for purchase.\n";
-			player.subtractMoney(100);
-			setOccupied(true);
+			std::cout << "Do you want to buy this property for $100? (Y/N): ";
+
+			while (std::cin >> choice)
+			{
+				if (choice == 'Y' || choice == 'y')
+				{
+					if (player.getMoney() >= 100)
+					{
+						player.subtractMoney(100);
+						player.addProperty(x, y);
+						setOccupied(true);
+						std::cout << "You have purchased this property.\n";
+					}
+					else
+					{
+						std::cout << "You don't have enough money to buy this property.\n";
+					}
+					break;
+				}
+				else if (choice == 'N' || choice == 'n')
+				{
+					std::cout << "You chose not to buy the property.\n";
+					break;
+				}
+				else if (choice != '\n') // Ignore newline characters
+				{
+					std::cout << "Invalid input. Please enter 'Y' or 'N': ";
+				}
+			}
 		}
-		else {
-			std::cout << "This property is owned by another player. Pay rent.\n";
+		else if (std::find(player.getProperties().begin(), player.getProperties().end(), std::make_pair(x, y)) == player.getProperties().end())
+		{
+			std::cout << "This property is already owned by another player. Pay rent.\n";
 			player.subtractMoney(50);
 		}
+		else
+		{
+			std::cout << "You already own this property!\n";
+		}
 	}
-	else {
+	else
+	{
 		std::cout << player.getName() << " landed on a non-playable tile!\n";
 	}
 }
 
-void Tile::enterShop(Player& player) {
+void Tile::enterShop(Player &player)
+{
 	std::cout << "=== Welcome to the Card Store ===\n";
 	std::cout << "[1] Barrier Card    - Price: $1500       - Effect: Place a barrier on a tile to block players.\n";
 	std::cout << "[2] Dice Card       - Price: $2000       - Effect: Choose the number you roll on the dice.\n";
@@ -102,59 +157,70 @@ void Tile::enterShop(Player& player) {
 	int choice;
 	std::cin >> choice;
 
-	switch (choice) {
+	switch (choice)
+	{
 	case 1:
-		if (player.getMoney() >= 1500) {
+		if (player.getMoney() >= 1500)
+		{
 			player.subtractMoney(1500);
 			Card barrierCard("Barrier Card");
 			player.addCard(barrierCard);
 			std::cout << "You bought a Barrier Card.\n";
 		}
-		else {
+		else
+		{
 			std::cout << "You don't have enough money to buy this card.\n";
 		}
 		break;
 	case 2:
-		if (player.getMoney() >= 2000) {
+		if (player.getMoney() >= 2000)
+		{
 			player.subtractMoney(2000);
 			Card diceCard("Dice Card");
 			player.addCard(diceCard);
 			std::cout << "You bought a Dice Card.\n";
 		}
-		else {
+		else
+		{
 			std::cout << "You don't have enough money to buy this card.\n";
 		}
 		break;
 	case 3:
-		if (player.getMoney() >= 2500) {
+		if (player.getMoney() >= 2500)
+		{
 			player.subtractMoney(2500);
 			Card destroyCard("Destroy Card");
 			player.addCard(destroyCard);
 			std::cout << "You bought a Destroy Card.\n";
 		}
-		else {
+		else
+		{
 			std::cout << "You don't have enough money to buy this card.\n";
 		}
 		break;
 	case 4:
-		if (player.getMoney() >= 1000) {
+		if (player.getMoney() >= 1000)
+		{
 			player.subtractMoney(1000);
 			Card fateCard("Fate Card");
 			player.addCard(fateCard);
 			std::cout << "You bought a Fate Card.\n";
 		}
-		else {
+		else
+		{
 			std::cout << "You don't have enough money to buy this card.\n";
 		}
 		break;
 	case 5:
-		if (player.getMoney() >= 3000) {
+		if (player.getMoney() >= 3000)
+		{
 			player.subtractMoney(3000);
 			Card rocketCard("Rocket Card");
 			player.addCard(rocketCard);
 			std::cout << "You bought a Rocket Card.\n";
 		}
-		else {
+		else
+		{
 			std::cout << "You don't have enough money to buy this card.\n";
 		}
 		break;
