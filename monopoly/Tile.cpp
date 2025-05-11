@@ -1,4 +1,5 @@
 #include "Tile.h"
+#include "Utils.h"
 #include "Game/Player.h"
 #include "Game/GameConfig.h"
 #include "MiniGame.h"
@@ -37,10 +38,6 @@ void Tile::handleEvent(Player &player)
 
 	// Get the player's current position as an index
 	int index = player.getPositionId();
-	std::cout << "Player position ID: " << index << "\n";
-
-	// Debugging output for player's position
-	std::cout << "Player index: " << index << "\n";
 
 	// Find the tile configuration based on the player's index
 	auto it = std::find_if(boardTiles.begin(), boardTiles.end(), [index](const TileConfig &tile)
@@ -110,9 +107,18 @@ void Tile::handleEvent(Player &player)
 		if (!getOccupied())
 		{
 			char choice;
-			std::cout << "This property is available for purchase for $" << tileConfig.price << ".\n";
-			std::cout << "Do you want to buy it? (Y/N): ";
+			std::cout << "This is an unowned property. You can choose to buy it or pass.\n";
+			std::cout << "Property Price: $" << tileConfig.price << "\n\n";
+
+			std::cout << "Please choose an action:\n";
+			std::cout << "B: Buy the property\n";
 			std::cin >> choice;
+
+			while (choice != 'Y' && choice != 'y' && choice != 'N' && choice != 'n')
+			{
+				std::cout << "Invalid input. Please enter Y or N: ";
+				std::cin >> choice;
+			}
 
 			if (choice == 'Y' || choice == 'y')
 			{
@@ -121,6 +127,7 @@ void Tile::handleEvent(Player &player)
 					player.subtractMoney(tileConfig.price);
 					player.addProperty(player.getX(), player.getY());
 					setOccupied(true);
+
 					std::cout << "You have purchased this property.\n";
 				}
 				else
@@ -132,6 +139,10 @@ void Tile::handleEvent(Player &player)
 			{
 				std::cout << "You chose not to buy the property.\n";
 			}
+
+			std::cout << "Press Enter to continue...\n";
+			std::cin.ignore();
+			std::cin.get();
 		}
 		else
 		{

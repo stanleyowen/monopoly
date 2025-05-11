@@ -151,7 +151,6 @@ int Player::getY() const
 
 int Player::getPositionId() const
 {
-	std::cout << "Player " << name << " is at position (" << x << ", " << y << ").\n";
 	if (x == 0) // Top row
 		return y;
 	else if (y == 7) // Right column

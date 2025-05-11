@@ -111,7 +111,8 @@ void Game::animatePlayerMovement(Player &player, int steps, int dice1, int dice2
 		// If animation is disabled, move the player directly
 		player.move(steps);
 		map.drawBoard(players);
-		std::cout << "\nDice Result:\n";
+		std::cout << "\nDice roll result:\n";
+		std::cout << "(" << dice1 << ", " << dice2 << ") -> Move forward " << steps << " steps.\n";
 		std::cout << diceFaces[dice1 - 1] << "    " << diceFaces[dice2 - 1] << std::endl;
 		return;
 	}
@@ -130,6 +131,7 @@ void Game::animatePlayerMovement(Player &player, int steps, int dice1, int dice2
 
 		// Display the dice result below the board
 		std::cout << "\nDice Result:\n";
+		std::cout << "(" << dice1 << ", " << dice2 << ") -> Move forward " << steps << " steps.\n";
 		std::cout << diceFaces[dice1 - 1] << "    " << diceFaces[dice2 - 1] << std::endl;
 
 		// Pause for the duration specified by the animation speed
@@ -139,7 +141,6 @@ void Game::animatePlayerMovement(Player &player, int steps, int dice1, int dice2
 
 void Game::processTurn()
 {
-	// Check that there are players
 	if (players.empty())
 	{
 		std::cerr << "No players available!\n";
@@ -148,33 +149,23 @@ void Game::processTurn()
 
 	Player &currentPlayer = players[currentPlayerIndex];
 
-	std::cout << currentPlayer.getName() << "'s turn!\n\n";
-	std::cout << "Please choose one of the following actions:\n";
-	std::cout << "T: Roll the dice\n";
-	std::cout << "I: View player info\n";
-	std::cout << "(Or type /list for all available commands)\n";
-
+	// Display dialogue for the current player's turn
+	Utils::displayDialogue("player_action.start");
 	std::string input;
 	std::cout << "> ";
-
-	if (std::cin.peek() == '\n')
-		std::cin.ignore(); // ignore leftover newline
-	std::getline(std::cin, input);
+	std::cin >> input;
 
 	if (input == "T" || input == "t")
 	{
 		// Seed the random number generator
 		std::srand(static_cast<unsigned>(std::time(nullptr)));
 
-		// Roll the dice and get the result
 		int dice1 = rand() % 6 + 1;
 		int dice2 = rand() % 6 + 1;
+		int diceRoll = dice1 + dice2;
 
 		// Display the dice animation
 		displayDiceAnimation(dice1, dice2, players);
-
-		// Calculate the total dice roll
-		int diceRoll = dice1 + dice2;
 
 		// Animate the player's movement
 		animatePlayerMovement(currentPlayer, diceRoll, dice1, dice2);

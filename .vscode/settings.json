@@ -43,6 +43,7 @@
     "fstream": "cpp",
     "map": "cpp",
     "iomanip": "cpp",
-    "__tree": "cpp"
+    "__tree": "cpp",
+    "chrono": "cpp"
   }
 }

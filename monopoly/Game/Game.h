@@ -2,6 +2,7 @@
 #include "Player.h"
 #include "Map.h"
 #include "Command.h"
+#include "Utils.h"
 
 #ifdef _WIN32
 #include <windows.h>

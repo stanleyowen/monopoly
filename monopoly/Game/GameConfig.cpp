@@ -4,6 +4,7 @@
 #include <fstream>
 #include <iostream>
 
+nlohmann::json config, dialogue;
 GameConfig GameConfig::instance;
 
 // Singleton accessor
@@ -16,24 +17,15 @@ GameConfig &GameConfig::getInstance()
 void GameConfig::loadConfig()
 {
 	std::string configPath = "json/config.json";
-	std::string dialoguePath = "json/dialogue.json";
 	std::ifstream fileConfig(configPath);
-	std::ifstream fileDialogue(dialoguePath);
 
-	if (!fileDialogue.is_open())
-	{
-		std::cerr << "Cannot open dialogue file: " << dialoguePath << "\n";
-		return;
-	}
 	if (!fileConfig.is_open())
 	{
 		std::cerr << "Cannot open config file: " << configPath << "\n";
 		return;
 	}
 
-	nlohmann::json config, dialogue;
 	fileConfig >> config;
-	fileDialogue >> dialogue;
 
 	// If the mode is release, ask the user to input the number of players and the player names
 	// If the mode is not release, read all the value from the specified mode in config.json
