@@ -68,9 +68,7 @@ void MiniGame::playHorseRace(Player &player)
 		player.subtractMoney(500);
 	}
 
-	std::cout << "Press Enter to return to the game...";
-	std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
-	std::cin.get();
+	Utils::pressEnterToContinue();
 	Utils::clearScreen();
 }
 
@@ -199,8 +197,43 @@ void MiniGame::playDragonGate(Player &player)
 		}
 	}
 
-	std::cout << "Press Enter to return to the game...";
-	std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
-	std::cin.get();
+	Utils::pressEnterToContinue();
+	Utils::clearScreen();
+}
+
+void MiniGame::playTreasureHunt(Player &player)
+{
+	Utils::clearScreen();
+	std::cout << "--- MiniGame: Treasure Hunt ---\n";
+	std::cout << "Three chests are in front of you. One contains a treasure, and the others are empty.\n";
+	std::cout << "Choose a chest (1, 2, or 3): ";
+
+	int chosenChest = 0;
+	while (chosenChest < 1 || chosenChest > 3)
+	{
+		std::cin >> chosenChest;
+		if (chosenChest < 1 || chosenChest > 3)
+			std::cout << "Invalid choice. Pick a chest (1, 2, or 3): ";
+	}
+
+	// Randomly determine which chest contains the treasure
+	srand(static_cast<unsigned>(time(nullptr)));
+	int treasureChest = rand() % 3 + 1;
+
+	if (chosenChest == treasureChest)
+	{
+		// Random reward between $500 and $2000
+		int reward = (rand() % 1501 + 500);
+		std::cout << "Congratulations! You found the treasure and won $" << reward << "!\n";
+		player.addMoney(reward);
+	}
+	else
+	{
+		int penalty = 500;
+		std::cout << "Oops! The treasure was in chest " << treasureChest << ". You lose $" << penalty << ".\n";
+		player.subtractMoney(penalty);
+	}
+
+	Utils::pressEnterToContinue();
 	Utils::clearScreen();
 }
