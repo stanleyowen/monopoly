@@ -8,6 +8,7 @@ class Tile
 private:
 	char symbol;
 	bool isOccupied;
+	int propertyLevel = 1; // 1-3
 	std::string owner;
 
 public:
@@ -18,6 +19,8 @@ public:
 	void setSymbol(char newSymbol);
 	bool getOccupied() const;
 	void setOccupied(bool occupied);
+	int getPropertyLevel() const;
+	void setPropertyLevel(int level);
 
 	std::string getOwner() const;
 	void setOwner(const std::string &newOwner);

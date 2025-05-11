@@ -41,6 +41,23 @@ std::string Tile::getOwner() const
 	return owner;
 }
 
+int Tile::getPropertyLevel() const
+{
+	return propertyLevel;
+}
+
+void Tile::setPropertyLevel(int level)
+{
+	if (level >= 1 && level <= 3)
+	{
+		propertyLevel = level;
+	}
+	else
+	{
+		std::cerr << "Invalid property level. Must be between 1 and 3.\n";
+	}
+}
+
 void Tile::handleEvent(Player &player)
 {
 	GameConfig &config = GameConfig::getInstance();
@@ -154,7 +171,59 @@ void Tile::handleEvent(Player &player)
 		}
 		else if (getOccupied() && getOwner() == player.getName())
 		{
-			std::cout << "You own this property!\n";
+			char choice;
+
+			Utils::displayDialogue("player_action.moved.property_owned");
+			std::cout << "> ";
+			std::cin >> choice;
+
+			if (choice == 'R' || choice == 'r')
+			{
+
+				if (propertyLevel < 3)
+				{
+					GameConfig &config = GameConfig::getInstance();
+					auto boardTiles = config.getBoardTiles();
+					auto it = std::find_if(boardTiles.begin(), boardTiles.end(), [index](const TileConfig &tile)
+										   { return tile.id == index; });
+
+					if (it != boardTiles.end())
+					{
+						const TileConfig &tileConfig = *it;
+						if (player.getMoney() >= tileConfig.price)
+						{
+							player.subtractMoney(tileConfig.price);
+							setPropertyLevel(getPropertyLevel() + 1);
+							std::cout << "Property upgraded to level " << getPropertyLevel() << "!\n";
+						}
+						else
+						{
+							std::cout << "You don't have enough money to upgrade this property.\n";
+						}
+					}
+				}
+				else
+				{
+					std::cout << "This property is already at the maximum level (3).\n";
+				}
+			}
+			else if (choice == 'S' || choice == 's')
+			{
+				int sellPrice = propertyLevel * tileConfig.price;
+				propertyLevel = 1;
+
+				player.addMoney(sellPrice);
+				setOccupied(false);
+				setOwner("");
+
+				std::cout << "You sold this property for $" << sellPrice << ".\n";
+			}
+			else
+			{
+				std::cout << "You chose not to upgrade or sell the property.\n";
+			}
+
+			Utils::pressEnterToContinue();
 		}
 	}
 	else
