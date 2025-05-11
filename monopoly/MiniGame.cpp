@@ -10,6 +10,7 @@
 #include <string>
 #include <limits>
 #include <random>
+#include <queue>
 
 void MiniGame::playHorseRace(Player &player)
 {
@@ -239,14 +240,49 @@ void MiniGame::playTreasureHunt(Player &player)
 	Utils::clearScreen();
 }
 
-// Maze Escape MiniGame using Depth-First Search (DFS) for maze generation
+// Function to calculate the shortest path using BFS
+int calculateShortestPath(char maze[10][10], int startX, int startY, int endX, int endY)
+{
+	std::queue<std::tuple<int, int, int>> q; // Queue to store {x, y, distance}
+	bool visited[10][10] = {false};
+
+	q.push({startX, startY, 0});
+	visited[startX][startY] = true;
+
+	std::vector<std::pair<int, int>> directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+
+	while (!q.empty())
+	{
+		auto [x, y, dist] = q.front();
+		q.pop();
+
+		// If we reach the exit, return the distance
+		if (x == endX && y == endY)
+			return dist;
+
+		// Explore all possible directions
+		for (const auto &[dx, dy] : directions)
+		{
+			int nx = x + dx, ny = y + dy;
+			if (nx >= 0 && nx < 10 && ny >= 0 && ny < 10 && !visited[nx][ny] && maze[nx][ny] != '#')
+			{
+				q.push({nx, ny, dist + 1});
+				visited[nx][ny] = true;
+			}
+		}
+	}
+
+	// If no path is found (shouldn't happen in a valid maze), return a large number
+	return 100;
+}
+
 void MiniGame::playMazeEscape(Player &player)
 {
 	Utils::clearScreen();
 	std::cout << "--- MiniGame: Maze Escape ---\n";
 	std::cout << "Navigate through the maze to reach the exit (E)!\n";
 
-	const int mazeSize = 10; // Larger maze size
+	const int mazeSize = 10; // Maze size
 	char maze[mazeSize][mazeSize];
 	bool visited[mazeSize][mazeSize] = {false};
 	int playerX = 0, playerY = 0;					// Player starts at the top-left corner
@@ -284,58 +320,31 @@ void MiniGame::playMazeEscape(Player &player)
 		}
 	};
 
-	generateMaze(0, 0); // Start generating the maze from the top-left corner
-
-	// Ensure a direct path from start (P) to exit (E)
-	int x = 0, y = 0;
-	while (x != exitX || y != exitY)
-	{
-		maze[x][y] = ' '; // Mark the path as clear
-		if (x < exitX)
-			x++; // Move down if not at the same row as the exit
-		else if (y < exitY)
-			y++; // Move right if not at the same column as the exit
-	}
+	generateMaze(0, 0);		  // Start generating the maze from the top-left corner
 	maze[exitX][exitY] = 'E'; // Mark the exit
 
-	// Calculate the minimal path using BFS
-	auto calculateMinimalPath = [&]() -> int
+	// Ensure at least one cell adjacent to the exit is clear
+	std::vector<std::pair<int, int>> adjacentCells = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+	std::random_device rd;
+	std::default_random_engine rng(rd());
+	std::shuffle(adjacentCells.begin(), adjacentCells.end(), rng);
+
+	for (const auto &[dx, dy] : adjacentCells)
 	{
-		std::queue<std::pair<int, int>> q;
-		int distance[mazeSize][mazeSize] = {{0}};
-		bool visitedBFS[mazeSize][mazeSize] = {{false}};
-
-		q.push({0, 0});
-		visitedBFS[0][0] = true;
-
-		std::vector<std::pair<int, int>> directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
-		while (!q.empty())
+		int adjX = exitX + dx, adjY = exitY + dy;
+		if (adjX >= 0 && adjX < mazeSize && adjY >= 0 && adjY < mazeSize)
 		{
-			auto [cx, cy] = q.front();
-			q.pop();
-
-			for (const auto &[dx, dy] : directions)
-			{
-				int nx = cx + dx, ny = cy + dy;
-				if (nx >= 0 && nx < mazeSize && ny >= 0 && ny < mazeSize && maze[nx][ny] != '#' && !visitedBFS[nx][ny])
-				{
-					visitedBFS[nx][ny] = true;
-					distance[nx][ny] = distance[cx][cy] + 1;
-					q.push({nx, ny});
-
-					if (nx == exitX && ny == exitY)
-						return distance[nx][ny]; // Return the minimal path length
-				}
-			}
+			maze[adjX][adjY] = ' '; // Clear one random adjacent cell
+			break;
 		}
-		return -1; // Should never reach here if the maze is solvable
-	};
+	}
 
-	int minimalPath = calculateMinimalPath();
-	int movesLeft = minimalPath + 3; // Add 3 extra moves to the minimal path
-	std::cout << "You have " << movesLeft << " moves to escape.\n";
+	// Calculate the shortest path from the player's starting position to the exit
+	int shortestPath = calculateShortestPath(maze, playerX, playerY, exitX, exitY);
 
-	// Game loop
+	// Set the number of moves allowed to the shortest path + 1
+	int movesLeft = shortestPath + 1;
+
 	while (movesLeft > 0)
 	{
 		// Display the maze
