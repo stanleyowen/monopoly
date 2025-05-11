@@ -149,6 +149,21 @@ int Player::getY() const
 	return y;
 }
 
+int Player::getPositionId() const
+{
+	std::cout << "Player " << name << " is at position (" << x << ", " << y << ").\n";
+	if (x == 0) // Top row
+		return y;
+	else if (y == 7) // Right column
+		return 7 + x;
+	else if (x == 7) // Bottom row
+		return 7 + 7 + (7 - y);
+	else if (y == 0) // Left column
+		return 7 + 7 + 7 + (7 - x);
+
+	return -1; // Invalid position (inside the board)
+}
+
 void Player::setPosition(int newX, int newY)
 {
 	x = newX;

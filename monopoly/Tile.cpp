@@ -1,5 +1,6 @@
 #include "Tile.h"
 #include "Game/Player.h"
+#include "Game/GameConfig.h"
 #include "MiniGame.h"
 #include <iostream>
 #include <algorithm>
@@ -31,18 +32,38 @@ void Tile::setOccupied(bool occupied)
 
 void Tile::handleEvent(Player &player)
 {
-	std::cout << "Debug: Player " << player.getName() << " interacting with Tile. Symbol: " << symbol
-			  << ", isOccupied: " << isOccupied << "\n";
+	GameConfig &config = GameConfig::getInstance();
+	auto boardTiles = config.getBoardTiles();
 
-	int x = player.getX();
-	int y = player.getY();
+	// Get the player's current position as an index
+	int index = player.getPositionId();
+	std::cout << "Player position ID: " << index << "\n";
 
-	if (x == 0 && y == 0)
+	// Debugging output for player's position
+	std::cout << "Player index: " << index << "\n";
+
+	// Find the tile configuration based on the player's index
+	auto it = std::find_if(boardTiles.begin(), boardTiles.end(), [index](const TileConfig &tile)
+						   {
+							   return tile.id == index; // Match the index directly
+						   });
+
+	if (it == boardTiles.end())
 	{
-		std::cout << player.getName() << " landed on the Start tile!\n";
-		player.addMoney(200);
+		std::cout << "Invalid tile configuration for index " << index << ".\n";
+		return;
 	}
-	else if (x == 0 && y == 3)
+
+	const TileConfig &tileConfig = *it;
+
+	std::cout << player.getName() << " landed on " << tileConfig.name << "!\n";
+
+	if (tileConfig.type == "start")
+	{
+		player.addMoney(config.getPassingStartBonus());
+		std::cout << "You received a bonus of $" << config.getPassingStartBonus() << "!\n";
+	}
+	else if (tileConfig.type == "store")
 	{
 		std::cout << player.getName() << " landed on the Item Shop tile!\n";
 		std::cout << "Please choose an action:\n";
@@ -67,15 +88,9 @@ void Tile::handleEvent(Player &player)
 			std::cout << "You chose to pass.\n";
 		}
 	}
-	else if ((x == 7 && y == 7) || (x == 3 && y == 7) || (x == 0 && y == 2) || (x == 7 && y == 5))
+	else if (tileConfig.type == "fate" || tileConfig.type == "chance")
 	{
-		std::cout << player.getName() << " landed on a ";
-		if ((x == 0 && y == 2) || (x == 7 && y == 5))
-			std::cout << "Fate";
-		else
-			std::cout << "Chance";
-		std::cout << " tile!\n";
-
+		std::cout << "You triggered a " << tileConfig.type << " event!\n";
 		int rng = rand() % 3;
 		if (rng == 0)
 		{
@@ -90,51 +105,38 @@ void Tile::handleEvent(Player &player)
 			std::cout << "Nothing happens... this time.\n";
 		}
 	}
-	else if (x == 0 || x == 7 || y == 0 || y == 7)
+	else if (tileConfig.type == "property")
 	{
-		std::cout << player.getName() << " landed on a Property tile!\n";
 		if (!getOccupied())
 		{
 			char choice;
-			std::cout << "This property is available for purchase.\n";
-			std::cout << "Do you want to buy this property for $100? (Y/N): ";
+			std::cout << "This property is available for purchase for $" << tileConfig.price << ".\n";
+			std::cout << "Do you want to buy it? (Y/N): ";
+			std::cin >> choice;
 
-			while (std::cin >> choice)
+			if (choice == 'Y' || choice == 'y')
 			{
-				if (choice == 'Y' || choice == 'y')
+				if (player.getMoney() >= tileConfig.price)
 				{
-					if (player.getMoney() >= 100)
-					{
-						player.subtractMoney(100);
-						player.addProperty(x, y);
-						setOccupied(true);
-						std::cout << "You have purchased this property.\n";
-					}
-					else
-					{
-						std::cout << "You don't have enough money to buy this property.\n";
-					}
-					break;
+					player.subtractMoney(tileConfig.price);
+					player.addProperty(player.getX(), player.getY());
+					setOccupied(true);
+					std::cout << "You have purchased this property.\n";
 				}
-				else if (choice == 'N' || choice == 'n')
+				else
 				{
-					std::cout << "You chose not to buy the property.\n";
-					break;
-				}
-				else if (choice != '\n') // Ignore newline characters
-				{
-					std::cout << "Invalid input. Please enter 'Y' or 'N': ";
+					std::cout << "You don't have enough money to buy this property.\n";
 				}
 			}
-		}
-		else if (std::find(player.getProperties().begin(), player.getProperties().end(), std::make_pair(x, y)) == player.getProperties().end())
-		{
-			std::cout << "This property is already owned by another player. Pay rent.\n";
-			player.subtractMoney(50);
+			else
+			{
+				std::cout << "You chose not to buy the property.\n";
+			}
 		}
 		else
 		{
-			std::cout << "You already own this property!\n";
+			std::cout << "This property is already owned. Pay rent of $" << tileConfig.toll << ".\n";
+			player.subtractMoney(tileConfig.toll);
 		}
 	}
 	else

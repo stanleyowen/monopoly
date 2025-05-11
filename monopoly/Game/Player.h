@@ -41,6 +41,7 @@ public:
 
 	int getX() const;
 	int getY() const;
+	int getPositionId() const;
 	void setPosition(int newX, int newY);
 
 	std::string getName() const;
