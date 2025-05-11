@@ -100,6 +100,23 @@ void Game::start()
 
 void Game::animatePlayerMovement(Player &player, int steps, int dice1, int dice2)
 {
+	// Get the animation settings from the configuration
+	const auto &config = GameConfig::getInstance();
+	bool isAnimationEnabled = config.getAnimation();
+	int animationSpeed = config.getAnimationTime(); // Retrieve animation speed (in milliseconds)
+
+	// Check if animation is disabled
+	if (!isAnimationEnabled)
+	{
+		// If animation is disabled, move the player directly
+		player.move(steps);
+		map.drawBoard(players);
+		std::cout << "\nDice Result:\n";
+		std::cout << diceFaces[dice1 - 1] << "    " << diceFaces[dice2 - 1] << std::endl;
+		return;
+	}
+
+	// If animation is enabled, perform the animation
 	for (int i = 0; i < steps; ++i)
 	{
 		// Move the player one step
@@ -115,8 +132,8 @@ void Game::animatePlayerMovement(Player &player, int steps, int dice1, int dice2
 		std::cout << "\nDice Result:\n";
 		std::cout << diceFaces[dice1 - 1] << "    " << diceFaces[dice2 - 1] << std::endl;
 
-		// Pause for a short duration to create the animation effect
-		std::this_thread::sleep_for(std::chrono::milliseconds(300));
+		// Pause for the duration specified by the animation speed
+		std::this_thread::sleep_for(std::chrono::milliseconds(animationSpeed));
 	}
 }
 
@@ -146,6 +163,9 @@ void Game::processTurn()
 
 	if (input == "T" || input == "t")
 	{
+		// Seed the random number generator
+		std::srand(static_cast<unsigned>(std::time(nullptr)));
+
 		// Roll the dice and get the result
 		int dice1 = rand() % 6 + 1;
 		int dice2 = rand() % 6 + 1;
@@ -184,31 +204,38 @@ void Game::processTurn()
 // Function to display dice rolling animation for two dice
 void Game::displayDiceAnimation(int dice1, int dice2, const std::vector<Player> &players)
 {
-	// Show rolling animation for a fixed duration
-	for (int i = 0; i < 10; ++i)
+	// Get the animation settings from the configuration
+	const auto &config = GameConfig::getInstance();
+	bool isAnimationEnabled = config.getAnimation();
+	int animationSpeed = config.getAnimationTime();
+
+	// If animation is enabled, perform the dice rolling animation
+	if (isAnimationEnabled)
 	{
-		int randomFace1 = rand() % 6; // Random face for dice 1
-		int randomFace2 = rand() % 6; // Random face for dice 2
+		for (int i = 0; i < 10; ++i)
+		{
+			int randomFace1 = rand() % 6; // Random face for dice 1
+			int randomFace2 = rand() % 6; // Random face for dice 2
 
-		// Clear the console
-		std::system("cls||clear");
+			// Clear the console
+			std::system("cls||clear");
 
-		// Draw the map on top
-		Map map;
-		map.drawBoard(players); // Correct.drawBoard(players);
+			// Draw the map on top
+			map.drawBoard(players);
 
-		// Display the two dice side by side
-		std::cout << diceFaces[randomFace1] << "    " << diceFaces[randomFace2] << std::endl;
+			// Display the two dice side by side
+			std::cout << diceFaces[randomFace1] << "    " << diceFaces[randomFace2] << std::endl;
 
-		// Pause for 200ms
-		std::this_thread::sleep_for(std::chrono::milliseconds(200));
+			// Pause for the duration specified by the animation speed
+			std::this_thread::sleep_for(std::chrono::milliseconds(animationSpeed));
+		}
 	}
 
 	// Clear the console and display the final result
 	std::system("cls||clear");
+	map.drawBoard(players);
 	std::cout << "Final Dice Roll:\n";
 	std::cout << diceFaces[dice1 - 1] << "    " << diceFaces[dice2 - 1] << std::endl;
-
 	std::cout << "Total: " << (dice1 + dice2) << std::endl;
 }
 
