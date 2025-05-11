@@ -30,7 +30,6 @@
       5000
     ]
   },
-  "defaultMode": "DEBUG",
   "modes": {
     "DEBUG": {
       "playersNum": 4,
@@ -276,7 +275,7 @@
       "name": "Barrier Card",
       "icon": "B",
       "price": 1500,
-      "effect": "Place a barrier on a tile to blcok players.."
+      "effect": "Place a barrier on a tile to block players.."
     },
     {
       "name": "Dice Card",

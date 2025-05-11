@@ -246,7 +246,6 @@ void Game::handleTileEvents(Player &player)
 
 	clearScreen();
 	map.drawBoard(players);
-	map.getTile(player.getX(), player.getY()).handleEvent(player);
 }
 
 void Game::checkWinCondition()
