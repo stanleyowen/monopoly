@@ -58,11 +58,6 @@ Game::Game() : currentPlayerIndex(0), gameRunning(true)
 	initializePlayers();
 }
 
-void clearScreen()
-{
-	std::system("cls||clear"); // Use system command to clear the screen
-}
-
 void Game::initializePlayers()
 {
 	const auto &config = GameConfig::getInstance();
@@ -124,7 +119,7 @@ void Game::animatePlayerMovement(Player &player, int steps, int dice1, int dice2
 		player.move(1);
 
 		// Clear the screen
-		clearScreen();
+		Utils::clearScreen();
 
 		// Redraw the board with the updated player position
 		map.drawBoard(players);
@@ -164,14 +159,9 @@ void Game::processTurn()
 		int dice2 = rand() % 6 + 1;
 		int diceRoll = dice1 + dice2;
 
-		// Display the dice animation
 		displayDiceAnimation(dice1, dice2, players);
-
-		// Animate the player's movement
 		animatePlayerMovement(currentPlayer, diceRoll, dice1, dice2);
-
 		handleTileEvents(currentPlayer);
-
 		checkWinCondition();
 	}
 	else if (input == "I" || input == "i")
@@ -185,7 +175,7 @@ void Game::processTurn()
 	}
 	else
 	{
-		std::cout << "Invalid choice. Please select 'T', 'I', or a valid slash command.\n\n";
+		Utils::displayDialogue("invalid_input");
 	}
 
 	// Move to the next player
@@ -209,7 +199,7 @@ void Game::displayDiceAnimation(int dice1, int dice2, const std::vector<Player> 
 			int randomFace2 = rand() % 6; // Random face for dice 2
 
 			// Clear the console
-			std::system("cls||clear");
+			Utils::clearScreen();
 
 			// Draw the map on top
 			map.drawBoard(players);
@@ -223,7 +213,7 @@ void Game::displayDiceAnimation(int dice1, int dice2, const std::vector<Player> 
 	}
 
 	// Clear the console and display the final result
-	std::system("cls||clear");
+	Utils::clearScreen();
 	map.drawBoard(players);
 	std::cout << "Final Dice Roll:\n";
 	std::cout << diceFaces[dice1 - 1] << "    " << diceFaces[dice2 - 1] << std::endl;
@@ -235,7 +225,7 @@ void Game::handleTileEvents(Player &player)
 	Tile &currentTile = map.getTile(player.getX(), player.getY());
 	currentTile.handleEvent(player);
 
-	clearScreen();
+	Utils::clearScreen();
 	map.drawBoard(players);
 }
 

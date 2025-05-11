@@ -1,14 +1,9 @@
+#include "Utils.h"
 #include "WelcomingScreen.h"
 #include <iostream>
 #include <thread>
 #include <chrono>
 #include <cstdlib>
-
-// Clear the console screen
-void WelcomingScreen::clearScreen()
-{
-	std::system("cls||clear");
-}
 
 // Display the welcoming screen with ASCII art
 void WelcomingScreen::displayWelcomeScreen()
@@ -43,9 +38,9 @@ void WelcomingScreen::displayWelcomeScreen()
  `--'   `--'     `-----' `--'  `--'       `-----'  `--'          `-----'  `------'  `-----'
     )";
 
-	std::cout << asciiArt << std::endl;                   // Display the ASCII art
+	std::cout << asciiArt << std::endl;					  // Display the ASCII art
 	std::this_thread::sleep_for(std::chrono::seconds(3)); // Pause for 3 seconds
-	clearScreen();                                        // Clear the screen
+	Utils::clearScreen();								  // Clear the screen
 }
 
 // Confirm whether to start the game
@@ -105,8 +100,8 @@ void WelcomingScreen::displayStartGame()
 
 	std::cout << asciiArt << std::endl; // Display the ASCII art
 
-	std::cout << "Welcome to the Monopoly Game!" << std::endl;    // Display welcome message
+	std::cout << "Welcome to the Monopoly Game!" << std::endl;	  // Display welcome message
 	std::cout << "Press Enter to start the game..." << std::endl; // Prompt user to start the game
-	std::cin.get();                                               // Wait for user input
-	clearScreen();                                                // Clear the screen
+	std::cin.get();												  // Wait for user input
+	Utils::clearScreen();										  // Clear the screen
 }

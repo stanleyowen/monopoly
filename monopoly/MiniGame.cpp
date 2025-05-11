@@ -1,3 +1,4 @@
+#include "Utils.h"
 #include "MiniGame.h"
 #include "Game/Game.h"
 #include <iostream>
@@ -9,40 +10,45 @@
 #include <string>
 #include <limits>
 
-void clearScreen();
-
-void MiniGame::playHorseRace(Player& player) {
-	clearScreen();
+void MiniGame::playHorseRace(Player &player)
+{
+	Utils::clearScreen();
 	std::cout << "--- MiniGame: Horse Race ---\n";
 	std::cout << "Four horses will race. Choose one to bet on (1-4): ";
 
 	int betHorse = 0;
-	while (betHorse < 1 || betHorse > 4) {
+	while (betHorse < 1 || betHorse > 4)
+	{
 		std::cin >> betHorse;
-		if (betHorse < 1 || betHorse > 4) std::cout << "Invalid horse. Pick 1 to 4: ";
+		if (betHorse < 1 || betHorse > 4)
+			std::cout << "Invalid horse. Pick 1 to 4: ";
 	}
 
 	const int finishLine = 50;
-	int positions[4] = { 0, 0, 0, 0 };
+	int positions[4] = {0, 0, 0, 0};
 
 	bool finished = false;
 	int winner = -1;
 
 	srand(static_cast<unsigned>(time(nullptr)));
 
-	while (!finished) {
-		clearScreen();
+	while (!finished)
+	{
+		Utils::clearScreen();
 		std::cout << "--- Horse Race ---\n";
 
-		for (int i = 0; i < 4; ++i) {
+		for (int i = 0; i < 4; ++i)
+		{
 			int step = rand() % 5 + 1; // 1 to 5 steps
 			positions[i] += step;
-			if (positions[i] >= finishLine && winner == -1) {
+			if (positions[i] >= finishLine && winner == -1)
+			{
 				winner = i + 1;
 				finished = true;
 			}
 			std::cout << "Horse " << (i + 1) << ": ";
-			for (int j = 0; j < positions[i] && j < finishLine; ++j) std::cout << "=";
+			for (int j = 0; j < positions[i] && j < finishLine; ++j)
+				std::cout << "=";
 			std::cout << ">\n";
 		}
 
@@ -51,11 +57,13 @@ void MiniGame::playHorseRace(Player& player) {
 
 	std::cout << "\nHorse " << winner << " wins the race!\n";
 
-	if (betHorse == winner) {
+	if (betHorse == winner)
+	{
 		std::cout << "You won the bet! You gain $1000!\n";
 		player.addMoney(1000);
 	}
-	else {
+	else
+	{
 		std::cout << "You lost the bet. You lose $500.\n";
 		player.subtractMoney(500);
 	}
@@ -63,11 +71,12 @@ void MiniGame::playHorseRace(Player& player) {
 	std::cout << "Press Enter to return to the game...";
 	std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
 	std::cin.get();
-	clearScreen();
+	Utils::clearScreen();
 }
 
-void MiniGame::playDragonGate(Player& player) {
-	clearScreen();
+void MiniGame::playDragonGate(Player &player)
+{
+	Utils::clearScreen();
 	srand(static_cast<unsigned>(time(nullptr)));
 	std::cout << "--- MiniGame: Dragon Gate ---\n";
 	int card1 = rand() % 13 + 1;
@@ -75,24 +84,29 @@ void MiniGame::playDragonGate(Player& player) {
 	std::cout << "First card: " << card1 << ", Second card: " << card2 << "\n";
 
 	int wager = 0;
-	while (true) {
+	while (true)
+	{
 		std::cout << "Enter your bet (up to $1000): ";
 		std::cin >> wager;
 
-		if (std::cin.fail()) {
+		if (std::cin.fail())
+		{
 			std::cin.clear();
 			std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n'); // flush bad input
 			std::cout << "Invalid input. Please enter a number.\n";
 			continue;
 		}
 
-		if (wager <= 0) {
+		if (wager <= 0)
+		{
 			std::cout << "Bet must be greater than zero.\n";
 		}
-		else if (wager > 1000) {
+		else if (wager > 1000)
+		{
 			std::cout << "Bet must not be greater than 1000.\n";
 		}
-		else {
+		else
+		{
 			std::cout << "You bet $" << wager << ".\n";
 			break;
 		}
@@ -102,13 +116,16 @@ void MiniGame::playDragonGate(Player& player) {
 	bool correct = false;
 	bool pillarHit = (nextCard == card1 || nextCard == card2);
 
-	if (card1 != card2) {
+	if (card1 != card2)
+	{
 		int low, high;
-		if (card1 < card2) {
+		if (card1 < card2)
+		{
 			low = card1;
 			high = card2;
 		}
-		else {
+		else
+		{
 			low = card2;
 			high = card1;
 		}
@@ -119,54 +136,64 @@ void MiniGame::playDragonGate(Player& player) {
 
 		std::cout << "Next card: " << nextCard << "\n";
 
-		if (pillarHit) {
+		if (pillarHit)
+		{
 			std::cout << "Pillar hit! You lose 2x your bet!\n";
 			player.subtractMoney(wager * 2);
 			return;
 		}
 
-		if (guess == "inside") {
+		if (guess == "inside")
+		{
 			correct = (nextCard > low && nextCard < high);
 		}
-		else {
+		else
+		{
 			correct = (nextCard < low || nextCard > high);
 		}
 
-		if (correct) {
+		if (correct)
+		{
 			std::cout << "You guessed right! You win your bet!\n";
 			player.addMoney(wager);
 		}
-		else {
+		else
+		{
 			std::cout << "Wrong guess! You lose your bet.\n";
 			player.subtractMoney(wager);
 		}
-
 	}
-	else {
+	else
+	{
 		std::string guess;
 		std::cout << "Cards are equal. Will the next card be [higher] or [lower]? ";
 		std::cin >> guess;
 
 		std::cout << "Next card: " << nextCard << "\n";
 
-		if (pillarHit) {
+		if (pillarHit)
+		{
 			std::cout << "Pillar hit! You lose 3x your bet!\n";
 			player.subtractMoney(wager * 3);
 			return;
 		}
 
-		if (guess == "higher") {
+		if (guess == "higher")
+		{
 			correct = (nextCard > card1);
 		}
-		else {
+		else
+		{
 			correct = (nextCard < card1);
 		}
 
-		if (correct) {
+		if (correct)
+		{
 			std::cout << "You guessed right! You win your bet!\n";
 			player.addMoney(wager);
 		}
-		else {
+		else
+		{
 			std::cout << "Wrong guess! You lose your bet.\n";
 			player.subtractMoney(wager);
 		}
@@ -175,5 +202,5 @@ void MiniGame::playDragonGate(Player& player) {
 	std::cout << "Press Enter to return to the game...";
 	std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
 	std::cin.get();
-	clearScreen();
+	Utils::clearScreen();
 }

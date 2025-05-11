@@ -11,7 +11,7 @@
       "options": []
     },
     "start": {
-      "option_prompt": "Please choose an action:",
+      "prompt": "Please choose an action:",
       "options": [
         {
           "key": "T",
@@ -21,23 +21,10 @@
           "key": "I",
           "description": "View Player Info"
         }
-      ],
-      "default": {
-        "prompt": "",
-        "options": [
-          {
-            "key": "T",
-            "description": "Roll the dice"
-          },
-          {
-            "key": "I",
-            "description": "View Player Info"
-          }
-        ]
-      }
+      ]
     },
     "moved": {
-      "option_prompt": "Please choose an action:",
+      "prompt": "Please choose an action:",
       "options": [
         {
           "key": "I",
@@ -48,19 +35,6 @@
           "description": "Press any key to PASS"
         }
       ],
-      "default": {
-        "prompt": "",
-        "options": [
-          {
-            "key": "I",
-            "description": "View Player Info"
-          },
-          {
-            "key": "*",
-            "description": "Press any key to PASS"
-          }
-        ]
-      },
       "event": {
         "prompt": "Something exciting is about to happen! Press any key to uncover the secret.",
         "options": [

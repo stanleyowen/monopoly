@@ -31,5 +31,3 @@ private:
 	int currentPlayerIndex;
 	bool gameRunning;
 };
-
-void clearScreen();

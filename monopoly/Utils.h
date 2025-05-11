@@ -14,4 +14,5 @@ public:
 	static void clearScreen();
 	static void loadDialogueData();
 	static void displayDialogue(const std::string &key);
+	static void pressEnterToContinue();
 };

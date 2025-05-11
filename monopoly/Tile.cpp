@@ -62,11 +62,7 @@ void Tile::handleEvent(Player &player)
 	}
 	else if (tileConfig.type == "store")
 	{
-		std::cout << player.getName() << " landed on the Item Shop tile!\n";
-		std::cout << "Please choose an action:\n";
-		std::cout << "E: Enter the shop\n";
-		std::cout << "I: View Player Info\n";
-		std::cout << "*: Press any key to PASS\n";
+		Utils::displayDialogue("player_action.moved.store");
 
 		char choice;
 		std::cout << "> ";
@@ -106,21 +102,10 @@ void Tile::handleEvent(Player &player)
 	{
 		if (!getOccupied())
 		{
+			Utils::displayDialogue("player_action.moved.property_unowned");
 			char choice;
-			std::cout << "This is an unowned property. You can choose to buy it or pass.\n";
-			std::cout << "Property Price: $" << tileConfig.price << "\n\n";
 
-			std::cout << "Please choose an action:\n";
-			std::cout << "B: Buy the property\n";
-			std::cin >> choice;
-
-			while (choice != 'Y' && choice != 'y' && choice != 'N' && choice != 'n')
-			{
-				std::cout << "Invalid input. Please enter Y or N: ";
-				std::cin >> choice;
-			}
-
-			if (choice == 'Y' || choice == 'y')
+			if (choice == 'R' || choice == 'r')
 			{
 				if (player.getMoney() >= tileConfig.price)
 				{
@@ -140,13 +125,11 @@ void Tile::handleEvent(Player &player)
 				std::cout << "You chose not to buy the property.\n";
 			}
 
-			std::cout << "Press Enter to continue...\n";
-			std::cin.ignore();
-			std::cin.get();
+			Utils::pressEnterToContinue();
 		}
 		else
 		{
-			std::cout << "This property is already owned. Pay rent of $" << tileConfig.toll << ".\n";
+			Utils::displayDialogue("player_action.moved.property_toll");
 			player.subtractMoney(tileConfig.toll);
 		}
 	}
