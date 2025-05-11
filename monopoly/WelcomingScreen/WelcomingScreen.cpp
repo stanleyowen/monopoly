@@ -100,8 +100,6 @@ void WelcomingScreen::displayStartGame()
 
 	std::cout << asciiArt << std::endl; // Display the ASCII art
 
-	std::cout << "Welcome to the Monopoly Game!" << std::endl;	  // Display welcome message
-	std::cout << "Press Enter to start the game..." << std::endl; // Prompt user to start the game
-	std::cin.get();												  // Wait for user input
-	Utils::clearScreen();										  // Clear the screen
+	Utils::displayDialogue("player_action.init"); // Display start game message
+	Utils::pressEnterToContinue();				  // Wait for user input
 }

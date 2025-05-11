@@ -62,8 +62,19 @@ void Map::drawBoard(const std::vector<Player> &players) const
 	const auto &propertyLabels = config.getLocationMap();
 	const auto &playerSymbols = config.getPlayerIcons();
 
-	auto getTileColor = [&](char sym) -> std::string
+	auto getTileColor = [&](char sym, const Tile &tile) -> std::string
 	{
+		if (tile.getOccupied()) // Check if the tile is owned
+		{
+			for (const auto &player : players)
+			{
+				if (player.getName() == tile.getOwner())
+				{
+					return player.getColor(); // Use the owner's color
+				}
+			}
+		}
+
 		switch (sym)
 		{
 		case 'S':
@@ -76,10 +87,8 @@ void Map::drawBoard(const std::vector<Player> &players) const
 			return RED_BG;
 		case 'F':
 			return CYAN_BG;
-		case 'P':
-			return BLACK_BG;
 		default:
-			return BLACK_BG;
+			return RESET; // Default background color
 		}
 	};
 
@@ -129,7 +138,7 @@ void Map::drawBoard(const std::vector<Player> &players) const
 				tileNumber = 7 + 7 + 7 + (7 - i);
 
 			char symbol = board[i][j].getSymbol();
-			std::string tileColor = getTileColor(symbol);
+			std::string tileColor = getTileColor(symbol, board[i][j]);
 			std::string label = getTileLabel(symbol, tileNumber);
 
 			std::stringstream top;

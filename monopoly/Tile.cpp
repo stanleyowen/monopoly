@@ -31,6 +31,16 @@ void Tile::setOccupied(bool occupied)
 	isOccupied = occupied;
 }
 
+void Tile::setOwner(const std::string &newOwner)
+{
+	owner = newOwner;
+}
+
+std::string Tile::getOwner() const
+{
+	return owner;
+}
+
 void Tile::handleEvent(Player &player)
 {
 	GameConfig &config = GameConfig::getInstance();
@@ -102,8 +112,11 @@ void Tile::handleEvent(Player &player)
 	{
 		if (!getOccupied())
 		{
-			Utils::displayDialogue("player_action.moved.property_unowned");
 			char choice;
+
+			Utils::displayDialogue("player_action.moved.property_unowned");
+			std::cout << "> ";
+			std::cin >> choice;
 
 			if (choice == 'R' || choice == 'r')
 			{
@@ -111,6 +124,7 @@ void Tile::handleEvent(Player &player)
 				{
 					player.subtractMoney(tileConfig.price);
 					player.addProperty(player.getX(), player.getY());
+					setOwner(player.getName());
 					setOccupied(true);
 
 					std::cout << "You have purchased this property.\n";
@@ -127,10 +141,20 @@ void Tile::handleEvent(Player &player)
 
 			Utils::pressEnterToContinue();
 		}
-		else
+		else if (getOccupied() && getOwner() != player.getName())
 		{
 			Utils::displayDialogue("player_action.moved.property_toll");
-			player.subtractMoney(tileConfig.toll);
+			std::cout << "You have to pay a toll of $" << tileConfig.toll << " to " << getOwner() << ".\n";
+
+			if (player.getMoney() < tileConfig.toll)
+			{
+				std::cout << "You don't have enough money to pay the toll!\n";
+				player.subtractMoney(player.getMoney());
+			}
+		}
+		else if (getOccupied() && getOwner() == player.getName())
+		{
+			std::cout << "You own this property!\n";
 		}
 	}
 	else
