@@ -18,7 +18,7 @@
     "OOO"
   ],
   "tileWidth": 14,
-  "animation": true,
+  "animation": false,
   "animationTime": 200,
   "eventValueRange": {
     "FATE": [
@@ -30,6 +30,7 @@
       5000
     ]
   },
+  "defaultMode": "DUEL",
   "modes": {
     "DEBUG": {
       "playersNum": 4,
