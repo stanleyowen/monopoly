@@ -4,22 +4,22 @@
     {
       "label": "Build Monopoly",
       "type": "shell",
-      "command": "/usr/bin/g++",
+      "command": "g++", // Use g++ directly if it's in PATH
       "args": [
         "-std=c++17",
         "-o",
-        "monopoly/monopoly",
-        "monopoly/*.cpp",
-        "monopoly/Game/*.cpp",
-        "monopoly/WelcomingScreen/*.cpp",
+        "monopoly\\monopoly.exe", // Use Windows path separator and .exe extension
+        "monopoly\\*.cpp",
+        "monopoly\\Game\\*.cpp",
+        "monopoly\\WelcomingScreen\\*.cpp",
         "-I",
         "monopoly",
         "-I",
-        "monopoly/Game",
+        "monopoly\\Game",
         "-I",
-        "monopoly/WelcomingScreen",
+        "monopoly\\WelcomingScreen",
         "-I",
-        "monopoly/include"
+        "monopoly\\include"
       ],
       "group": {
         "kind": "build",
@@ -31,9 +31,9 @@
     {
       "label": "Run Monopoly",
       "type": "shell",
-      "command": "./monopoly", // Path to the executable
+      "command": ".\\monopoly.exe", // Path to the executable
       "options": {
-        "cwd": "${workspaceFolder}/monopoly" // Set the working directory to the monopoly folder
+        "cwd": "${workspaceFolder}\\monopoly" // Set the working directory to the monopoly folder
       },
       "dependsOn": ["Build Monopoly"], // Ensure it waits for the build to finish
       "group": {
