@@ -2,6 +2,7 @@
 #include "Game/Game.h"
 #include "Game/Player.h"
 #include "Game/Map.h"
+#include "MiniGame.h"
 #include "Card.h"
 #include <iostream>
 #include <sstream>
@@ -219,6 +220,8 @@ void Command::execute(Game& game, const std::string& input)
 	else if (cmd == "/refresh")
 	{
 		game.getMap().drawBoard(game.getPlayers());
+		std::cout << "[系統] 地圖已重新繪製。\n";
+		return; // 不切換回合
 	}
 	else if (cmd == "/gamestate")
 	{
@@ -226,7 +229,59 @@ void Command::execute(Game& game, const std::string& input)
 	}
 	else if (cmd == "/minigame")
 	{
-		std::cout << "[Minigame] Entered a demo minigame (not yet implemented).\n";
+		int currentPlayerIndex = game.getCurrentPlayerIndex();
+		Player& currentPlayer = game.getPlayers()[currentPlayerIndex];
+
+		while (true)
+		{
+			int choice;
+
+			// 顯示小遊戲選單
+			Utils::clearScreen();
+			std::cout << "\n======================== MiniGame Menu ========================\n";
+			std::cout << "1. Horse Racing Game\n";
+			std::cout << "2. Dragon Gate Game\n";
+			std::cout << "3. Treasure Hunt Game\n";
+			std::cout << "4. Maze Escape Game\n";
+			std::cout << "5. Return\n";
+			std::cout << "===============================================================\n";
+			std::cout << "Please choose (1~5): ";
+			std::cin >> choice;
+
+
+
+			switch (choice)
+			{
+			case 1:
+				std::cout << "\n[小遊戲] 進入 Horse Racing Game！\n";
+				MiniGame::playHorseRace(currentPlayer);
+				break;
+			case 2:
+				std::cout << "\n[小遊戲] 進入 Dragon Gate Game！\n";
+				MiniGame::playDragonGate(currentPlayer);
+				break;
+			case 3:
+				std::cout << "\n[小遊戲] 進入 Treasure Hunt Game！\n";
+				MiniGame::playTreasureHunt(currentPlayer);
+				break;
+			case 4:
+				std::cout << "\n[小遊戲] 進入 Maze Escape Game！\n";
+				MiniGame::playMazeEscape(currentPlayer);
+				break;
+			case 5:
+				std::cout << "[返回] 回到主畫面。\n";
+				game.getMap().drawBoard(game.getPlayers());
+				break;
+			default:
+				std::cout << "[錯誤] 無效的選擇，請輸入 1~5。\n";
+				Utils::pressEnterToContinue();
+				break;
+			}
+
+			// 更新地圖顯示
+			game.getMap().drawBoard(game.getPlayers());
+			return;
+		}
 	}
 	else if (cmd == "/list" || cmd == "/help")
 	{

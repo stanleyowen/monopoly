@@ -27,9 +27,12 @@ public:
 	int getCurrentPlayerIndex() const;
 	int getTileIdByName(const std::string& name) const;
 
+
+
 private:
 	Map map;
 	std::vector<Player> players;
 	int currentPlayerIndex;
 	bool gameRunning;
+
 };

@@ -8,6 +8,8 @@
 #include <thread>
 #include <random>
 #include <ctime>
+#include <limits>
+#include <ios>
 
 const std::vector<std::string> diceFaces = {
 	R"(
@@ -99,6 +101,7 @@ int Game::getTileIdByName(const std::string& name) const
 	}
 	return -1; // 地名不存在
 }
+
 
 void Game::start()
 {
@@ -193,17 +196,14 @@ void Game::processTurn()
 	{
 		Command command;
 		command.execute(*this, input);
-		if (input.find("/get") == 0 || input.find("/give") == 0 || input.find("/card") == 0 || input.find("/move") == 0)
-		{
-			return; // 不更換玩家回合
-		}
+
+		return; // 不更換玩家回合
 	}
 	else
 	{
 		Utils::displayDialogue("invalid_input");
 	}
 
-	// Move to the next player
 	currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
 }
 
