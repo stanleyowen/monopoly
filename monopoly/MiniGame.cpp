@@ -12,7 +12,7 @@
 #include <random>
 #include <queue>
 
-void MiniGame::playHorseRace(Player &player)
+void MiniGame::playHorseRace(Player& player)
 {
 	Utils::clearScreen();
 	std::cout << "--- MiniGame: Horse Race ---\n";
@@ -27,10 +27,10 @@ void MiniGame::playHorseRace(Player &player)
 	}
 
 	const int finishLine = 50;
-	int positions[4] = {0, 0, 0, 0};
-
+	int positions[4] = { 0, 0, 0, 0 };
+	int rankings[4] = { -1, -1, -1, -1 };
+	int rankCounter = 1;
 	bool finished = false;
-	int winner = -1;
 
 	srand(static_cast<unsigned>(time(nullptr)));
 
@@ -38,28 +38,54 @@ void MiniGame::playHorseRace(Player &player)
 	{
 		Utils::clearScreen();
 		std::cout << "--- Horse Race ---\n";
+		std::cout << "Finish Line: ";
+
+		for (int i = 0; i < finishLine; ++i) {
+			std::cout << "-";
+		}
+
+		std::cout << "|\n";
 
 		for (int i = 0; i < 4; ++i)
 		{
-			int step = rand() % 5 + 1; // 1 to 5 steps
-			positions[i] += step;
-			if (positions[i] >= finishLine && winner == -1)
+			if (rankings[i] == -1)
 			{
-				winner = i + 1;
-				finished = true;
+				int step = rand() % 5 + 1;
+				positions[i] += step;
+				if (positions[i] >= finishLine)
+				{
+					rankings[i] = rankCounter++;
+					if (rankCounter > 4)
+					{
+						finished = true;
+					}
+				}
 			}
+
 			std::cout << "Horse " << (i + 1) << ": ";
-			for (int j = 0; j < positions[i] && j < finishLine; ++j)
+
+			int barLength = (positions[i] < finishLine) ? positions[i] : finishLine;
+
+			for (int j = 0; j < barLength; ++j) {
 				std::cout << "=";
-			std::cout << ">\n";
+			}
+
+			std::cout << ">";
+
+			if (rankings[i] != -1 && positions[i] >= finishLine) {
+				std::cout << "  <Rank " << rankings[i] << ">";
+			}
+
+			std::cout << "\n";
 		}
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(300));
 	}
 
-	std::cout << "\nHorse " << winner << " wins the race!\n";
+	int winner = std::find(rankings, rankings + 4, 1) - rankings;
+	std::cout << "\nHorse " << (winner + 1) << " wins the race!\n";
 
-	if (betHorse == winner)
+	if (betHorse == winner + 1)
 	{
 		std::cout << "You won the bet! You gain $1000!\n";
 		player.addMoney(1000);
@@ -74,7 +100,7 @@ void MiniGame::playHorseRace(Player &player)
 	Utils::clearScreen();
 }
 
-void MiniGame::playDragonGate(Player &player)
+void MiniGame::playDragonGate(Player& player)
 {
 	Utils::clearScreen();
 	srand(static_cast<unsigned>(time(nullptr)));
@@ -203,7 +229,7 @@ void MiniGame::playDragonGate(Player &player)
 	Utils::clearScreen();
 }
 
-void MiniGame::playTreasureHunt(Player &player)
+void MiniGame::playTreasureHunt(Player& player)
 {
 	Utils::clearScreen();
 	std::cout << "--- MiniGame: Treasure Hunt ---\n";
@@ -244,12 +270,12 @@ void MiniGame::playTreasureHunt(Player &player)
 int calculateShortestPath(char maze[10][10], int startX, int startY, int endX, int endY)
 {
 	std::queue<std::tuple<int, int, int>> q; // Queue to store {x, y, distance}
-	bool visited[10][10] = {false};
+	bool visited[10][10] = { false };
 
-	q.push({startX, startY, 0});
+	q.push({ startX, startY, 0 });
 	visited[startX][startY] = true;
 
-	std::vector<std::pair<int, int>> directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+	std::vector<std::pair<int, int>> directions = { {-1, 0}, {1, 0}, {0, -1}, {0, 1} };
 
 	while (!q.empty())
 	{
@@ -261,12 +287,12 @@ int calculateShortestPath(char maze[10][10], int startX, int startY, int endX, i
 			return dist;
 
 		// Explore all possible directions
-		for (const auto &[dx, dy] : directions)
+		for (const auto& [dx, dy] : directions)
 		{
 			int nx = x + dx, ny = y + dy;
 			if (nx >= 0 && nx < 10 && ny >= 0 && ny < 10 && !visited[nx][ny] && maze[nx][ny] != '#')
 			{
-				q.push({nx, ny, dist + 1});
+				q.push({ nx, ny, dist + 1 });
 				visited[nx][ny] = true;
 			}
 		}
@@ -276,7 +302,7 @@ int calculateShortestPath(char maze[10][10], int startX, int startY, int endX, i
 	return 100;
 }
 
-void MiniGame::playMazeEscape(Player &player)
+void MiniGame::playMazeEscape(Player& player)
 {
 	Utils::clearScreen();
 	std::cout << "--- MiniGame: Maze Escape ---\n";
@@ -284,7 +310,7 @@ void MiniGame::playMazeEscape(Player &player)
 
 	const int mazeSize = 10; // Maze size
 	char maze[mazeSize][mazeSize];
-	bool visited[mazeSize][mazeSize] = {false};
+	bool visited[mazeSize][mazeSize] = { false };
 	int playerX = 0, playerY = 0;					// Player starts at the top-left corner
 	int exitX = mazeSize - 1, exitY = mazeSize - 1; // Exit is at the bottom-right corner
 
@@ -304,12 +330,12 @@ void MiniGame::playMazeEscape(Player &player)
 		maze[x][y] = ' '; // Mark the current cell as a path
 
 		// Randomize the order of directions
-		std::vector<std::pair<int, int>> directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+		std::vector<std::pair<int, int>> directions = { {-1, 0}, {1, 0}, {0, -1}, {0, 1} };
 		std::random_device rd;
 		std::default_random_engine rng(rd());
 		std::shuffle(directions.begin(), directions.end(), rng);
 
-		for (const auto &[dx, dy] : directions)
+		for (const auto& [dx, dy] : directions)
 		{
 			int nx = x + dx * 2, ny = y + dy * 2; // Move two steps in the chosen direction
 			if (nx >= 0 && nx < mazeSize && ny >= 0 && ny < mazeSize && !visited[nx][ny])
@@ -324,12 +350,12 @@ void MiniGame::playMazeEscape(Player &player)
 	maze[exitX][exitY] = 'E'; // Mark the exit
 
 	// Ensure at least one cell adjacent to the exit is clear
-	std::vector<std::pair<int, int>> adjacentCells = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+	std::vector<std::pair<int, int>> adjacentCells = { {-1, 0}, {1, 0}, {0, -1}, {0, 1} };
 	std::random_device rd;
 	std::default_random_engine rng(rd());
 	std::shuffle(adjacentCells.begin(), adjacentCells.end(), rng);
 
-	for (const auto &[dx, dy] : adjacentCells)
+	for (const auto& [dx, dy] : adjacentCells)
 	{
 		int adjX = exitX + dx, adjY = exitY + dy;
 		if (adjX >= 0 && adjX < mazeSize && adjY >= 0 && adjY < mazeSize)
