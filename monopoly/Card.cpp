@@ -92,7 +92,13 @@ void Card::applyEffect(Player& player, std::vector<Player>& players)
 
 			// 獲取地名
 			std::string propertyName = (locationMap.find(tileId) != locationMap.end()) ? locationMap[tileId] : "Unknown";
-			std::cout << i + 1 << ". " << propertyName << "\n";
+
+			Game& game = Game::getInstance();
+			Map& map = game.getMap();
+			Tile& tile = map.getTile(x, y);
+			int buildingLevel = tile.getPropertyLevel();
+
+			std::cout << i + 1 << ". " << propertyName << " (Level " << buildingLevel << ")\n";
 		}
 
 		int propertyChoice;
@@ -126,18 +132,25 @@ void Card::applyEffect(Player& player, std::vector<Player>& players)
 		Map& map = game.getMap();
 		Tile& tile = map.getTile(x, y);
 
-
-		tile.setOccupied(false);    // 設為未佔用
-		tile.setOwner("");          // 移除擁有者
-		tile.setSymbol('P');        // 恢復成普通地產標記
-		targetPlayer.removeProperty(x, y);  // 從玩家房產列表中移除
-
-
 		GameConfig& config = GameConfig::getInstance();
 		auto locationMap = config.getLocationMap();
 		std::string propertyName = (locationMap.find(tileId) != locationMap.end()) ? locationMap[tileId] : "Unknown";
 
-		std::cout << "Property \"" << propertyName << "\" destroyed!\n";
+		int buildingLevel = tile.getPropertyLevel();
+		if (buildingLevel > 1)
+		{
+			tile.setPropertyLevel(buildingLevel - 1);
+			std::cout << "Property \"" << propertyName << "\" downgraded to Level " << buildingLevel - 1 << "!\n";
+		}
+		else
+		{
+			tile.setOccupied(false);
+			tile.setOwner("");
+			targetPlayer.removeProperty(x, y);
+			tile.setPropertyLevel(1);
+
+			std::cout << "Property \"" << propertyName << "\" destroyed!\n";
+		}
 		player.removeCard("Destroy Card");
 	}
 	else

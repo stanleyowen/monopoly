@@ -37,8 +37,8 @@ public:
 
 	void addProperty(int x, int y);
 	const std::vector<std::pair<int, int>>& getProperties() const;
-	const std::vector<Card>& getCards() const;
 
+	const std::vector<Card>& getCards() const;
 	void addCard(const Card& card);
 
 	int getX() const;
