@@ -68,13 +68,22 @@ void Game::initializePlayers()
 	const auto& playerColors = config.getPlayerColors();
 	int startMoney = config.getStartMoney();
 
+
+
 	for (size_t i = 0; i < playerNames.size(); ++i)
 	{
 		std::string symbol = (i < playerIcons.size()) ? playerIcons[i] : "?";
 		std::string color = (i < playerColors.size()) ? playerColors[i] : "\033[0m"; // Default to no color
 		players.emplace_back(playerNames[i], symbol, startMoney);
 		players.back().setColor(color);
+
+		players.back().addCard(Card("Dice Card"));      // 骰控卡
+		players.back().addCard(Card("Barrier Card"));   // 路障卡
+		players.back().addCard(Card("Destroy Card"));   // 拆除卡
+
 	}
+
+
 }
 
 std::vector<Player>& Game::getPlayers()
@@ -258,6 +267,7 @@ void Game::processTurn()
 		int cardChoice;
 		std::cout << "Enter the card number to use (0 to cancel): ";
 		std::cin >> cardChoice;
+		std::cin.ignore();
 
 		// 若選擇有效卡片
 		if (cardChoice > 0 && cardChoice <= currentPlayer.getCards().size())
