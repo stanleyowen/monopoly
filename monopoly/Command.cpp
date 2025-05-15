@@ -122,25 +122,6 @@ void Command::execute(Game& game, const std::string& input)
 	}
 	else if (cmd == "/give")
 	{
-		/*int from, to, amount;
-		iss >> from >> to >> amount;
-		auto& players = game.getPlayers();
-		if (from >= 0 && from < players.size() && to >= 0 && to < players.size())
-		{
-			Player& pFrom = players[from];
-			Player& pTo = players[to];
-			if (pFrom.getMoney() >= amount)
-			{
-				pFrom.subtractMoney(amount);
-				pTo.addMoney(amount);
-				std::cout << "[Cheat] $" << amount << " transferred from " << pFrom.getName() << " to " << pTo.getName() << "\n";
-			}
-			else
-			{
-				std::cout << "[Cheat] Not enough money to transfer!\n";
-			}
-		}*/
-
 		std::string targetName;
 		int amount;
 		iss >> targetName >> amount;
@@ -246,8 +227,9 @@ void Command::execute(Game& game, const std::string& input)
 			std::cout << "5. Return\n";
 			std::cout << "===============================================================\n";
 			std::cout << "Please choose (1~5): ";
-			std::cin >> choice;
 
+			std::cin >> choice;
+			std::cin.ignore();
 
 
 			switch (choice)
@@ -271,6 +253,7 @@ void Command::execute(Game& game, const std::string& input)
 			case 5:
 				std::cout << "[返回] 回到主畫面。\n";
 				game.getMap().drawBoard(game.getPlayers());
+
 				break;
 			default:
 				std::cout << "[錯誤] 無效的選擇，請輸入 1~5。\n";
