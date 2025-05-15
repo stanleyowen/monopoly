@@ -58,6 +58,11 @@ void Tile::setPropertyLevel(int level)
 	}
 }
 
+int Tile::getPositionId() const
+{
+	return positionId;
+}
+
 void Tile::handleEvent(Player& player)
 {
 	GameConfig& config = GameConfig::getInstance();

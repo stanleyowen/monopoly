@@ -1,5 +1,9 @@
 #include "Card.h"
+#include "Game/Map.h"
+#include "Game/Game.h"
 #include "Game/Player.h"
+#include "Tile.h"
+#include "Game/GameConfig.h"
 #include <iostream>
 
 Card::Card(const std::string& type) : type(type) {}
@@ -33,9 +37,108 @@ void Card::applyEffect(Player& player, std::vector<Player>& players)
 		// Implement barrier logic here
 	}
 	else if (type == "Destroy Card") { //拆除卡
-		std::cout << "Destroying another player's property.\n";
+		//std::cout << "Destroying another player's property.\n";
 		// Implement property destruction logic here
+		std::cout << "Choose a player to destroy their property:\n";
 
+		// 列出所有玩家
+		for (size_t i = 0; i < players.size(); ++i)
+		{
+			std::cout << i + 1 << ". " << players[i].getName() << "\n";
+		}
+		int playerChoice;
+		std::cout << "Enter player number (0 to cancel): ";
+		std::cin >> playerChoice;
+		std::cin.ignore();
+
+		if (playerChoice <= 0 || playerChoice > players.size())
+		{
+			std::cout << "Invalid choice. Canceling destroy action.\n";
+			return;
+		}
+
+		Player& targetPlayer = players[playerChoice - 1];
+		const auto& properties = targetPlayer.getProperties();
+
+		// 檢查玩家是否有房產
+		if (properties.empty())
+		{
+			std::cout << targetPlayer.getName() << " has no properties to destroy.\n";
+			return;
+		}
+
+		// 列出目標玩家的所有房產
+		std::cout << "Choose a property to destroy:\n";
+		for (size_t i = 0; i < properties.size(); ++i)
+		{
+			// 正確獲取房產位置 (x, y)
+			int x = properties[i].first;
+			int y = properties[i].second;
+
+			// 計算 tileId (假設地圖為 8x8)
+			int tileId = -1;
+
+			if (x == 0)
+				tileId = y;
+			else if (y == 7)
+				tileId = 7 + x;
+			else if (x == 7)
+				tileId = 7 + 7 + (7 - y);
+			else if (y == 0)
+				tileId = 7 + 7 + 7 + (7 - x);
+
+			GameConfig& config = GameConfig::getInstance();
+			auto locationMap = config.getLocationMap();
+
+			// 獲取地名
+			std::string propertyName = (locationMap.find(tileId) != locationMap.end()) ? locationMap[tileId] : "Unknown";
+			std::cout << i + 1 << ". " << propertyName << "\n";
+		}
+
+		int propertyChoice;
+		std::cout << "Enter property number (0 to cancel): ";
+		std::cin >> propertyChoice;
+		std::cin.ignore();
+
+		if (propertyChoice <= 0 || propertyChoice > properties.size())
+		{
+			std::cout << "Invalid choice. Canceling destroy action.\n";
+			return;
+		}
+
+		// 獲取選中的房產座標
+		int x = properties[propertyChoice - 1].first;
+		int y = properties[propertyChoice - 1].second;
+
+		// 計算 tileId
+		int tileId = -1;
+
+		if (x == 0)
+			tileId = y;
+		else if (y == 7)
+			tileId = 7 + x;
+		else if (x == 7)
+			tileId = 7 + 7 + (7 - y);
+		else if (y == 0)
+			tileId = 7 + 7 + 7 + (7 - x);
+
+		Game& game = Game::getInstance();
+		Map& map = game.getMap();
+		Tile& tile = map.getTile(x, y);
+
+
+		tile.setOccupied(false);    // 設為未佔用
+		tile.setOwner("");          // 移除擁有者
+		tile.setSymbol('P');        // 恢復成普通地產標記
+		targetPlayer.removeProperty(x, y);  // 從玩家房產列表中移除
+
+
+		GameConfig& config = GameConfig::getInstance();
+		auto locationMap = config.getLocationMap();
+		std::string propertyName = (locationMap.find(tileId) != locationMap.end()) ? locationMap[tileId] : "Unknown";
+
+		std::cout << "Property \"" << propertyName << "\" destroyed!\n";
+		player.removeCard("Destroy Card");
 	}
 	else
 	{

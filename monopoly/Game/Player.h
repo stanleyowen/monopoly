@@ -53,4 +53,5 @@ public:
 	bool hasNextDiceValue() const;
 	void clearNextDiceValue();
 	void removeCard(const std::string& cardType);
+	void removeProperty(int x, int y);
 };

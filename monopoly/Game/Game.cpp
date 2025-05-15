@@ -11,6 +11,18 @@
 #include <limits>
 #include <ios>
 
+Game Game::instance;
+
+Game& Game::getInstance()
+{
+	return instance;
+}
+
+Map& Game::getMap()
+{
+	return map;
+}
+
 const std::vector<std::string> diceFaces = {
 	R"(
 	 +-------+
@@ -216,82 +228,85 @@ void Game::processTurn()
 		return;
 	}
 
+	bool diceRolled = false;
 	Player& currentPlayer = players[currentPlayerIndex];
 
-	// Display dialogue for the current player's turn
-	std::cout << "\nIt's " << currentPlayer.getSymbol() << " " << currentPlayer.getName() << "'s turn:\n\n";
-	Utils::displayDialogue("player_action.start");
-	std::string input;
-	std::cout << "> ";
-	std::getline(std::cin, input);
+	while (!diceRolled) {
+		// Display dialogue for the current player's turn
+		std::cout << "\nIt's " << currentPlayer.getSymbol() << " " << currentPlayer.getName() << "'s turn:\n\n";
+		Utils::displayDialogue("player_action.start");
+		std::string input;
+		std::cout << "> ";
+		std::getline(std::cin, input);
 
-	if (input == "T" || input == "t")
-	{
-		// Seed the random number generator
-		std::srand(static_cast<unsigned>(std::time(nullptr)));
-
-		int dice1, dice2, diceRoll;
-
-		// 檢查是否有骰控卡效果
-		if (currentPlayer.hasNextDiceValue())
+		if (input == "T" || input == "t")
 		{
-			// 使用骰控卡效果，直接控制骰子值
-			dice1 = currentPlayer.getNextDiceValue();
-			dice2 = dice1;  // 單骰效果，設為相同值
-			diceRoll = dice1;
-			currentPlayer.clearNextDiceValue();
-			std::cout << "Using Dice Control: You rolled " << dice1 << ".\n";
-			animateControlledPlayerMovement(currentPlayer, diceRoll, dice1);
+			// Seed the random number generator
+			std::srand(static_cast<unsigned>(std::time(nullptr)));
+
+			int dice1, dice2, diceRoll;
+
+			// 檢查是否有骰控卡效果
+			if (currentPlayer.hasNextDiceValue())
+			{
+				// 使用骰控卡效果，直接控制骰子值
+				dice1 = currentPlayer.getNextDiceValue();
+				dice2 = dice1;  // 單骰效果，設為相同值
+				diceRoll = dice1;
+				currentPlayer.clearNextDiceValue();
+				std::cout << "Using Dice Control: You rolled " << dice1 << ".\n";
+				animateControlledPlayerMovement(currentPlayer, diceRoll, dice1);
+			}
+			else
+			{
+				// 正常擲骰邏輯
+				std::srand(static_cast<unsigned>(std::time(nullptr)));
+				dice1 = rand() % 6 + 1;
+				dice2 = rand() % 6 + 1;
+				diceRoll = dice1 + dice2;
+
+				// 正常骰子動畫
+				displayDiceAnimation(dice1, dice2, players);
+				animatePlayerMovement(currentPlayer, diceRoll, dice1, dice2);
+
+			}
+			handleTileEvents(currentPlayer);
+			checkWinCondition();
+			diceRolled = true;
+		}
+		else if (input == "I" || input == "i")
+		{
+			currentPlayer.showInfo();
+
+			// 提示玩家選擇卡片編號
+			int cardChoice;
+			std::cout << "Enter the card number to use (0 to cancel): ";
+			std::cin >> cardChoice;
+			std::cin.ignore();
+
+			// 若選擇有效卡片
+			if (cardChoice > 0 && cardChoice <= currentPlayer.getCards().size())
+			{
+				Card chosenCard = currentPlayer.getCards()[cardChoice - 1];
+				// 呼叫卡片效果，傳入玩家及所有玩家列表
+				chosenCard.applyEffect(currentPlayer, this->getPlayers());
+			}
+			else {
+				std::cout << "Invalid choice. Returning to game.\n";
+			}
+		}
+		else if (!input.empty() && input[0] == '/')
+		{
+			Command command;
+			command.execute(*this, input);
+
+			return; // 不更換玩家回合
 		}
 		else
 		{
-			// 正常擲骰邏輯
-			std::srand(static_cast<unsigned>(std::time(nullptr)));
-			dice1 = rand() % 6 + 1;
-			dice2 = rand() % 6 + 1;
-			diceRoll = dice1 + dice2;
-
-			// 正常骰子動畫
-			displayDiceAnimation(dice1, dice2, players);
-			animatePlayerMovement(currentPlayer, diceRoll, dice1, dice2);
-
-		}
-		handleTileEvents(currentPlayer);
-		checkWinCondition();
-	}
-	else if (input == "I" || input == "i")
-	{
-		currentPlayer.showInfo();
-
-		// 提示玩家選擇卡片編號
-		int cardChoice;
-		std::cout << "Enter the card number to use (0 to cancel): ";
-		std::cin >> cardChoice;
-		std::cin.ignore();
-
-		// 若選擇有效卡片
-		if (cardChoice > 0 && cardChoice <= currentPlayer.getCards().size())
-		{
-			Card chosenCard = currentPlayer.getCards()[cardChoice - 1];
-			// 呼叫卡片效果，傳入玩家及所有玩家列表
-			chosenCard.applyEffect(currentPlayer, this->getPlayers());
-		}
-		else {
-			std::cout << "Invalid choice. Returning to game.\n";
+			Utils::displayDialogue("invalid_input");
 		}
 	}
-	else if (!input.empty() && input[0] == '/')
-	{
-		Command command;
-		command.execute(*this, input);
-
-		return; // 不更換玩家回合
-	}
-	else
-	{
-		Utils::displayDialogue("invalid_input");
-	}
-
 	currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
 }
 

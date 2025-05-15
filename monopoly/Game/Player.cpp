@@ -208,3 +208,17 @@ bool Player::hasNextDiceValue() const {
 void Player::clearNextDiceValue() {
 	nextDiceValue = 0;
 }
+
+void Player::removeProperty(int x, int y)
+{
+	auto it = std::remove_if(ownedTiles.begin(), ownedTiles.end(),
+		[x, y](const std::pair<int, int>& coord) {
+			return coord.first == x && coord.second == y;
+		});
+
+	if (it != ownedTiles.end())
+	{
+		ownedTiles.erase(it, ownedTiles.end());
+		std::cout << "Property at (" << x << ", " << y << ") removed from ownership.\n";
+	}
+}

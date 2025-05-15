@@ -15,6 +15,9 @@ public:
 
 	void setupBoard();
 	void drawBoard(const std::vector<Player>& players) const;
+
+	void resetProperty(int x, int y);
+	Tile& getTileById(int tileId);
 };
 
 #endif // MAP_H
