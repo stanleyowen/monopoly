@@ -18,7 +18,7 @@
     "OOO"
   ],
   "tileWidth": 14,
-  "animation": false,
+  "animation": true,
   "animationTime": 200,
   "eventValueRange": {
     "FATE": [

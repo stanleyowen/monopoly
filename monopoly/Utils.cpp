@@ -16,7 +16,6 @@ void Utils::loadDialogueData()
 	}
 
 	fileDialogue >> dialogueData;
-	std::cout << "Dialogue data loaded successfully.\n";
 }
 
 void Utils::clearScreen()

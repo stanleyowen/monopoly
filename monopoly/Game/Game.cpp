@@ -53,7 +53,7 @@ const std::vector<std::string> diceFaces = {
 	 | o   o |
 	 | o   o |
 	 +-------+
-	)" };
+	)"};
 
 Game::Game() : currentPlayerIndex(0), gameRunning(true)
 {
@@ -62,10 +62,10 @@ Game::Game() : currentPlayerIndex(0), gameRunning(true)
 
 void Game::initializePlayers()
 {
-	const auto& config = GameConfig::getInstance();
-	const auto& playerNames = config.getPlayerNames();
-	const auto& playerIcons = config.getPlayerIcons();
-	const auto& playerColors = config.getPlayerColors();
+	const auto &config = GameConfig::getInstance();
+	const auto &playerNames = config.getPlayerNames();
+	const auto &playerIcons = config.getPlayerIcons();
+	const auto &playerColors = config.getPlayerColors();
 	int startMoney = config.getStartMoney();
 
 	for (size_t i = 0; i < playerNames.size(); ++i)
@@ -77,7 +77,7 @@ void Game::initializePlayers()
 	}
 }
 
-std::vector<Player>& Game::getPlayers()
+std::vector<Player> &Game::getPlayers()
 {
 	return players;
 }
@@ -87,12 +87,12 @@ int Game::getCurrentPlayerIndex() const
 	return currentPlayerIndex;
 }
 
-int Game::getTileIdByName(const std::string& name) const
+int Game::getTileIdByName(const std::string &name) const
 {
-	const auto& config = GameConfig::getInstance();
-	const auto& tiles = config.getBoardTiles();
+	const auto &config = GameConfig::getInstance();
+	const auto &tiles = config.getBoardTiles();
 
-	for (const auto& tile : tiles)
+	for (const auto &tile : tiles)
 	{
 		if (tile.name == name)
 		{
@@ -101,7 +101,6 @@ int Game::getTileIdByName(const std::string& name) const
 	}
 	return -1; // 地名不存在
 }
-
 
 void Game::start()
 {
@@ -116,10 +115,10 @@ void Game::start()
 	std::cout << "\nGame Over!" << std::endl;
 }
 
-void Game::animatePlayerMovement(Player& player, int steps, int dice1, int dice2)
+void Game::animatePlayerMovement(Player &player, int steps, int dice1, int dice2)
 {
 	// Get the animation settings from the configuration
-	const auto& config = GameConfig::getInstance();
+	const auto &config = GameConfig::getInstance();
 	bool isAnimationEnabled = config.getAnimation();
 	int animationSpeed = config.getAnimationTime(); // Retrieve animation speed (in milliseconds)
 
@@ -165,7 +164,7 @@ void Game::processTurn()
 		return;
 	}
 
-	Player& currentPlayer = players[currentPlayerIndex];
+	Player &currentPlayer = players[currentPlayerIndex];
 
 	// Display dialogue for the current player's turn
 	std::cout << "\nIt's " << currentPlayer.getSymbol() << " " << currentPlayer.getName() << "'s turn:\n\n";
@@ -208,10 +207,10 @@ void Game::processTurn()
 }
 
 // Function to display dice rolling animation for two dice
-void Game::displayDiceAnimation(int dice1, int dice2, const std::vector<Player>& players)
+void Game::displayDiceAnimation(int dice1, int dice2, const std::vector<Player> &players)
 {
 	// Get the animation settings from the configuration
-	const auto& config = GameConfig::getInstance();
+	const auto &config = GameConfig::getInstance();
 	bool isAnimationEnabled = config.getAnimation();
 	int animationSpeed = config.getAnimationTime();
 
@@ -239,15 +238,11 @@ void Game::displayDiceAnimation(int dice1, int dice2, const std::vector<Player>&
 
 	// Clear the console and display the final result
 	Utils::clearScreen();
-	map.drawBoard(players);
-	std::cout << "Final Dice Roll:\n";
-	std::cout << diceFaces[dice1 - 1] << "    " << diceFaces[dice2 - 1] << std::endl;
-	std::cout << "Total: " << (dice1 + dice2) << std::endl;
 }
 
-void Game::handleTileEvents(Player& player)
+void Game::handleTileEvents(Player &player)
 {
-	Tile& currentTile = map.getTile(player.getX(), player.getY());
+	Tile &currentTile = map.getTile(player.getX(), player.getY());
 	currentTile.handleEvent(player);
 
 	Utils::clearScreen();
