@@ -31,7 +31,7 @@ void Tile::setOccupied(bool occupied)
 	isOccupied = occupied;
 }
 
-void Tile::setOwner(const std::string &newOwner)
+void Tile::setOwner(const std::string& newOwner)
 {
 	owner = newOwner;
 }
@@ -58,19 +58,19 @@ void Tile::setPropertyLevel(int level)
 	}
 }
 
-void Tile::handleEvent(Player &player)
+void Tile::handleEvent(Player& player)
 {
-	GameConfig &config = GameConfig::getInstance();
+	GameConfig& config = GameConfig::getInstance();
 	auto boardTiles = config.getBoardTiles();
 
 	// Get the player's current position as an index
 	int index = player.getPositionId();
 
 	// Find the tile configuration based on the player's index
-	auto it = std::find_if(boardTiles.begin(), boardTiles.end(), [index](const TileConfig &tile)
-						   {
-							   return tile.id == index; // Match the index directly
-						   });
+	auto it = std::find_if(boardTiles.begin(), boardTiles.end(), [index](const TileConfig& tile)
+		{
+			return tile.id == index; // Match the index directly
+		});
 
 	if (it == boardTiles.end())
 	{
@@ -78,7 +78,7 @@ void Tile::handleEvent(Player &player)
 		return;
 	}
 
-	const TileConfig &tileConfig = *it;
+	const TileConfig& tileConfig = *it;
 
 	std::cout << player.getName() << " landed on " << tileConfig.name << "!\n";
 
@@ -200,14 +200,14 @@ void Tile::handleEvent(Player &player)
 
 				if (propertyLevel < 3)
 				{
-					GameConfig &config = GameConfig::getInstance();
+					GameConfig& config = GameConfig::getInstance();
 					auto boardTiles = config.getBoardTiles();
-					auto it = std::find_if(boardTiles.begin(), boardTiles.end(), [index](const TileConfig &tile)
-										   { return tile.id == index; });
+					auto it = std::find_if(boardTiles.begin(), boardTiles.end(), [index](const TileConfig& tile)
+						{ return tile.id == index; });
 
 					if (it != boardTiles.end())
 					{
-						const TileConfig &tileConfig = *it;
+						const TileConfig& tileConfig = *it;
 						if (player.getMoney() >= tileConfig.price)
 						{
 							player.subtractMoney(tileConfig.price);
@@ -250,7 +250,7 @@ void Tile::handleEvent(Player &player)
 	}
 }
 
-void Tile::enterShop(Player &player)
+void Tile::enterShop(Player& player)
 {
 	std::cout << "=== Welcome to the Card Store ===\n";
 	std::cout << "[1] Barrier Card    - Price: $1500       - Effect: Place a barrier on a tile to block players.\n";
@@ -263,7 +263,7 @@ void Tile::enterShop(Player &player)
 
 	int choice;
 	std::cin >> choice;
-
+	std::cin.ignore();
 	switch (choice)
 	{
 	case 1:

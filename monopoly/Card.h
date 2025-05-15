@@ -12,7 +12,7 @@ public:
 	Card(const std::string& type);
 	std::string getType() const;
 
-	void applyEffect(Player& player, std::vector<std::shared_ptr<Player>>& players);
+	void applyEffect(Player& player, std::vector<Player>& players);
 
 private:
 	std::string type;

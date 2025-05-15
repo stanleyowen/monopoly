@@ -19,6 +19,7 @@ public:
 	std::vector<Player>& getPlayers();
 	void start();
 	void animatePlayerMovement(Player& player, int steps, int dice1, int dice2);
+	void animateControlledPlayerMovement(Player& player, int steps, int diceValue);
 	void displayDiceAnimation(int dice1, int dice2, const std::vector<Player>& players);
 	void processTurn();
 

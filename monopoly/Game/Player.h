@@ -17,16 +17,18 @@ private:
 	std::vector<std::pair<int, int>> ownedTiles; // stores (x, y) coords of owned properties
 	std::vector<Card> cards;
 
+	int nextDiceValue = 0;
+
 public:
-	Player(const std::string &name);
-	Player(const std::string &name, std::string symbol, int startMoney);
+	Player(const std::string& name);
+	Player(const std::string& name, std::string symbol, int startMoney);
 
 	void showInfo() const;
 	void move(int steps);
 	void addMoney(int amount);
 	void subtractMoney(int amount);
 	int getMoney() const;
-	void setColor(const std::string &color);
+	void setColor(const std::string& color);
 	std::string getColor() const;
 
 	std::string getSymbol() const { return symbol; };
@@ -34,10 +36,10 @@ public:
 	int getHouseCount() const;
 
 	void addProperty(int x, int y);
-	const std::vector<std::pair<int, int>> &getProperties() const;
-	const std::vector<Card> &getCards() const;
+	const std::vector<std::pair<int, int>>& getProperties() const;
+	const std::vector<Card>& getCards() const;
 
-	void addCard(const Card &card);
+	void addCard(const Card& card);
 
 	int getX() const;
 	int getY() const;
@@ -45,4 +47,10 @@ public:
 	void setPosition(int newX, int newY);
 
 	std::string getName() const;
+
+	void setNextDiceValue(int value);
+	int getNextDiceValue() const;
+	bool hasNextDiceValue() const;
+	void clearNextDiceValue();
+	void removeCard(const std::string& cardType);
 };

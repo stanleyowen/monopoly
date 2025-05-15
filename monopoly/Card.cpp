@@ -8,7 +8,34 @@ std::string Card::getType() const {
 	return type;
 }
 
-void Card::applyEffect(Player& player, std::vector<std::shared_ptr<Player>>& players) {
+void Card::applyEffect(Player& player, std::vector<Player>& players)
+{
+	if (type == "Dice Card")
+	{
+		int diceValue;
+		std::cout << "Choose your dice value (1-12): ";
+		std::cin >> diceValue;
+
+		if (diceValue >= 1 && diceValue <= 12)
+		{
+			player.setNextDiceValue(diceValue);
+			std::cout << "Dice Control Card used! Next dice will roll: " << diceValue << "\n";
+			player.removeCard("Dice Card");
+		}
+		else
+		{
+			std::cout << "Invalid dice value. Please enter a number between 1 and 12.\n";
+		}
+	}
+	else
+	{
+		std::cout << "Unknown or unsupported card type.\n";
+	}
+}
+
+
+
+/* void Card::applyEffect(Player& player, std::vector<std::shared_ptr<Player>>& players) {
 	if (type == "Barrier Card") { //路障卡
 		std::cout << "Placing a barrier on a tile to block players.\n";
 		// Implement barrier logic here
@@ -16,7 +43,18 @@ void Card::applyEffect(Player& player, std::vector<std::shared_ptr<Player>>& pla
 	else if (type == "Dice Card") { //骰控卡
 		std::cout << "Choose the number you roll on the dice.\n";
 		// Implement dice control logic here
+		int diceValue;
+		std::cout << "Choose your dice value (1-12): ";
+		std::cin >> diceValue;
 
+		if (diceValue >= 1 && diceValue <= 12) {
+			player.setNextDiceValue(diceValue);
+			std::cout << "Dice Control Card used! Next dice will roll: " << diceValue << "\n";
+			player.removeCard("Dice Card");
+		}
+		else {
+			std::cout << "Invalid dice value. Please enter a number between 1 and 12.\n";
+		}
 	}
 	else if (type == "Destroy Card") { //拆除卡
 		std::cout << "Destroying another player's property.\n";
@@ -44,4 +82,4 @@ void Card::applyEffect(Player& player, std::vector<std::shared_ptr<Player>>& pla
 	else {
 		std::cout << "Unknown card type.\n";
 	}
-}
+}*/
