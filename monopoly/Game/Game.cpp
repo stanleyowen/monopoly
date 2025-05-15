@@ -53,7 +53,7 @@ const std::vector<std::string> diceFaces = {
 	 | o   o |
 	 | o   o |
 	 +-------+
-	)"};
+	)" };
 
 Game::Game() : currentPlayerIndex(0), gameRunning(true)
 {
@@ -62,10 +62,10 @@ Game::Game() : currentPlayerIndex(0), gameRunning(true)
 
 void Game::initializePlayers()
 {
-	const auto &config = GameConfig::getInstance();
-	const auto &playerNames = config.getPlayerNames();
-	const auto &playerIcons = config.getPlayerIcons();
-	const auto &playerColors = config.getPlayerColors();
+	const auto& config = GameConfig::getInstance();
+	const auto& playerNames = config.getPlayerNames();
+	const auto& playerIcons = config.getPlayerIcons();
+	const auto& playerColors = config.getPlayerColors();
 	int startMoney = config.getStartMoney();
 
 	for (size_t i = 0; i < playerNames.size(); ++i)
@@ -77,7 +77,7 @@ void Game::initializePlayers()
 	}
 }
 
-std::vector<Player> &Game::getPlayers()
+std::vector<Player>& Game::getPlayers()
 {
 	return players;
 }
@@ -87,12 +87,12 @@ int Game::getCurrentPlayerIndex() const
 	return currentPlayerIndex;
 }
 
-int Game::getTileIdByName(const std::string &name) const
+int Game::getTileIdByName(const std::string& name) const
 {
-	const auto &config = GameConfig::getInstance();
-	const auto &tiles = config.getBoardTiles();
+	const auto& config = GameConfig::getInstance();
+	const auto& tiles = config.getBoardTiles();
 
-	for (const auto &tile : tiles)
+	for (const auto& tile : tiles)
 	{
 		if (tile.name == name)
 		{
@@ -115,10 +115,10 @@ void Game::start()
 	std::cout << "\nGame Over!" << std::endl;
 }
 
-void Game::animatePlayerMovement(Player &player, int steps, int dice1, int dice2)
+void Game::animatePlayerMovement(Player& player, int steps, int dice1, int dice2)
 {
 	// Get the animation settings from the configuration
-	const auto &config = GameConfig::getInstance();
+	const auto& config = GameConfig::getInstance();
 	bool isAnimationEnabled = config.getAnimation();
 	int animationSpeed = config.getAnimationTime(); // Retrieve animation speed (in milliseconds)
 
@@ -164,7 +164,7 @@ void Game::processTurn()
 		return;
 	}
 
-	Player &currentPlayer = players[currentPlayerIndex];
+	Player& currentPlayer = players[currentPlayerIndex];
 
 	// Display dialogue for the current player's turn
 	std::cout << "\nIt's " << currentPlayer.getSymbol() << " " << currentPlayer.getName() << "'s turn:\n\n";
@@ -207,10 +207,10 @@ void Game::processTurn()
 }
 
 // Function to display dice rolling animation for two dice
-void Game::displayDiceAnimation(int dice1, int dice2, const std::vector<Player> &players)
+void Game::displayDiceAnimation(int dice1, int dice2, const std::vector<Player>& players)
 {
 	// Get the animation settings from the configuration
-	const auto &config = GameConfig::getInstance();
+	const auto& config = GameConfig::getInstance();
 	bool isAnimationEnabled = config.getAnimation();
 	int animationSpeed = config.getAnimationTime();
 
@@ -240,9 +240,9 @@ void Game::displayDiceAnimation(int dice1, int dice2, const std::vector<Player> 
 	Utils::clearScreen();
 }
 
-void Game::handleTileEvents(Player &player)
+void Game::handleTileEvents(Player& player)
 {
-	Tile &currentTile = map.getTile(player.getX(), player.getY());
+	Tile& currentTile = map.getTile(player.getX(), player.getY());
 	currentTile.handleEvent(player);
 
 	Utils::clearScreen();
@@ -252,8 +252,13 @@ void Game::handleTileEvents(Player &player)
 void Game::checkWinCondition()
 {
 	int winMoney = GameConfig::getInstance().getWinMoney();
-	if (winMoney == 0)
+
+	// Fallback default if config file failed to load properly
+	if (winMoney <= 0) {
 		winMoney = 300000;
+		std::cout << "[Warning] Invalid winMoney in config. Defaulting to $300000.\n";
+	}
+
 	int aliveCount = 0;
 	int richestIndex = -1;
 
@@ -261,10 +266,12 @@ void Game::checkWinCondition()
 	{
 		if (players[i].getMoney() >= winMoney)
 		{
-			std::cout << "🏆 " << players[i].getName() << " wins with $" << players[i].getMoney() << "!\n";
+			std::cout << "🏆 " << players[i].getSymbol() << " " << players[i].getName()
+				<< " wins with $" << players[i].getMoney() << "!\n";
 			gameRunning = false;
 			return;
 		}
+
 		if (players[i].getMoney() > 0)
 		{
 			aliveCount++;
@@ -272,9 +279,11 @@ void Game::checkWinCondition()
 		}
 	}
 
-	if (aliveCount == 1)
+	// Only one player still has money
+	if (aliveCount == 1 && richestIndex != -1)
 	{
-		std::cout << "🏆 " << players[richestIndex].getName() << " wins by survival!\n";
+		std::cout << "🏆 " << players[richestIndex].getSymbol() << " " << players[richestIndex].getName()
+			<< " wins by survival with $" << players[richestIndex].getMoney() << "!\n";
 		gameRunning = false;
 	}
 }

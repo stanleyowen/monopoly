@@ -283,4 +283,8 @@ void Command::execute(Game& game, const std::string& input)
 	{
 		std::cout << "Unknown command.\n";
 	}
+
+	Utils::clearScreen();
+	game.getMap().drawBoard(game.getPlayers());
+	game.checkWinCondition();
 }
