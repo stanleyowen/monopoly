@@ -10,6 +10,7 @@ void Store::open(Player& player) {  // Random store example
 
 	int choice;
 	std::cin >> choice;
+	std::cin.ignore();
 
 	if (choice == 1 && player.getMoney() >= 1000) {
 		player.subtractMoney(1000);

@@ -114,6 +114,7 @@ void MiniGame::playDragonGate(Player& player)
 	{
 		std::cout << "Enter your bet (you currently have " << player.getMoney() << "): ";
 		std::cin >> wager;
+		std::cin.ignore();
 
 		if (std::cin.fail())
 		{
@@ -161,6 +162,7 @@ void MiniGame::playDragonGate(Player& player)
 		while (true) {
 			std::cout << "Do you think the next card will be [inside] or [outside] the range? ";
 			std::cin >> guess;
+			std::cin.ignore();
 
 			if (guess == "inside" || guess == "outside") {
 				break;

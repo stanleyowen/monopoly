@@ -99,6 +99,7 @@ void Tile::handleEvent(Player& player)
 		char choice;
 		std::cout << "> ";
 		std::cin >> choice;
+		std::cin.ignore();
 
 		if (choice == 'E' || choice == 'e')
 		{
@@ -150,6 +151,7 @@ void Tile::handleEvent(Player& player)
 			Utils::displayDialogue("player_action.moved.property_unowned");
 			std::cout << "> ";
 			std::cin >> choice;
+			std::cin.ignore();
 
 			if (choice == 'R' || choice == 'r')
 			{
@@ -199,6 +201,7 @@ void Tile::handleEvent(Player& player)
 			Utils::displayDialogue("player_action.moved.property_owned");
 			std::cout << "> ";
 			std::cin >> choice;
+			std::cin.ignore();
 
 			if (choice == 'R' || choice == 'r')
 			{
