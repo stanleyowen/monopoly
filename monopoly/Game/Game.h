@@ -14,11 +14,13 @@ class Game
 {
 public:
 	Game();
-	Map& getMap() { return map; }
+	static Game& getInstance();  // 單例模式方法
+	Map& getMap();
 	void initializePlayers();
 	std::vector<Player>& getPlayers();
 	void start();
 	void animatePlayerMovement(Player& player, int steps, int dice1, int dice2);
+	void animateControlledPlayerMovement(Player& player, int steps, int diceValue);
 	void displayDiceAnimation(int dice1, int dice2, const std::vector<Player>& players);
 	void processTurn();
 
@@ -35,4 +37,8 @@ private:
 	int currentPlayerIndex;
 	bool gameRunning;
 
+
+	Game(const Game&) = delete;  // 刪除拷貝構造
+	Game& operator=(const Game&) = delete;  // 刪除賦值運算
+	static Game instance;  // 單例實例
 };

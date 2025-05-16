@@ -8,7 +8,7 @@ nlohmann::json config, dialogue;
 GameConfig GameConfig::instance;
 
 // Singleton accessor
-GameConfig &GameConfig::getInstance()
+GameConfig& GameConfig::getInstance()
 {
 	return instance;
 }
@@ -65,7 +65,7 @@ void GameConfig::loadConfig()
 	propertyLevelIcons = config["propertyLevelIcons"].get<std::vector<std::string>>();
 
 	// Parse the board tiles
-	for (const auto &tile : config["boardTiles"])
+	for (const auto& tile : config["boardTiles"])
 	{
 		TileConfig tileConfig;
 		tileConfig.id = tile["index"].get<std::size_t>();
@@ -78,7 +78,7 @@ void GameConfig::loadConfig()
 	}
 
 	// Parse the cards
-	for (const auto &card : config["cards"])
+	for (const auto& card : config["cards"])
 	{
 		CardConfig cardConfig;
 		cardConfig.name = card["name"].get<std::string>();
@@ -89,7 +89,7 @@ void GameConfig::loadConfig()
 	}
 
 	// Parse eventValueRange
-	for (const auto &event : config["eventValueRange"].items())
+	for (const auto& event : config["eventValueRange"].items())
 	{
 		std::string eventName = event.key();
 		int minValue = event.value()[0].get<int>(),
@@ -105,16 +105,16 @@ GameMode GameConfig::getMode() const { return mode; }
 void GameConfig::setPlayersNum(int num) { playersNum = num; }
 int GameConfig::getPlayersNum() const { return playersNum; }
 
-void GameConfig::setPlayersName(const std::vector<std::string> &names) { playerNames = names; }
+void GameConfig::setPlayersName(const std::vector<std::string>& names) { playerNames = names; }
 std::vector<std::string> GameConfig::getPlayerNames() const { return playerNames; }
 
-void GameConfig::setPlayerIcons(const std::vector<std::string> &icons) { playerIcons = icons; }
+void GameConfig::setPlayerIcons(const std::vector<std::string>& icons) { playerIcons = icons; }
 std::vector<std::string> GameConfig::getPlayerIcons() const { return playerIcons; }
 
-void GameConfig::setPlayerColors(const std::vector<std::string> &colors) { playerColors = colors; }
+void GameConfig::setPlayerColors(const std::vector<std::string>& colors) { playerColors = colors; }
 std::vector<std::string> GameConfig::getPlayerColors() const { return playerColors; }
 
-void GameConfig::setPropertyLevelIcons(const std::vector<std::string> &icons) { propertyLevelIcons = icons; }
+void GameConfig::setPropertyLevelIcons(const std::vector<std::string>& icons) { propertyLevelIcons = icons; }
 std::vector<std::string> GameConfig::getPropertyLevelIcons() const { return propertyLevelIcons; }
 
 std::map<int, std::string> GameConfig::getLocationMap() const { return locationMap; }
@@ -128,16 +128,16 @@ int GameConfig::getWinMoney() const { return winMoney; }
 void GameConfig::setPassingStartBonus(int amount) { passingStartBonus = amount; }
 int GameConfig::getPassingStartBonus() const { return passingStartBonus; }
 
-void GameConfig::setBoardTiles(const std::vector<TileConfig> &tiles) { boardTiles = tiles; }
+void GameConfig::setBoardTiles(const std::vector<TileConfig>& tiles) { boardTiles = tiles; }
 std::vector<TileConfig> GameConfig::getBoardTiles() const { return boardTiles; }
 
-void GameConfig::setCards(const std::vector<CardConfig> &cards)
+void GameConfig::setCards(const std::vector<CardConfig>& cards)
 {
 	// cards = cards;
 }
 std::vector<CardConfig> GameConfig::getCards() const { return cards; }
 
-void GameConfig::setEventValueRange(const std::map<std::string, std::pair<int, int>> &range) { eventValueRange = range; }
+void GameConfig::setEventValueRange(const std::map<std::string, std::pair<int, int>>& range) { eventValueRange = range; }
 std::map<std::string, std::pair<int, int>> GameConfig::getEventValueRange() const { return eventValueRange; }
 
 void GameConfig::setAnimation(bool status) { animation = status; }
@@ -148,3 +148,5 @@ int GameConfig::getMapSize() const { return mapSize; }
 int GameConfig::getTileWidth() const { return tileWidth; }
 
 long long GameConfig::getAnimationTime() const { return animationTime; }
+
+

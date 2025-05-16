@@ -60,7 +60,7 @@ private:
 	GameConfig() = default;
 
 public:
-	static GameConfig &getInstance();
+	static GameConfig& getInstance();
 
 	// Set and get game mode
 	void setMode(GameMode newMode);
@@ -71,19 +71,19 @@ public:
 	int getPlayersNum() const;
 
 	// Set and get player names
-	void setPlayersName(const std::vector<std::string> &names);
+	void setPlayersName(const std::vector<std::string>& names);
 	std::vector<std::string> getPlayerNames() const;
 
 	// Set and get player icons
-	void setPlayerIcons(const std::vector<std::string> &icons);
+	void setPlayerIcons(const std::vector<std::string>& icons);
 	std::vector<std::string> getPlayerIcons() const;
 
 	// Set and get player colors
-	void setPlayerColors(const std::vector<std::string> &colors);
+	void setPlayerColors(const std::vector<std::string>& colors);
 	std::vector<std::string> getPlayerColors() const;
 
 	// Set and get property level icons
-	void setPropertyLevelIcons(const std::vector<std::string> &icons);
+	void setPropertyLevelIcons(const std::vector<std::string>& icons);
 	std::vector<std::string> getPropertyLevelIcons() const;
 
 	std::map<int, std::string> getLocationMap() const;
@@ -99,15 +99,15 @@ public:
 	int getPassingStartBonus() const;
 
 	// Set and get board tile information
-	void setBoardTiles(const std::vector<TileConfig> &tiles);
+	void setBoardTiles(const std::vector<TileConfig>& tiles);
 	std::vector<TileConfig> getBoardTiles() const;
 
 	// Set and get cards information
-	void setCards(const std::vector<CardConfig> &cards);
+	void setCards(const std::vector<CardConfig>& cards);
 	std::vector<CardConfig> getCards() const;
 
 	// Set and get event value range
-	void setEventValueRange(const std::map<std::string, std::pair<int, int>> &range);
+	void setEventValueRange(const std::map<std::string, std::pair<int, int>>& range);
 	std::map<std::string, std::pair<int, int>> getEventValueRange() const;
 
 	// Set and get animation status
@@ -121,4 +121,5 @@ public:
 	long long getAnimationTime() const;
 
 	void loadConfig();
+
 };

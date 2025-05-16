@@ -2,9 +2,9 @@
 #include <iostream>
 #include <iomanip>
 
-Player::Player(const std::string &name) : name(name), money(5000), x(0), y(0), houseCount(0) {}
+Player::Player(const std::string& name) : name(name), money(5000), x(0), y(0), houseCount(0) {}
 
-Player::Player(const std::string &name, std::string symbol, int startMoney)
+Player::Player(const std::string& name, std::string symbol, int startMoney)
 	: name(name), symbol(symbol), money(startMoney), x(0), y(0), houseCount(0) {}
 
 void Player::showInfo() const
@@ -35,8 +35,8 @@ void Player::showInfo() const
 
 		// Format line (fixed-width using std::setw)
 		std::cout << "| " << std::setw(3) << (i + 1) << " | "
-				  << std::setw(21) << std::left << name << " | "
-				  << std::setw(43) << std::left << effect << "|\n";
+			<< std::setw(21) << std::left << name << " | "
+			<< std::setw(43) << std::left << effect << "|\n";
 	}
 
 	std::cout << "+----------------------------------------------------------------------------+\n";
@@ -124,17 +124,17 @@ void Player::addProperty(int x, int y)
 	ownedTiles.emplace_back(x, y);
 }
 
-const std::vector<std::pair<int, int>> &Player::getProperties() const
+const std::vector<std::pair<int, int>>& Player::getProperties() const
 {
 	return ownedTiles;
 }
 
-const std::vector<Card> &Player::getCards() const
+const std::vector<Card>& Player::getCards() const
 {
 	return cards;
 }
 
-void Player::addCard(const Card &card)
+void Player::addCard(const Card& card)
 {
 	cards.push_back(card);
 }
@@ -169,7 +169,7 @@ void Player::setPosition(int newX, int newY)
 	y = newY;
 }
 
-void Player::setColor(const std::string &color)
+void Player::setColor(const std::string& color)
 {
 	this->color = color;
 }
@@ -177,4 +177,48 @@ void Player::setColor(const std::string &color)
 std::string Player::getColor() const
 {
 	return color;
+}
+
+void Player::removeCard(const std::string& cardType) {
+	auto it = std::find_if(cards.begin(), cards.end(), [&](const Card& card) {
+		return card.getType() == cardType;
+		});
+
+	if (it != cards.end()) {
+		cards.erase(it);
+		std::cout << "Card removed: " << cardType << "\n";
+	}
+	else {
+		std::cout << "Card not found: " << cardType << "\n";
+	}
+}
+
+void Player::setNextDiceValue(int value) {
+	nextDiceValue = value;
+}
+
+int Player::getNextDiceValue() const {
+	return nextDiceValue;
+}
+
+bool Player::hasNextDiceValue() const {
+	return nextDiceValue != 0;
+}
+
+void Player::clearNextDiceValue() {
+	nextDiceValue = 0;
+}
+
+void Player::removeProperty(int x, int y)
+{
+	auto it = std::remove_if(ownedTiles.begin(), ownedTiles.end(),
+		[x, y](const std::pair<int, int>& coord) {
+			return coord.first == x && coord.second == y;
+		});
+
+	if (it != ownedTiles.end())
+	{
+		ownedTiles.erase(it, ownedTiles.end());
+		std::cout << "Property at (" << x << ", " << y << ") removed from ownership.\n";
+	}
 }

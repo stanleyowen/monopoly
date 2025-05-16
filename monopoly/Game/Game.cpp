@@ -11,6 +11,18 @@
 #include <limits>
 #include <ios>
 
+Game Game::instance;
+
+Game& Game::getInstance()
+{
+	return instance;
+}
+
+Map& Game::getMap()
+{
+	return map;
+}
+
 const std::vector<std::string> diceFaces = {
 	R"(
 	 +-------+
@@ -68,13 +80,22 @@ void Game::initializePlayers()
 	const auto& playerColors = config.getPlayerColors();
 	int startMoney = config.getStartMoney();
 
+
+
 	for (size_t i = 0; i < playerNames.size(); ++i)
 	{
 		std::string symbol = (i < playerIcons.size()) ? playerIcons[i] : "?";
 		std::string color = (i < playerColors.size()) ? playerColors[i] : "\033[0m"; // Default to no color
 		players.emplace_back(playerNames[i], symbol, startMoney);
 		players.back().setColor(color);
+
+		players.back().addCard(Card("Dice Card"));      // 骰控卡
+		//players.back().addCard(Card("Barrier Card"));   // 路障卡
+		players.back().addCard(Card("Destroy Card"));   // 拆除卡
+
 	}
+
+
 }
 
 std::vector<Player>& Game::getPlayers()
@@ -113,6 +134,49 @@ void Game::start()
 	}
 
 	std::cout << "\nGame Over!" << std::endl;
+}
+
+void Game::animateControlledPlayerMovement(Player& player, int steps, int diceValue)
+{
+	// Get the animation settings from the configuration
+	const auto& config = GameConfig::getInstance();
+	bool isAnimationEnabled = config.getAnimation();
+	int animationSpeed = config.getAnimationTime(); // Retrieve animation speed (in milliseconds)
+
+	// 無動畫情況，直接移動
+	if (!isAnimationEnabled)
+	{
+		player.move(steps);
+		map.drawBoard(players);
+		std::cout << "\n[Dice Control] You directly moved " << steps << " steps.\n";
+		std::cout << "Dice result: (" << diceValue << ")\n";
+		std::cout << diceFaces[diceValue - 1] << std::endl;
+		return;
+	}
+
+	// 使用動畫的情況
+	for (int i = 0; i < steps; ++i)
+	{
+		// Move the player one step
+		player.move(1);
+
+		// Clear the screen
+		Utils::clearScreen();
+
+		// Redraw the board with the updated player position
+		map.drawBoard(players);
+
+		// 顯示骰控卡的單骰效果
+		std::cout << "\n[Dice Control] Moving with controlled dice value: " << diceValue << "\n";
+		std::cout << "Step " << (i + 1) << " / " << steps << "\n";
+		std::cout << "Dice result: (" << diceValue << ")\n";
+		//std::cout << diceFaces[diceValue - 1] << std::endl;
+
+		// Pause for the duration specified by the animation speed
+		std::this_thread::sleep_for(std::chrono::milliseconds(animationSpeed));
+	}
+
+	std::cout << "[Completed] You moved " << steps << " steps using Dice Control.\n";
 }
 
 void Game::animatePlayerMovement(Player& player, int steps, int dice1, int dice2)
@@ -164,45 +228,87 @@ void Game::processTurn()
 		return;
 	}
 
+	bool diceRolled = false;
 	Player& currentPlayer = players[currentPlayerIndex];
 
-	// Display dialogue for the current player's turn
-	std::cout << "\nIt's " << currentPlayer.getSymbol() << " " << currentPlayer.getName() << "'s turn:\n\n";
-	Utils::displayDialogue("player_action.start");
-	std::string input;
-	std::cout << "> ";
-	std::getline(std::cin, input);
+	while (!diceRolled) {
+		// Display dialogue for the current player's turn
+		std::cout << "\nIt's " << currentPlayer.getSymbol() << " " << currentPlayer.getName() << "'s turn:\n\n";
+		Utils::displayDialogue("player_action.start");
+		std::string input;
+		std::cout << "> ";
+		std::getline(std::cin, input);
 
-	if (input == "T" || input == "t")
-	{
-		// Seed the random number generator
-		std::srand(static_cast<unsigned>(std::time(nullptr)));
+		if (input == "T" || input == "t")
+		{
+			// Seed the random number generator
+			std::srand(static_cast<unsigned>(std::time(nullptr)));
 
-		int dice1 = rand() % 6 + 1;
-		int dice2 = rand() % 6 + 1;
-		int diceRoll = dice1 + dice2;
+			int dice1, dice2, diceRoll;
 
-		displayDiceAnimation(dice1, dice2, players);
-		animatePlayerMovement(currentPlayer, diceRoll, dice1, dice2);
-		handleTileEvents(currentPlayer);
-		checkWinCondition();
+			// 檢查是否有骰控卡效果
+			if (currentPlayer.hasNextDiceValue())
+			{
+				// 使用骰控卡效果，直接控制骰子值
+				dice1 = currentPlayer.getNextDiceValue();
+				dice2 = dice1;  // 單骰效果，設為相同值
+				diceRoll = dice1;
+				currentPlayer.clearNextDiceValue();
+				std::cout << "Using Dice Control: You rolled " << dice1 << ".\n";
+				animateControlledPlayerMovement(currentPlayer, diceRoll, dice1);
+			}
+			else
+			{
+				// 正常擲骰邏輯
+				std::srand(static_cast<unsigned>(std::time(nullptr)));
+				dice1 = rand() % 6 + 1;
+				dice2 = rand() % 6 + 1;
+				diceRoll = dice1 + dice2;
+
+				// 正常骰子動畫
+				displayDiceAnimation(dice1, dice2, players);
+				animatePlayerMovement(currentPlayer, diceRoll, dice1, dice2);
+
+			}
+			handleTileEvents(currentPlayer);
+			checkWinCondition();
+			diceRolled = true;
+			//Tile& tile = map.getTile(currentPlayer.getX(), currentPlayer.getY());
+			//std::cout << tile.getPropertyLevel() << std::endl;
+		}
+		else if (input == "I" || input == "i")
+		{
+			currentPlayer.showInfo();
+
+			// 提示玩家選擇卡片編號
+			int cardChoice;
+			std::cout << "Enter the card number to use (0 to cancel): ";
+			std::cin >> cardChoice;
+			std::cin.ignore();
+
+			// 若選擇有效卡片
+			if (cardChoice > 0 && cardChoice <= currentPlayer.getCards().size())
+			{
+				Card chosenCard = currentPlayer.getCards()[cardChoice - 1];
+				// 呼叫卡片效果，傳入玩家及所有玩家列表
+				chosenCard.applyEffect(currentPlayer, this->getPlayers(), this->getMap());
+			}
+			else {
+				std::cout << "Invalid choice. Returning to game.\n";
+			}
+		}
+		else if (!input.empty() && input[0] == '/')
+		{
+			Command command;
+			command.execute(*this, input);
+
+			return; // 不更換玩家回合
+		}
+		else
+		{
+			Utils::displayDialogue("invalid_input");
+		}
 	}
-	else if (input == "I" || input == "i")
-	{
-		currentPlayer.showInfo();
-	}
-	else if (!input.empty() && input[0] == '/')
-	{
-		Command command;
-		command.execute(*this, input);
-
-		return; // 不更換玩家回合
-	}
-	else
-	{
-		Utils::displayDialogue("invalid_input");
-	}
-
 	currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
 }
 

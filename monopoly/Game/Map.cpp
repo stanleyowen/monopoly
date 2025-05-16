@@ -11,8 +11,15 @@ void Map::setTile(int x, int y, char tileSymbol)
 	board[x][y].setSymbol(tileSymbol);
 }
 
-Tile &Map::getTile(int x, int y)
+Tile& Map::getTile(int x, int y)
 {
+	return board[x][y];
+}
+
+Tile& Map::getTileById(int tileId)
+{
+	int x = tileId / 8;
+	int y = tileId % 8;
 	return board[x][y];
 }
 
@@ -45,7 +52,7 @@ void Map::setupBoard()
 	setTile(7, 5, 'F'); // Fate
 }
 
-void Map::drawBoard(const std::vector<Player> &players) const
+void Map::drawBoard(const std::vector<Player>& players) const
 {
 	// ANSI color codes
 	const std::string RESET = "\033[0m";
@@ -58,15 +65,15 @@ void Map::drawBoard(const std::vector<Player> &players) const
 	const std::string BOLD = "\033[1m";
 
 	// Access GameConfig instance
-	const auto &config = GameConfig::getInstance();
-	const auto &propertyLabels = config.getLocationMap();
-	const auto &playerSymbols = config.getPlayerIcons();
+	const auto& config = GameConfig::getInstance();
+	const auto& propertyLabels = config.getLocationMap();
+	const auto& playerSymbols = config.getPlayerIcons();
 
-	auto getTileColor = [&](char sym, const Tile &tile) -> std::string
+	auto getTileColor = [&](char sym, const Tile& tile) -> std::string
 	{
 		if (tile.getOccupied()) // Check if the tile is owned
 		{
-			for (const auto &player : players)
+			for (const auto& player : players)
 			{
 				if (player.getName() == tile.getOwner())
 				{
@@ -160,7 +167,7 @@ void Map::drawBoard(const std::vector<Player> &players) const
 			std::stringstream rawIcons;
 			for (size_t playerIndex = 0; playerIndex < players.size(); ++playerIndex)
 			{
-				const auto &player = players[playerIndex];
+				const auto& player = players[playerIndex];
 				if (player.getX() == i && player.getY() == j)
 				{
 					// Fetch player symbol and color
@@ -197,7 +204,7 @@ void Map::drawBoard(const std::vector<Player> &players) const
 		for (int j = 0; j < 8; ++j)
 		{
 			std::stringstream levelDisplay;
-			const Tile &tile = board[i][j];
+			const Tile& tile = board[i][j];
 
 			if (tile.getOccupied()) // Check if the property is owned
 			{
@@ -222,11 +229,11 @@ void Map::drawBoard(const std::vector<Player> &players) const
 	std::cout << "| Player Name  |  Assets  | Property                     | Cards          |\n";
 	std::cout << "+--------------+----------+------------------------------+----------------+\n";
 
-	for (const auto &player : players)
+	for (const auto& player : players)
 	{
 		// Cards: convert to comma-separated string
 		std::stringstream cardList;
-		for (const auto &card : player.getCards())
+		for (const auto& card : player.getCards())
 		{
 			cardList << card.getType() << ", ";
 		}
@@ -236,7 +243,7 @@ void Map::drawBoard(const std::vector<Player> &players) const
 
 		// Properties: convert (x,y) to tile numbers
 		std::stringstream propList;
-		for (const auto &coord : player.getProperties())
+		for (const auto& coord : player.getProperties())
 		{
 			int x = coord.first;
 			int y = coord.second;
@@ -263,11 +270,22 @@ void Map::drawBoard(const std::vector<Player> &players) const
 
 		// Display player information with colored symbol
 		std::cout << "| " << std::left << std::setw(22)
-				  << (color + playerSymbol + RESET + " " + player.getName())
-				  << "| " << std::right << std::setw(8) << player.getMoney()
-				  << " | " << std::left << std::setw(29) << propsStr
-				  << "| " << std::left << std::setw(15) << cardsStr << "|\n";
+			<< (color + playerSymbol + RESET + " " + player.getName())
+			<< "| " << std::right << std::setw(8) << player.getMoney()
+			<< " | " << std::left << std::setw(29) << propsStr
+			<< "| " << std::left << std::setw(15) << cardsStr << "|\n";
 	}
 
 	std::cout << "+--------------+----------+------------------------------+----------------+\n";
+}
+
+void Map::resetProperty(int x, int y)
+{
+	if (x >= 0 && x < 8 && y >= 0 && y < 8)
+	{
+		board[x][y].setSymbol('P');   // 恢復為普通地產
+		board[x][y].setOccupied(false);
+		board[x][y].setOwner("");
+		std::cout << "Property at (" << x << ", " << y << ") has been reset.\n";
+	}
 }
