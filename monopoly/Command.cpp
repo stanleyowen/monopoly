@@ -58,16 +58,21 @@ void Command::execute(Game &game, const std::string &input)
 		int currentPositionId = player.getPositionId();
 		int totalSteps = (destinationId - currentPositionId + 28) % 28; // Wrap around the board
 
-		// Move the player to the destination
-		player.move(totalSteps);
-
-		game.getMap().drawBoard(game.getPlayers());
-		// Move the player step-by-step
-		for (int i = 0; i < totalSteps; ++i)
+		if (config.getAnimation())
 		{
-			player.move(1); // Move one step at a time
+			// Move the player step-by-step
+			for (int i = 0; i < totalSteps; ++i)
+			{
+				player.move(1); // Move one step at a time
+				game.getMap().drawBoard(game.getPlayers());
+				std::this_thread::sleep_for(std::chrono::milliseconds(config.getAnimationTime())); // Optional: Add delay for animation
+			}
+		}
+		else
+		{
+			// If animation is disabled, move the player directly
+			player.move(totalSteps);
 			game.getMap().drawBoard(game.getPlayers());
-			std::this_thread::sleep_for(std::chrono::milliseconds(config.getAnimationTime())); // Optional: Add delay for animation
 		}
 
 		std::cout << "[Cheat] " << player.getName() << " moved to position " << destinationId << "\n";
@@ -334,7 +339,7 @@ void Command::execute(Game &game, const std::string &input)
 		std::cout << "Unknown command.\n";
 	}
 
-	Utils::clearScreen();
-	game.getMap().drawBoard(game.getPlayers());
-	game.checkWinCondition();
+	// Utils::clearScreen();
+	// game.getMap().drawBoard(game.getPlayers());
+	// game.checkWinCondition();
 }
