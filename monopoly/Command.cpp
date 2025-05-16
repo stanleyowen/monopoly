@@ -191,9 +191,10 @@ void Command::execute(Game& game, const std::string& input)
 	}
 	else if (cmd == "/info")
 	{
+		Utils::clearScreen();
+		game.getMap().drawBoard(game.getPlayers());
 		for (const Player& p : game.getPlayers())
 		{
-			std::cout << p.getName() << " | $" << p.getMoney() << " | Pos: (" << p.getX() << ", " << p.getY() << ") | Houses: " << p.getHouseCount() << "\n";
 			p.showInfo();
 		}
 		/*// 獲取遊戲單例
@@ -282,6 +283,8 @@ void Command::execute(Game& game, const std::string& input)
 	}
 	else if (cmd == "/list" || cmd == "/help")
 	{
+		Utils::clearScreen();
+		game.getMap().drawBoard(game.getPlayers());
 		std::cout << "\n";
 		std::cout << "/card       - Retrieve a specific card by name.\n";
 		std::cout << "/gamestate  - Change the game state.\n";
