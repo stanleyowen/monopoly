@@ -112,13 +112,13 @@ void MiniGame::playDragonGate(Player& player)
 	int wager = 0;
 	while (true)
 	{
-		std::cout << "Enter your bet (up to $1000): ";
+		std::cout << "Enter your bet (you currently have " << player.getMoney() << "): ";
 		std::cin >> wager;
 
 		if (std::cin.fail())
 		{
 			std::cin.clear();
-			std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n'); // flush bad input
+			std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
 			std::cout << "Invalid input. Please enter a number.\n";
 			continue;
 		}
@@ -127,9 +127,9 @@ void MiniGame::playDragonGate(Player& player)
 		{
 			std::cout << "Bet must be greater than zero.\n";
 		}
-		else if (wager > 1000)
+		else if (wager > player.getMoney())
 		{
-			std::cout << "Bet must not be greater than 1000.\n";
+			std::cout << "You do not have enough money to bet that amount!\n";
 		}
 		else
 		{
@@ -157,8 +157,17 @@ void MiniGame::playDragonGate(Player& player)
 		}
 
 		std::string guess;
-		std::cout << "Do you think the next card will be [inside] or [outside] the range? ";
-		std::cin >> guess;
+
+		while (true) {
+			std::cout << "Do you think the next card will be [inside] or [outside] the range? ";
+			std::cin >> guess;
+
+			if (guess == "inside" || guess == "outside") {
+				break;
+			}
+
+			std::cout << "Invalid choice. Please type 'inside' or 'outside'.\n";
+		}
 
 		std::cout << "Next card: " << nextCard << "\n";
 
@@ -166,7 +175,6 @@ void MiniGame::playDragonGate(Player& player)
 		{
 			std::cout << "Pillar hit! You lose 2x your bet!\n";
 			player.subtractMoney(wager * 2);
-			return;
 		}
 
 		if (guess == "inside")
@@ -192,8 +200,18 @@ void MiniGame::playDragonGate(Player& player)
 	else
 	{
 		std::string guess;
-		std::cout << "Cards are equal. Will the next card be [higher] or [lower]? ";
-		std::cin >> guess;
+
+		while (true) {
+			std::cout << "Cards are equal. Will the next card be [higher] or [lower]? ";
+			std::cin >> guess;
+
+			if (guess == "higher" || guess == "lower") {
+				break;
+			}
+
+			std::cout << "Invalid choice. Please type 'higher' or 'lower'.\n";
+		}
+
 
 		std::cout << "Next card: " << nextCard << "\n";
 
@@ -201,7 +219,6 @@ void MiniGame::playDragonGate(Player& player)
 		{
 			std::cout << "Pillar hit! You lose 3x your bet!\n";
 			player.subtractMoney(wager * 3);
-			return;
 		}
 
 		if (guess == "higher")
