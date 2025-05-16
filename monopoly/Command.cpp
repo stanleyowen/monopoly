@@ -187,14 +187,13 @@ void Command::execute(Game& game, const std::string& input)
 	}
 	else if (cmd == "/info")
 	{
-		std::cout << "444" << std::endl;
+		Utils::clearScreen();
+		game.getMap().drawBoard(game.getPlayers());
 		for (const Player& p : game.getPlayers())
 		{
-			std::cout << p.getName() << " | $" << p.getMoney() << " | Pos: (" << p.getX() << ", " << p.getY() << ") | Houses: " << p.getHouseCount() << "\n";
 			p.showInfo();
 		}
-
-		// 獲取遊戲單例
+		/*// 獲取遊戲單例
 		const std::vector<Player>& players = game.getPlayers(); // 獲取所有玩家
 		std::cout << "玩家數量: " << players.size() << std::endl; // 打印玩家數量
 
@@ -208,6 +207,8 @@ void Command::execute(Game& game, const std::string& input)
 			player.showInfo();    // 呼叫每個玩家的 showInfo() 函式
 			std::cout << std::endl; // 分隔不同玩家資訊
 		}
+
+
 	}
 	else if (cmd == "/refresh")
 	{
@@ -308,6 +309,8 @@ void Command::execute(Game& game, const std::string& input)
 	}
 	else if (cmd == "/list" || cmd == "/help")
 	{
+		Utils::clearScreen();
+		game.getMap().drawBoard(game.getPlayers());
 		std::cout << "\n";
 		std::cout << "/card       - Retrieve a specific card by name.\n";
 		std::cout << "/gamestate  - Change the game state.\n";
