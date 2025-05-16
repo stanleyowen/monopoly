@@ -295,6 +295,13 @@ void Game::processTurn()
 			int totalSteps = diceRoll;
 			int boardSize = 28;
 
+			// Check passing start BEFORE moving
+			if (totalSteps == 0 || (totalSteps > 0 && ((currentPositionId + totalSteps) >= boardSize || (currentPositionId + totalSteps) % boardSize < currentPositionId)))
+			{
+				currentPlayer.addMoney(GameConfig::getInstance().getPassingStartBonus());
+				std::cout << "[系統] " << currentPlayer.getName() << " 通過起點，獲得 $" << GameConfig::getInstance().getPassingStartBonus() << "!\n";
+			}
+
 			if (currentPlayer.hasNextDiceValue())
 			{
 				dice1 = currentPlayer.getNextDiceValue();
@@ -305,17 +312,14 @@ void Game::processTurn()
 			}
 			else
 			{
+				srand(static_cast<unsigned>(time(nullptr)));
+
 				dice1 = rand() % 6 + 1;
 				dice2 = rand() % 6 + 1;
 				diceRoll = dice1 + dice2;
+
 				displayDiceAnimation(dice1, dice2, players);
 				animatePlayerMovement(currentPlayer, diceRoll, dice1, dice2);
-			}
-
-			if ((totalSteps > 0 && ((currentPositionId + totalSteps) >= boardSize || (currentPositionId + totalSteps) % boardSize < currentPositionId)))
-			{
-				currentPlayer.addMoney(GameConfig::getInstance().getPassingStartBonus());
-				std::cout << "[系統] " << currentPlayer.getName() << " 通過起點，獲得 $" << GameConfig::getInstance().getPassingStartBonus() << "!\n";
 			}
 
 			currentState = GameState::MOVED;
