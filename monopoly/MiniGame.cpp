@@ -260,6 +260,8 @@ void MiniGame::playTreasureHunt(Player& player)
 	while (chosenChest < 1 || chosenChest > 3)
 	{
 		std::cin >> chosenChest;
+		std::cin.ignore();
+
 		if (chosenChest < 1 || chosenChest > 3)
 			std::cout << "Invalid choice. Pick a chest (1, 2, or 3): ";
 	}
