@@ -90,7 +90,7 @@ void Game::initializePlayers()
 		players.back().setColor(color);
 
 		players.back().addCard(Card("Dice Card"));      // 骰控卡
-		players.back().addCard(Card("Barrier Card"));   // 路障卡
+		//players.back().addCard(Card("Barrier Card"));   // 路障卡
 		players.back().addCard(Card("Destroy Card"));   // 拆除卡
 
 	}
@@ -273,6 +273,8 @@ void Game::processTurn()
 			handleTileEvents(currentPlayer);
 			checkWinCondition();
 			diceRolled = true;
+			//Tile& tile = map.getTile(currentPlayer.getX(), currentPlayer.getY());
+			//std::cout << tile.getPropertyLevel() << std::endl;
 		}
 		else if (input == "I" || input == "i")
 		{
@@ -289,7 +291,7 @@ void Game::processTurn()
 			{
 				Card chosenCard = currentPlayer.getCards()[cardChoice - 1];
 				// 呼叫卡片效果，傳入玩家及所有玩家列表
-				chosenCard.applyEffect(currentPlayer, this->getPlayers());
+				chosenCard.applyEffect(currentPlayer, this->getPlayers(), this->getMap());
 			}
 			else {
 				std::cout << "Invalid choice. Returning to game.\n";

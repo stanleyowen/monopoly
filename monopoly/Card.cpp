@@ -12,7 +12,7 @@ std::string Card::getType() const {
 	return type;
 }
 
-void Card::applyEffect(Player& player, std::vector<Player>& players)
+void Card::applyEffect(Player& player, std::vector<Player>& players, Map& map)
 {
 	if (type == "Dice Card") //控骰卡
 	{
@@ -93,9 +93,10 @@ void Card::applyEffect(Player& player, std::vector<Player>& players)
 			// 獲取地名
 			std::string propertyName = (locationMap.find(tileId) != locationMap.end()) ? locationMap[tileId] : "Unknown";
 
-			Game& game = Game::getInstance();
-			Map& map = game.getMap();
+			//Game& game = Game::getInstance();
+			//Map& map = game.getMap();
 			Tile& tile = map.getTile(x, y);
+			std::cout << tile.getSymbol() << "\n";
 			int buildingLevel = tile.getPropertyLevel();
 
 			std::cout << i + 1 << ". " << propertyName << " (Level " << buildingLevel << ")\n";
@@ -128,26 +129,28 @@ void Card::applyEffect(Player& player, std::vector<Player>& players)
 		else if (y == 0)
 			tileId = 7 + 7 + 7 + (7 - x);
 
-		Game& game = Game::getInstance();
-		Map& map = game.getMap();
+		//Game& game = Game::getInstance();
+		//Map& map = game.getMap();
 		Tile& tile = map.getTile(x, y);
-
+		std::cout << tile.getSymbol() << "\n";
 		GameConfig& config = GameConfig::getInstance();
 		auto locationMap = config.getLocationMap();
 		std::string propertyName = (locationMap.find(tileId) != locationMap.end()) ? locationMap[tileId] : "Unknown";
 
-		int buildingLevel = tile.getPropertyLevel();
-		if (buildingLevel > 1)
+
+
+		if (tile.getPropertyLevel() > 1)
 		{
-			tile.setPropertyLevel(buildingLevel - 1);
-			std::cout << "Property \"" << propertyName << "\" downgraded to Level " << buildingLevel - 1 << "!\n";
+			tile.setPropertyLevel(tile.getPropertyLevel() - 1);
+			std::cout << "Property \"" << propertyName << "\" downgraded to Level " << tile.getPropertyLevel() << "!\n";
 		}
-		else
+		else if (tile.getPropertyLevel() == 1)
 		{
+			tile.setPropertyLevel(tile.getPropertyLevel() - 1);
 			tile.setOccupied(false);
 			tile.setOwner("");
-			targetPlayer.removeProperty(x, y);
-			tile.setPropertyLevel(1);
+			//targetPlayer.removeProperty(x, y);
+			//tile.setPropertyLevel(0);
 
 			std::cout << "Property \"" << propertyName << "\" destroyed!\n";
 		}
