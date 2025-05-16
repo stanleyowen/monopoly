@@ -2,14 +2,17 @@
 #include "Game/Game.h"
 #include "Game/Player.h"
 #include "Game/Map.h"
+#include "Game/GameConfig.h"
 #include "MiniGame.h"
 #include "Card.h"
 #include <iostream>
 #include <sstream>
 #include <vector>
 #include <string>
+#include <chrono>
+#include <thread>
 
-void Command::execute(Game& game, const std::string& input)
+void Command::execute(Game &game, const std::string &input)
 {
 	std::istringstream iss(input);
 	std::string cmd;
@@ -35,36 +38,37 @@ void Command::execute(Game& game, const std::string& input)
 				return;
 			}
 		}
-		else {
+		else
+		{
 			// 嘗試將子指令轉換為數字 ID
 			try
 			{
 				destinationId = std::stoi(subCmd);
 			}
-			catch (const std::invalid_argument&)
+			catch (const std::invalid_argument &)
 			{
 				std::cout << "[錯誤] 無效的指令格式：" << subCmd << "\n";
 				return;
 			}
 		}
 
+		const auto &config = GameConfig::getInstance();
 		int currentPlayerIndex = game.getCurrentPlayerIndex();
-		Player& player = game.getPlayers()[currentPlayerIndex];
-
+		Player &player = game.getPlayers()[currentPlayerIndex];
 		int currentPositionId = player.getPositionId();
 		int totalSteps = (destinationId - currentPositionId + 28) % 28; // Wrap around the board
 
-		 // Move the player to the destination
+		// Move the player to the destination
 		player.move(totalSteps);
 
 		game.getMap().drawBoard(game.getPlayers());
 		// Move the player step-by-step
-		// for (int i = 0; i < totalSteps; ++i)
-		// {
-		// 	player.move(1); // Move one step at a time
-		// 	game.getMap().drawBoard(game.getPlayers());
-		// 	std::this_thread::sleep_for(std::chrono::milliseconds(500)); // Optional: Add delay for animation
-		// }
+		for (int i = 0; i < totalSteps; ++i)
+		{
+			player.move(1); // Move one step at a time
+			game.getMap().drawBoard(game.getPlayers());
+			std::this_thread::sleep_for(std::chrono::milliseconds(config.getAnimationTime())); // Optional: Add delay for animation
+		}
 
 		std::cout << "[Cheat] " << player.getName() << " moved to position " << destinationId << "\n";
 
@@ -77,7 +81,7 @@ void Command::execute(Game& game, const std::string& input)
 		int amount;
 
 		int currentPlayerIndex = game.getCurrentPlayerIndex();
-		Player& currentPlayer = game.getPlayers()[currentPlayerIndex];
+		Player &currentPlayer = game.getPlayers()[currentPlayerIndex];
 
 		// 嘗試讀取金額或玩家名稱
 		if (!(iss >> amount))
@@ -104,7 +108,7 @@ void Command::execute(Game& game, const std::string& input)
 				return;
 			}
 
-			Player& targetPlayer = game.getPlayers()[targetPlayerIndex];
+			Player &targetPlayer = game.getPlayers()[targetPlayerIndex];
 			targetPlayer.addMoney(amount);
 			std::cout << "[作弊] " << targetPlayer.getName() << " 從系統取得 $" << amount << "\n";
 		}
@@ -125,7 +129,7 @@ void Command::execute(Game& game, const std::string& input)
 		iss >> targetName >> amount;
 
 		int currentPlayerIndex = game.getCurrentPlayerIndex();
-		Player& currentPlayer = game.getPlayers()[currentPlayerIndex];
+		Player &currentPlayer = game.getPlayers()[currentPlayerIndex];
 
 		// 查找指定名字的玩家
 		int targetPlayerIndex = -1;
@@ -145,7 +149,7 @@ void Command::execute(Game& game, const std::string& input)
 			return;
 		}
 
-		Player& targetPlayer = game.getPlayers()[targetPlayerIndex];
+		Player &targetPlayer = game.getPlayers()[targetPlayerIndex];
 
 		// 檢查自己是否有足夠的金錢
 		if (currentPlayer.getMoney() >= amount)
@@ -155,7 +159,6 @@ void Command::execute(Game& game, const std::string& input)
 			std::cout << "[交易] " << currentPlayer.getName() << " 給予 " << targetPlayer.getName() << " $" << amount << "\n";
 			// 立即更新遊戲畫面
 			game.getMap().drawBoard(game.getPlayers());
-
 		}
 		else
 		{
@@ -169,7 +172,7 @@ void Command::execute(Game& game, const std::string& input)
 		cardName = cardName.substr(cardName.find_first_not_of(" ")); // 去除多餘空格
 
 		int currentPlayerIndex = game.getCurrentPlayerIndex();
-		Player& currentPlayer = game.getPlayers()[currentPlayerIndex];
+		Player &currentPlayer = game.getPlayers()[currentPlayerIndex];
 
 		if (cardName.empty())
 		{
@@ -189,12 +192,12 @@ void Command::execute(Game& game, const std::string& input)
 	{
 		Utils::clearScreen();
 		game.getMap().drawBoard(game.getPlayers());
-		for (const Player& p : game.getPlayers())
+		for (const Player &p : game.getPlayers())
 		{
 			p.showInfo();
 		}
-		/*// 獲取遊戲單例
-		const std::vector<Player>& players = game.getPlayers(); // 獲取所有玩家
+		// 獲取遊戲單例
+		const std::vector<Player> &players = game.getPlayers();	  // 獲取所有玩家
 		std::cout << "玩家數量: " << players.size() << std::endl; // 打印玩家數量
 
 		if (players.empty())
@@ -202,13 +205,11 @@ void Command::execute(Game& game, const std::string& input)
 			std::cerr << "No players available!\n";
 			return;
 		}
-		for (const Player& player : players)
+		for (const Player &player : players)
 		{
-			player.showInfo();    // 呼叫每個玩家的 showInfo() 函式
+			player.showInfo();		// 呼叫每個玩家的 showInfo() 函式
 			std::cout << std::endl; // 分隔不同玩家資訊
 		}
-
-
 	}
 	else if (cmd == "/refresh")
 	{
@@ -226,22 +227,28 @@ void Command::execute(Game& game, const std::string& input)
 
 		GameState newState;
 
-		if (stateStr == "INIT") {
+		if (stateStr == "INIT")
+		{
 			newState = GameState::INIT;
 		}
-		else if (stateStr == "START") {
+		else if (stateStr == "START")
+		{
 			newState = GameState::START;
 		}
-		else if (stateStr == "MOVED") {
+		else if (stateStr == "MOVED")
+		{
 			newState = GameState::MOVED;
 		}
-		else if (stateStr == "ROUND_END") {
+		else if (stateStr == "ROUND_END")
+		{
 			newState = GameState::ROUND_END;
 		}
-		else if (stateStr == "FINISH") {
+		else if (stateStr == "FINISH")
+		{
 			newState = GameState::FINISH;
 		}
-		else {
+		else
+		{
 			std::cout << "Invalid input. Please enter: INIT, START, MOVED, ROUND_END, FINISH\n";
 			return;
 		}
@@ -252,7 +259,7 @@ void Command::execute(Game& game, const std::string& input)
 	else if (cmd == "/minigame")
 	{
 		int currentPlayerIndex = game.getCurrentPlayerIndex();
-		Player& currentPlayer = game.getPlayers()[currentPlayerIndex];
+		Player &currentPlayer = game.getPlayers()[currentPlayerIndex];
 
 		while (true)
 		{
@@ -327,7 +334,7 @@ void Command::execute(Game& game, const std::string& input)
 		std::cout << "Unknown command.\n";
 	}
 
-	//Utils::clearScreen();
-	//game.getMap().drawBoard(game.getPlayers());
-	//game.checkWinCondition();
+	Utils::clearScreen();
+	game.getMap().drawBoard(game.getPlayers());
+	game.checkWinCondition();
 }
