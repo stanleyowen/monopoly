@@ -10,6 +10,14 @@
 #include <cstdlib>
 #endif
 
+enum class GameState {
+	INIT,
+	START,
+	MOVED,
+	ROUND_END,
+	FINISH
+};
+
 class Game
 {
 public:
@@ -29,7 +37,8 @@ public:
 	int getCurrentPlayerIndex() const;
 	int getTileIdByName(const std::string& name) const;
 
-
+	void setGameState(GameState state);
+	GameState getGameState() const;
 
 private:
 	Map map;
@@ -37,6 +46,7 @@ private:
 	int currentPlayerIndex;
 	bool gameRunning;
 
+	GameState currentState = GameState::INIT;
 
 	Game(const Game&) = delete;  // §R°£«þ¨©ºc³y
 	Game& operator=(const Game&) = delete;  // §R°£½á­È¹Bºâ

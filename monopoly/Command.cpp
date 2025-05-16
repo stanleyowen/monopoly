@@ -51,15 +51,14 @@ void Command::execute(Game& game, const std::string& input)
 		int currentPlayerIndex = game.getCurrentPlayerIndex();
 		Player& player = game.getPlayers()[currentPlayerIndex];
 
-		// Get the current position ID of the player
 		int currentPositionId = player.getPositionId();
-
-		// Calculate the number of steps required to reach the destination
 		int totalSteps = (destinationId - currentPositionId + 28) % 28; // Wrap around the board
 
-		player.move(totalSteps); // Move the player to the destination
+		 // Move the player to the destination
+		player.move(totalSteps);
+
 		game.getMap().drawBoard(game.getPlayers());
-		// // Move the player step-by-step
+		// Move the player step-by-step
 		// for (int i = 0; i < totalSteps; ++i)
 		// {
 		// 	player.move(1); // Move one step at a time
@@ -71,7 +70,6 @@ void Command::execute(Game& game, const std::string& input)
 
 		// Handle events after reaching the destination
 		game.handleTileEvents(player);
-
 	}
 	else if (cmd == "/get")
 	{
@@ -163,7 +161,6 @@ void Command::execute(Game& game, const std::string& input)
 		{
 			std::cout << "[錯誤] " << currentPlayer.getName() << " 金錢不足。\n";
 		}
-
 	}
 	else if (cmd == "/card")
 	{
@@ -187,7 +184,6 @@ void Command::execute(Game& game, const std::string& input)
 		// 更新遊戲畫面
 		game.getMap().drawBoard(game.getPlayers());
 		return; // 不切換回合
-
 	}
 	else if (cmd == "/info")
 	{
@@ -197,9 +193,11 @@ void Command::execute(Game& game, const std::string& input)
 			std::cout << p.getName() << " | $" << p.getMoney() << " | Pos: (" << p.getX() << ", " << p.getY() << ") | Houses: " << p.getHouseCount() << "\n";
 			p.showInfo();
 		}
+
 		// 獲取遊戲單例
 		const std::vector<Player>& players = game.getPlayers(); // 獲取所有玩家
 		std::cout << "玩家數量: " << players.size() << std::endl; // 打印玩家數量
+
 		if (players.empty())
 		{
 			std::cerr << "No players available!\n";
@@ -210,10 +208,7 @@ void Command::execute(Game& game, const std::string& input)
 			player.showInfo();    // 呼叫每個玩家的 showInfo() 函式
 			std::cout << std::endl; // 分隔不同玩家資訊
 		}
-
-
 	}
-	// [!!] Incomplete commands, need to implement
 	else if (cmd == "/refresh")
 	{
 		game.getMap().drawBoard(game.getPlayers());
@@ -222,7 +217,36 @@ void Command::execute(Game& game, const std::string& input)
 	}
 	else if (cmd == "/gamestate")
 	{
-		std::cout << "[Cheat] Changed game state (placeholder function).\n";
+		std::string stateStr;
+		iss >> stateStr;
+
+		// Convert string to GameState
+		std::transform(stateStr.begin(), stateStr.end(), stateStr.begin(), ::toupper);
+
+		GameState newState;
+
+		if (stateStr == "INIT") {
+			newState = GameState::INIT;
+		}
+		else if (stateStr == "START") {
+			newState = GameState::START;
+		}
+		else if (stateStr == "MOVED") {
+			newState = GameState::MOVED;
+		}
+		else if (stateStr == "ROUND_END") {
+			newState = GameState::ROUND_END;
+		}
+		else if (stateStr == "FINISH") {
+			newState = GameState::FINISH;
+		}
+		else {
+			std::cout << "Invalid input. Please enter: INIT, START, MOVED, ROUND_END, FINISH\n";
+			return;
+		}
+
+		game.setGameState(newState);
+		std::cout << "[Cheat] Changed the game state into " << stateStr << "\n";
 	}
 	else if (cmd == "/minigame")
 	{
@@ -246,7 +270,6 @@ void Command::execute(Game& game, const std::string& input)
 
 			std::cin >> choice;
 			std::cin.ignore();
-
 
 			switch (choice)
 			{
@@ -278,6 +301,7 @@ void Command::execute(Game& game, const std::string& input)
 			}
 
 			// 更新地圖顯示
+			Utils::clearScreen();
 			game.getMap().drawBoard(game.getPlayers());
 			return;
 		}

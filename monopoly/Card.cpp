@@ -46,6 +46,7 @@ void Card::applyEffect(Player& player, std::vector<Player>& players, Map& map)
 		{
 			std::cout << i + 1 << ". " << players[i].getName() << "\n";
 		}
+
 		int playerChoice;
 		std::cout << "Enter player number (0 to cancel): ";
 		std::cin >> playerChoice;

@@ -11,6 +11,14 @@
 #include <limits>
 #include <ios>
 
+void Game::setGameState(GameState state) {
+	currentState = state;
+}
+
+GameState Game::getGameState() const {
+	return currentState;
+}
+
 Game Game::instance;
 
 Game& Game::getInstance()
@@ -67,20 +75,19 @@ const std::vector<std::string> diceFaces = {
 	 +-------+
 	)" };
 
-Game::Game() : currentPlayerIndex(0), gameRunning(true)
-{
-	initializePlayers();
-}
+Game::Game() : currentPlayerIndex(0), gameRunning(true) {}
 
 void Game::initializePlayers()
 {
+	if (!players.empty()) {
+		players.clear();
+	}
+
 	const auto& config = GameConfig::getInstance();
 	const auto& playerNames = config.getPlayerNames();
 	const auto& playerIcons = config.getPlayerIcons();
 	const auto& playerColors = config.getPlayerColors();
 	int startMoney = config.getStartMoney();
-
-
 
 	for (size_t i = 0; i < playerNames.size(); ++i)
 	{
@@ -94,8 +101,6 @@ void Game::initializePlayers()
 		players.back().addCard(Card("Destroy Card"));   // 拆除卡
 
 	}
-
-
 }
 
 std::vector<Player>& Game::getPlayers()
@@ -125,15 +130,45 @@ int Game::getTileIdByName(const std::string& name) const
 
 void Game::start()
 {
-	map.setupBoard();
-	map.drawBoard(players);
+	currentState = GameState::INIT;
 
 	while (gameRunning)
 	{
-		processTurn();
-	}
+		switch (currentState)
+		{
+		case GameState::INIT:
+			Utils::clearScreen();
+			initializePlayers();
+			map.setupBoard();
+			map.drawBoard(players);
+			currentState = GameState::START;
+			break;
 
-	std::cout << "\nGame Over!" << std::endl;
+		case GameState::START:
+			processTurn();
+			break;
+
+		case GameState::MOVED:
+			handleTileEvents(players[currentPlayerIndex]);
+			currentState = GameState::ROUND_END;
+			break;
+
+		case GameState::ROUND_END:
+			checkWinCondition();
+			if (!gameRunning)
+				currentState = GameState::FINISH;
+			else {
+				currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+				currentState = GameState::START;
+			}
+			break;
+
+		case GameState::FINISH:
+			std::cout << "\n🏁 Game Over!\n";
+			gameRunning = false;
+			break;
+		}
+	}
 }
 
 void Game::animateControlledPlayerMovement(Player& player, int steps, int diceValue)
@@ -225,14 +260,15 @@ void Game::processTurn()
 	if (players.empty())
 	{
 		std::cerr << "No players available!\n";
+		currentState = GameState::FINISH;
 		return;
 	}
 
-	bool diceRolled = false;
 	Player& currentPlayer = players[currentPlayerIndex];
 
-	while (!diceRolled) {
-		// Display dialogue for the current player's turn
+	// Player input loop
+	while (true)
+	{
 		std::cout << "\nIt's " << currentPlayer.getSymbol() << " " << currentPlayer.getName() << "'s turn:\n\n";
 		Utils::displayDialogue("player_action.start");
 		std::string input;
@@ -241,57 +277,41 @@ void Game::processTurn()
 
 		if (input == "T" || input == "t")
 		{
-			// Seed the random number generator
-			std::srand(static_cast<unsigned>(std::time(nullptr)));
-
 			int dice1, dice2, diceRoll;
 
-			// 檢查是否有骰控卡效果
 			if (currentPlayer.hasNextDiceValue())
 			{
-				// 使用骰控卡效果，直接控制骰子值
 				dice1 = currentPlayer.getNextDiceValue();
-				dice2 = dice1;  // 單骰效果，設為相同值
+				dice2 = dice1;
 				diceRoll = dice1;
 				currentPlayer.clearNextDiceValue();
-				std::cout << "Using Dice Control: You rolled " << dice1 << ".\n";
 				animateControlledPlayerMovement(currentPlayer, diceRoll, dice1);
 			}
 			else
 			{
-				// 正常擲骰邏輯
-				std::srand(static_cast<unsigned>(std::time(nullptr)));
 				dice1 = rand() % 6 + 1;
 				dice2 = rand() % 6 + 1;
 				diceRoll = dice1 + dice2;
-
-				// 正常骰子動畫
 				displayDiceAnimation(dice1, dice2, players);
 				animatePlayerMovement(currentPlayer, diceRoll, dice1, dice2);
-
 			}
-			handleTileEvents(currentPlayer);
-			checkWinCondition();
-			diceRolled = true;
-			//Tile& tile = map.getTile(currentPlayer.getX(), currentPlayer.getY());
-			//std::cout << tile.getPropertyLevel() << std::endl;
+
+			currentState = GameState::MOVED;
+			break;
 		}
 		else if (input == "I" || input == "i")
 		{
 			currentPlayer.showInfo();
 
-			// 提示玩家選擇卡片編號
 			int cardChoice;
 			std::cout << "Enter the card number to use (0 to cancel): ";
 			std::cin >> cardChoice;
-			std::cin.ignore();
+			std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
 
-			// 若選擇有效卡片
 			if (cardChoice > 0 && cardChoice <= currentPlayer.getCards().size())
 			{
 				Card chosenCard = currentPlayer.getCards()[cardChoice - 1];
-				// 呼叫卡片效果，傳入玩家及所有玩家列表
-				chosenCard.applyEffect(currentPlayer, this->getPlayers(), this->getMap());
+				chosenCard.applyEffect(currentPlayer, players, map);
 			}
 			else {
 				std::cout << "Invalid choice. Returning to game.\n";
@@ -301,15 +321,15 @@ void Game::processTurn()
 		{
 			Command command;
 			command.execute(*this, input);
-
-			return; // 不更換玩家回合
+			// Check if game was ended during command
+			if (!gameRunning) currentState = GameState::FINISH;
+			return;
 		}
 		else
 		{
 			Utils::displayDialogue("invalid_input");
 		}
 	}
-	currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
 }
 
 // Function to display dice rolling animation for two dice
