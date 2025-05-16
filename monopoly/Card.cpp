@@ -150,12 +150,16 @@ void Card::applyEffect(Player& player, std::vector<Player>& players, Map& map)
 			tile.setPropertyLevel(tile.getPropertyLevel() - 1);
 			tile.setOccupied(false);
 			tile.setOwner("");
-			//targetPlayer.removeProperty(x, y);
-			//tile.setPropertyLevel(0);
+			targetPlayer.removeProperty(x, y);
 
 			std::cout << "Property \"" << propertyName << "\" destroyed!\n";
 		}
 		player.removeCard("Destroy Card");
+
+		// Clear the screen and redraw the board
+		Utils::clearScreen();
+		map.drawBoard(players);
+		std::cout << "Destroy Card used! Property \"" << propertyName << "\" has been destroyed.\n";
 	}
 	else
 	{
