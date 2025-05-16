@@ -206,6 +206,7 @@ void MiniGame::playDragonGate(Player& player)
 		while (true) {
 			std::cout << "Cards are equal. Will the next card be [higher] or [lower]? ";
 			std::cin >> guess;
+			std::cin.ignore();
 
 			if (guess == "higher" || guess == "lower") {
 				break;
@@ -419,6 +420,7 @@ void MiniGame::playMazeEscape(Player& player)
 		std::cout << "Enter your move (W = up, S = down, A = left, D = right): ";
 		char move;
 		std::cin >> move;
+		std::cin.ignore();
 
 		// Update the player's position based on the move
 		int newX = playerX, newY = playerY;
