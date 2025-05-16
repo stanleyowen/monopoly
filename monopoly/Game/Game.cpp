@@ -291,6 +291,10 @@ void Game::processTurn()
 		{
 			int dice1, dice2, diceRoll;
 
+			int currentPositionId = currentPlayer.getPositionId();
+			int totalSteps = diceRoll;
+			int boardSize = 28;
+
 			if (currentPlayer.hasNextDiceValue())
 			{
 				dice1 = currentPlayer.getNextDiceValue();
@@ -306,6 +310,12 @@ void Game::processTurn()
 				diceRoll = dice1 + dice2;
 				displayDiceAnimation(dice1, dice2, players);
 				animatePlayerMovement(currentPlayer, diceRoll, dice1, dice2);
+			}
+
+			if ((totalSteps > 0 && ((currentPositionId + totalSteps) >= boardSize || (currentPositionId + totalSteps) % boardSize < currentPositionId)))
+			{
+				currentPlayer.addMoney(GameConfig::getInstance().getPassingStartBonus());
+				std::cout << "[系統] " << currentPlayer.getName() << " 通過起點，獲得 $" << GameConfig::getInstance().getPassingStartBonus() << "!\n";
 			}
 
 			currentState = GameState::MOVED;

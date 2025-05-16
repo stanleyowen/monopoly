@@ -77,6 +77,14 @@ void Command::execute(Game &game, const std::string &input)
 
 		std::cout << "[Cheat] " << player.getName() << " moved to position " << destinationId << "\n";
 
+		// Check if passing start including if the player is moving to the same position
+		if (totalSteps == 0 || (totalSteps > 0 && ((currentPositionId + totalSteps) >= 28 || (currentPositionId + totalSteps) % 28 < currentPositionId)))
+		{
+			player.addMoney(config.getPassingStartBonus());
+			std::cout << "[系統] " << player.getName() << " 通過起點，獲得 $" << config.getPassingStartBonus() << "!\n";
+			game.getMap().drawBoard(game.getPlayers());
+		}
+
 		// Handle events after reaching the destination
 		game.handleTileEvents(player);
 
