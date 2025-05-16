@@ -69,6 +69,5 @@ void Utils::displayDialogue(const std::string &key)
 void Utils::pressEnterToContinue()
 {
 	std::cout << "Press Enter to continue...\n";
-	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 	std::cin.get();
 }

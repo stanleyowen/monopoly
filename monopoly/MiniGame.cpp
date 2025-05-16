@@ -458,7 +458,6 @@ void MiniGame::playMazeEscape(Player& player)
 	std::cout << "You ran out of moves! You lose $2000.\n";
 	player.subtractMoney(2000);
 	std::cout << "Press Enter to return to the game...";
-	std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
 	std::cin.get();
 	Utils::clearScreen();
 }

@@ -332,7 +332,7 @@ void Game::processTurn()
 			int cardChoice;
 			std::cout << "Enter the card number to use (0 to cancel): ";
 			std::cin >> cardChoice;
-			std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
+			std::cin.ignore();
 
 			if (cardChoice > 0 && cardChoice <= currentPlayer.getCards().size())
 			{
