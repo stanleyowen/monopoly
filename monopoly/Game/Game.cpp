@@ -269,6 +269,8 @@ void Game::animatePlayerMovement(Player& player, int steps, int dice1, int dice2
 
 void Game::processTurn()
 {
+	srand(static_cast<unsigned>(time(nullptr)));
+
 	if (players.empty())
 	{
 		std::cerr << "No players available!\n";
@@ -276,7 +278,83 @@ void Game::processTurn()
 		return;
 	}
 
-	Player& currentPlayer = players[currentPlayerIndex];
+	Player &currentPlayer = players[currentPlayerIndex];
+
+	// Hospital logic
+	if (currentPlayer.isInHospital())
+	{
+		bool hospitalActionDone = false;
+		while (!hospitalActionDone && currentPlayer.isInHospital())
+		{
+			std::string input;
+
+			Utils::displayDialogue("player_action.moved.hospital");
+			std::cout << "[醫院] " << currentPlayer.getName() << " is in the hospital! Turns left: " << currentPlayer.getHospitalTurnsLeft() << "\n";
+			std::cout << "> ";
+			std::cin >> input;
+			std::cin.ignore();
+
+			if (input == "T" || input == "t")
+			{
+				int dice1 = rand() % 6 + 1;
+				int dice2 = rand() % 6 + 1;
+				int diceRoll = dice1 + dice2;
+				std::cout << "[醫院] You rolled (" << dice1 << ", " << dice2 << ") = " << diceRoll << "\n";
+
+				if (diceRoll >= 10)
+				{
+					std::cout << "[醫院] You rolled 10 or more! You are released from the hospital!\n";
+					currentPlayer.leaveHospital();
+				}
+				else
+				{
+					std::cout << "[醫院] Not enough! You remain in the hospital.\n";
+					currentPlayer.decrementHospitalTurns();
+				}
+				hospitalActionDone = true;
+			}
+			else if (input == "R" || input == "r")
+			{
+				int bill = 2000;
+				if (currentPlayer.getMoney() >= bill)
+				{
+					currentPlayer.addMoney(-bill);
+					std::cout << "[醫院] You paid $" << bill << " and are released from the hospital!\n";
+					currentPlayer.leaveHospital();
+				}
+				else
+				{
+					std::cout << "[醫院] Not enough money to pay the bill!\n";
+				}
+				hospitalActionDone = true;
+			}
+			else if (input == "I" || input == "i")
+			{
+				currentPlayer.showInfo();
+				std::cout << "Press Enter to return to hospital menu...";
+				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			}
+			else
+			{
+				currentPlayer.decrementHospitalTurns();
+				std::cout << "[醫院] You skipped your chance to roll. Turns left: " << currentPlayer.getHospitalTurnsLeft() << "\n";
+				hospitalActionDone = true;
+			}
+		}
+
+		if (currentPlayer.isInHospital())
+		{
+			// End turn if still in hospital
+			currentState = GameState::ROUND_END;
+			return;
+		}
+		else
+		{
+			std::cout << "[醫院] You are free to move next turn!\n";
+			currentState = GameState::ROUND_END;
+			return;
+		}
+	}
 
 	// Player input loop
 	while (true)
@@ -312,8 +390,6 @@ void Game::processTurn()
 			}
 			else
 			{
-				srand(static_cast<unsigned>(time(nullptr)));
-
 				dice1 = rand() % 6 + 1;
 				dice2 = rand() % 6 + 1;
 				diceRoll = dice1 + dice2;

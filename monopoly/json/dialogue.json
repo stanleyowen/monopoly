@@ -82,6 +82,10 @@
         "prompt": "You are in the hospital. You can't move.",
         "options": [
           {
+            "key": "T",
+            "description": "Roll the dice to try and escape if 10+ is rolled."
+          },
+          {
             "key": "R",
             "description": "Pay the medical bills and early leave."
           },

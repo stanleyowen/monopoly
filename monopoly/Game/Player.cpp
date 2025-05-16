@@ -222,3 +222,27 @@ void Player::removeProperty(int x, int y)
 		std::cout << "Property at (" << x << ", " << y << ") removed from ownership.\n";
 	}
 }
+
+void Player::sendToHospital(int turns)
+{
+	inHospital = true;
+	hospitalTurnsLeft = turns;
+}
+
+void Player::leaveHospital()
+{
+	inHospital = false;
+	hospitalTurnsLeft = 0;
+}
+
+bool Player::isInHospital() const { return inHospital; }
+
+int Player::getHospitalTurnsLeft() const { return hospitalTurnsLeft; }
+
+void Player::decrementHospitalTurns()
+{
+	if (hospitalTurnsLeft > 0)
+		--hospitalTurnsLeft;
+	if (hospitalTurnsLeft == 0)
+		inHospital = false;
+}

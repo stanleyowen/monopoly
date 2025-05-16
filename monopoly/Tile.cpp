@@ -142,6 +142,13 @@ void Tile::handleEvent(Player& player)
 			std::cout << "You found nothing special.\n";
 		}
 	}
+	else if (tileConfig.type == "hospital")
+	{
+		std::cout << player.getName() << " has been sent to the hospital and must skip 3 turns (unless rolling 10+ to leave)!\n";
+		player.sendToHospital();
+		Utils::pressEnterToContinue();
+		return;
+	}
 	else if (tileConfig.type == "property")
 	{
 		if (!getOccupied())

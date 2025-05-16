@@ -19,6 +19,9 @@ private:
 
 	int nextDiceValue = 0;
 
+	bool inHospital = false;
+	int hospitalTurnsLeft = 0;
+
 public:
 	Player(const std::string& name);
 	Player(const std::string& name, std::string symbol, int startMoney);
@@ -54,4 +57,10 @@ public:
 	void clearNextDiceValue();
 	void removeCard(const std::string& cardType);
 	void removeProperty(int x, int y);
+
+	void sendToHospital(int turns = 3);
+	void leaveHospital();
+	bool isInHospital() const;
+	int getHospitalTurnsLeft() const;
+	void decrementHospitalTurns();
 };
