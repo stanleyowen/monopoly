@@ -10,7 +10,8 @@
 #include <cstdlib>
 #endif
 
-enum class GameState {
+enum class GameState
+{
 	INIT,
 	START,
 	MOVED,
@@ -22,20 +23,21 @@ class Game
 {
 public:
 	Game();
-	static Game& getInstance();  // ³æ¨Ò¼Ò¦¡¤èªk
-	Map& getMap();
+	static Game &getInstance(); // ï¿½ï¿½Ò¼Ò¦ï¿½ï¿½ï¿½k
+	Map &getMap();
 	void initializePlayers();
-	std::vector<Player>& getPlayers();
+	std::vector<Player> &getPlayers();
 	void start();
-	void animatePlayerMovement(Player& player, int steps, int dice1, int dice2);
-	void animateControlledPlayerMovement(Player& player, int steps, int diceValue);
-	void displayDiceAnimation(int dice1, int dice2, const std::vector<Player>& players);
+	void animatePlayerMovement(Player &player, int steps, int dice1, int dice2);
+	void animateControlledPlayerMovement(Player &player, int steps, int diceValue);
+	void displayDiceAnimation(int dice1, int dice2, const std::vector<Player> &players);
 	void processTurn();
 
-	void handleTileEvents(Player& player);
+	void handleTileEvents(Player &player);
 	void checkWinCondition();
 	int getCurrentPlayerIndex() const;
-	int getTileIdByName(const std::string& name) const;
+	void setCurrentPlayerIndex(int index);
+	int getTileIdByName(const std::string &name) const;
 
 	void setGameState(GameState state);
 	GameState getGameState() const;
@@ -48,7 +50,7 @@ private:
 
 	GameState currentState = GameState::INIT;
 
-	Game(const Game&) = delete;  // §R°£«þ¨©ºc³y
-	Game& operator=(const Game&) = delete;  // §R°£½á­È¹Bºâ
-	static Game instance;  // ³æ¨Ò¹ê¨Ò
+	Game(const Game &) = delete;			// ï¿½Rï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½cï¿½y
+	Game &operator=(const Game &) = delete; // ï¿½Rï¿½ï¿½ï¿½ï¿½È¹Bï¿½ï¿½
+	static Game instance;					// ï¿½ï¿½Ò¹ï¿½ï¿½
 };

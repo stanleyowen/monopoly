@@ -79,6 +79,12 @@ void Command::execute(Game &game, const std::string &input)
 
 		// Handle events after reaching the destination
 		game.handleTileEvents(player);
+
+		// Switch to next player and set state to START
+		game.setGameState(GameState::START);
+		int nextPlayer = (game.getCurrentPlayerIndex() + 1) % game.getPlayers().size();
+		game.setCurrentPlayerIndex(nextPlayer);
+		return;
 	}
 	else if (cmd == "/get")
 	{

@@ -113,7 +113,19 @@ int Game::getCurrentPlayerIndex() const
 	return currentPlayerIndex;
 }
 
-int Game::getTileIdByName(const std::string& name) const
+void Game::setCurrentPlayerIndex(int index)
+{
+	if (index >= 0 && index < players.size())
+	{
+		currentPlayerIndex = index;
+	}
+	else
+	{
+		std::cerr << "Invalid player index: " << index << std::endl;
+	}
+}
+
+int Game::getTileIdByName(const std::string &name) const
 {
 	const auto& config = GameConfig::getInstance();
 	const auto& tiles = config.getBoardTiles();
