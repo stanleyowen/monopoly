@@ -44,6 +44,7 @@
     "map": "cpp",
     "iomanip": "cpp",
     "__tree": "cpp",
-    "chrono": "cpp"
+    "chrono": "cpp",
+    "thread": "cpp"
   }
 }

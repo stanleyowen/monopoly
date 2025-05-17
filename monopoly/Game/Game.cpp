@@ -10,6 +10,8 @@
 #include <ctime>
 #include <limits>
 #include <ios>
+#include <fstream>
+#include <nlohmann/json.hpp>
 
 void Game::setGameState(GameState state) {
 	currentState = state;
