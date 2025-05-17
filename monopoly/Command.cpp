@@ -64,6 +64,7 @@ void Command::execute(Game& game, const std::string& input)
 			for (int i = 0; i < totalSteps; ++i)
 			{
 				player.move(1); // Move one step at a time
+				Utils::clearScreen();
 				game.getMap().drawBoard(game.getPlayers());
 				std::this_thread::sleep_for(std::chrono::milliseconds(config.getAnimationTime())); // Optional: Add delay for animation
 			}
@@ -74,7 +75,8 @@ void Command::execute(Game& game, const std::string& input)
 			player.move(totalSteps);
 			game.getMap().drawBoard(game.getPlayers());
 		}
-
+		Utils::clearScreen();
+		game.getMap().drawBoard(game.getPlayers());
 		std::cout << "[Cheat] " << player.getName() << " moved to position " << destinationId << "\n";
 
 		// Check if passing start including if the player is moving to the same position
