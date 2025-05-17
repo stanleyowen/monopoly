@@ -225,9 +225,9 @@ void Map::drawBoard(const std::vector<Player>& players) const
 
 	// === Display Player Info Below the Board ===
 	std::cout << "\n";
-	std::cout << "+--------------+----------+------------------------------+----------------+\n";
-	std::cout << "| Player Name  |  Assets  | Property                     | Cards          |\n";
-	std::cout << "+--------------+----------+------------------------------+----------------+\n";
+	std::cout << "+--------------+----------+------------------------------+---------------------+\n";
+	std::cout << "| Player Name  |  Assets  | Property                     | Cards               |\n";
+	std::cout << "+--------------+----------+------------------------------+---------------------+\n";
 
 	for (const auto& player : players)
 	{
@@ -235,11 +235,11 @@ void Map::drawBoard(const std::vector<Player>& players) const
 		std::stringstream cardList;
 		for (const auto& card : player.getCards())
 		{
-			cardList << card.getType() << ", ";
+			cardList << card.getAbbreviatedName() << ",";
 		}
 		std::string cardsStr = cardList.str();
 		if (!cardsStr.empty())
-			cardsStr.pop_back(), cardsStr.pop_back(); // Remove trailing comma
+			cardsStr.pop_back();	// Remove trailing comma
 
 		// Properties: convert (x,y) to tile numbers
 		std::stringstream propList;
@@ -273,10 +273,10 @@ void Map::drawBoard(const std::vector<Player>& players) const
 			<< (color + playerSymbol + RESET + " " + player.getName())
 			<< "| " << std::right << std::setw(8) << player.getMoney()
 			<< " | " << std::left << std::setw(29) << propsStr
-			<< "| " << std::left << std::setw(15) << cardsStr << "|\n";
+			<< "| " << std::left << std::setw(20) << cardsStr << "|\n";
 	}
 
-	std::cout << "+--------------+----------+------------------------------+----------------+\n";
+	std::cout << "+--------------+----------+------------------------------+---------------------+\n";
 }
 
 void Map::resetProperty(int x, int y)

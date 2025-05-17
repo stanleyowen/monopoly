@@ -99,7 +99,6 @@ void Game::initializePlayers()
 		players.back().addCard(Card("Dice Card"));      // 骰控卡
 		//players.back().addCard(Card("Barrier Card"));   // 路障卡
 		players.back().addCard(Card("Destroy Card"));   // 拆除卡
-
 	}
 }
 
@@ -125,7 +124,7 @@ void Game::setCurrentPlayerIndex(int index)
 	}
 }
 
-int Game::getTileIdByName(const std::string &name) const
+int Game::getTileIdByName(const std::string& name) const
 {
 	const auto& config = GameConfig::getInstance();
 	const auto& tiles = config.getBoardTiles();
@@ -278,7 +277,7 @@ void Game::processTurn()
 		return;
 	}
 
-	Player &currentPlayer = players[currentPlayerIndex];
+	Player& currentPlayer = players[currentPlayerIndex];
 
 	// Hospital logic
 	if (currentPlayer.isInHospital())
@@ -332,7 +331,7 @@ void Game::processTurn()
 			{
 				currentPlayer.showInfo();
 				std::cout << "Press Enter to return to hospital menu...";
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+				std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
 			}
 			else
 			{
@@ -367,7 +366,7 @@ void Game::processTurn()
 
 		if (input == "T" || input == "t")
 		{
-			int dice1, dice2, diceRoll;
+			int dice1, dice2, diceRoll{};
 
 			int currentPositionId = currentPlayer.getPositionId();
 			int totalSteps = diceRoll;

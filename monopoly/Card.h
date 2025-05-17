@@ -13,6 +13,7 @@ class Card {
 public:
 	Card(const std::string& type);
 	std::string getType() const;
+	std::string getAbbreviatedName() const;
 
 	void applyEffect(Player& player, std::vector<Player>& players, Map& map);
 

@@ -12,6 +12,33 @@ std::string Card::getType() const {
 	return type;
 }
 
+std::string Card::getAbbreviatedName() const {
+	std::string t = type;
+
+	// Trim leading/trailing spaces
+	t.erase(0, t.find_first_not_of(" "));
+	t.erase(t.find_last_not_of(" ") + 1);
+
+	// Convert to lowercase for comparison
+	std::string lower = t;
+	std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
+
+	// Match normalized names
+	if (lower == "dice card") return "Di";
+	if (lower == "destroy card") return "Dst";
+	if (lower == "fate card") return "Fa";
+	if (lower == "rocket card") return "Ro";
+	if (lower == "barrier card") return "Ba";
+
+	// Fallback (first two non-space letters)
+	std::string fallback;
+	for (char c : t) {
+		if (!isspace(c)) fallback += c;
+		if (fallback.size() == 2) break;
+	}
+	return fallback.empty() ? "??" : fallback;
+}
+
 void Card::applyEffect(Player& player, std::vector<Player>& players, Map& map)
 {
 	if (type == "Dice Card") //±±»ë¥d
@@ -166,8 +193,6 @@ void Card::applyEffect(Player& player, std::vector<Player>& players, Map& map)
 		std::cout << "Unknown or unsupported card type.\n";
 	}
 }
-
-
 
 /* void Card::applyEffect(Player& player, std::vector<std::shared_ptr<Player>>& players) {
 	if (type == "Barrier Card") { //¸ô»Ù¥d
