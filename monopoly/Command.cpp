@@ -363,6 +363,37 @@ void Command::execute(Game& game, const std::string& input)
 		std::cout << "Unknown command.\n";
 	}
 
+	if (input == "/save")
+	{
+		std::string filename;
+		std::cout << "Enter filename to save: ";
+		std::cin >> filename;
+		if (game.saveGame(filename))
+		{
+			std::cout << "Game saved to " << filename << "\n";
+		}
+		else
+		{
+			std::cout << "Failed to save game.\n";
+		}
+		return;
+	}
+	if (input == "/load")
+	{
+		std::string filename;
+		std::cout << "Enter filename to load: ";
+		std::cin >> filename;
+		if (game.loadGame(filename))
+		{
+			std::cout << "Game loaded from " << filename << "\n";
+		}
+		else
+		{
+			std::cout << "Failed to load game.\n";
+		}
+		return;
+	}
+
 	// Utils::clearScreen();
 	// game.getMap().drawBoard(game.getPlayers());
 	// game.checkWinCondition();

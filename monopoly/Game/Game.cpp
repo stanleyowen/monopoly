@@ -514,3 +514,94 @@ void Game::checkWinCondition()
 		gameRunning = false;
 	}
 }
+
+bool Game::saveGame(const std::string &filename) const
+{
+	nlohmann::json saveData;
+
+	// Save players
+	for (const auto &player : players)
+	{
+		nlohmann::json p;
+		p["name"] = player.getName();
+		p["symbol"] = player.getSymbol();
+		p["color"] = player.getColor();
+		p["money"] = player.getMoney();
+		p["x"] = player.getX();
+		p["y"] = player.getY();
+
+		// Cards as vector of strings
+		std::vector<std::string> cardTypes;
+		for (const auto &card : player.getCards())
+			cardTypes.push_back(card.getType());
+		p["cards"] = cardTypes;
+
+		// Properties as vector of {x, y}
+		nlohmann::json props = nlohmann::json::array();
+		for (const auto &prop : player.getProperties())
+			props.push_back({{"x", prop.first}, {"y", prop.second}});
+		p["properties"] = props;
+
+		p["status"] = {
+			{"inHospital", player.isInHospital()},
+			{"hospitalTurnsLeft", player.getHospitalTurnsLeft()}};
+		saveData["players"].push_back(p);
+	}
+
+	// Save tiles
+	for (const auto &tile : map.getTiles())
+	{
+		nlohmann::json t;
+		t["owner"] = tile.getOwner(); // string (player name or empty)
+		t["level"] = tile.getPropertyLevel();
+		saveData["tiles"].push_back(t);
+	}
+
+	saveData["currentPlayerIndex"] = currentPlayerIndex;
+
+	std::ofstream out(filename);
+	if (!out.is_open())
+		return false;
+	out << saveData.dump(4);
+	return true;
+}
+
+bool Game::loadGame(const std::string &filename)
+{
+	std::ifstream in(filename);
+	if (!in.is_open())
+		return false;
+
+	nlohmann::json saveData;
+	in >> saveData;
+
+	players.clear();
+	for (const auto &p : saveData["players"])
+	{
+		Player player(p["name"], p["symbol"], p["money"]);
+		player.setColor(p["color"]);
+		player.setPosition(p["x"], p["y"]);
+
+		// Cards
+		for (const auto &cardType : p["cards"])
+			player.addCard(Card(cardType));
+
+		// Properties
+		for (const auto &prop : p["properties"])
+			player.addProperty(prop["x"], prop["y"]);
+
+		player.setInHospital(p["status"]["inHospital"]);
+		player.setHospitalTurnsLeft(p["status"]["hospitalTurnsLeft"]);
+		players.push_back(player);
+	}
+
+	auto &tiles = map.getTiles();
+	for (size_t i = 0; i < tiles.size(); ++i)
+	{
+		tiles[i].setOwner(saveData["tiles"][i]["owner"]);
+		tiles[i].setPropertyLevel(saveData["tiles"][i]["level"]);
+	}
+
+	currentPlayerIndex = saveData["currentPlayerIndex"];
+	return true;
+}

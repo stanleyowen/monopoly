@@ -42,6 +42,9 @@ public:
 	void setGameState(GameState state);
 	GameState getGameState() const;
 
+	bool saveGame(const std::string &filename) const;
+	bool loadGame(const std::string &filename);
+
 private:
 	Map map;
 	std::vector<Player> players;
