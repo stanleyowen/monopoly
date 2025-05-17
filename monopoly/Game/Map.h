@@ -17,7 +17,10 @@ public:
 	void drawBoard(const std::vector<Player>& players) const;
 
 	void resetProperty(int x, int y);
-	Tile& getTileById(int tileId);
+	Tile &getTileById(int tileId);
+
+	std::vector<Tile> &getTiles();
+	const std::vector<Tile> &getTiles() const;
 };
 
 #endif // MAP_H

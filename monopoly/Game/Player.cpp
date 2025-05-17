@@ -229,6 +229,10 @@ void Player::sendToHospital(int turns)
 	hospitalTurnsLeft = turns;
 }
 
+void Player::setInHospital(bool val) { inHospital = val; }
+
+void Player::setHospitalTurnsLeft(int turns) { hospitalTurnsLeft = turns; }
+
 void Player::leaveHospital()
 {
 	inHospital = false;

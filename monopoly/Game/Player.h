@@ -59,8 +59,10 @@ public:
 	void removeProperty(int x, int y);
 
 	void sendToHospital(int turns = 3);
+	void setInHospital(bool inHospital);
 	void leaveHospital();
 	bool isInHospital() const;
 	int getHospitalTurnsLeft() const;
+	void setHospitalTurnsLeft(int turns);
 	void decrementHospitalTurns();
 };
