@@ -2,6 +2,7 @@
 #include "Utils.h"
 #include "Game/Player.h"
 #include "Game/GameConfig.h"
+#include "Game/Game.h"
 #include "MiniGame.h"
 #include <iostream>
 #include <algorithm>
@@ -66,6 +67,8 @@ int Tile::getPositionId() const
 void Tile::handleEvent(Player& player)
 {
 	GameConfig& config = GameConfig::getInstance();
+
+
 	auto boardTiles = config.getBoardTiles();
 
 	// Get the player's current position as an index
@@ -153,35 +156,69 @@ void Tile::handleEvent(Player& player)
 	{
 		if (!getOccupied())
 		{
-			char choice;
 
-			Utils::displayDialogue("player_action.moved.property_unowned");
-			std::cout << "> ";
-			std::cin >> choice;
-			std::cin.ignore();
+			bool chose = 0;
+			while (!chose) {
+				char choice;
 
-			if (choice == 'R' || choice == 'r')
-			{
-				if (player.getMoney() >= tileConfig.price)
+				Utils::displayDialogue("player_action.moved.property_unowned");
+				std::cout << "> ";
+				std::cin >> choice;
+				std::cin.ignore();
+				if (choice == 'R' || choice == 'r')
 				{
-					player.subtractMoney(tileConfig.price);
-					player.addProperty(player.getX(), player.getY());
-					setOwner(player.getName());
-					setOccupied(true);
+					if (player.getMoney() >= tileConfig.price)
+					{
+						player.subtractMoney(tileConfig.price);
+						player.addProperty(player.getX(), player.getY());
+						setOwner(player.getName());
+						setOccupied(true);
+						chose = 1;
+						std::cout << "You have purchased this property.\n";
+					}
+					else
+					{
+						chose = 1;
+						std::cout << "You don't have enough money to buy this property.\n";
+					}
+				}
+				else if (choice == 'I' || choice == 'i') {
+					player.showInfo();
 
-					std::cout << "You have purchased this property.\n";
+					int cardChoice;
+					std::cout << "Enter the card number to use (0 to cancel): ";
+					std::cin >> cardChoice;
+					std::cin.ignore();
+					Game& game = Game::getInstance();
+					if (cardChoice > 0 && cardChoice <= player.getCards().size())
+					{
+						Card chosenCard = player.getCards()[cardChoice - 1];
+
+						Map& map = game.getMap();
+						std::vector<Player>& players = game.getPlayers();
+						chosenCard.applyEffect(player, players, map);
+						//Game& game = Game::getInstance();
+						//game.getMap().drawBoard(game.getPlayers());
+
+					}
+					else {
+						std::cout << "Invalid choice. Returning to game.\n";
+						Utils::clearScreen();
+						//Game& game = Game::getInstance();
+						//game.getMap().drawBoard(game.getPlayers());
+					}
 				}
 				else
 				{
-					std::cout << "You don't have enough money to buy this property.\n";
+					std::cout << "You chose not to buy the property.\n";
 				}
-			}
-			else
-			{
-				std::cout << "You chose not to buy the property.\n";
+
+				Utils::pressEnterToContinue();
+				//Utils::clearScreen();
+				//Game& game = Game::getInstance();
+				//game.getMap().drawBoard(game.getPlayers());
 			}
 
-			Utils::pressEnterToContinue();
 		}
 		else if (getOccupied() && getOwner() != player.getName())
 		{
@@ -257,6 +294,7 @@ void Tile::handleEvent(Player& player)
 			}
 
 			Utils::pressEnterToContinue();
+
 		}
 	}
 	else
