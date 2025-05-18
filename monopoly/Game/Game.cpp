@@ -567,6 +567,7 @@ bool Game::saveGame(const std::string& filename) const
 		nlohmann::json t;
 		t["owner"] = tile.getOwner(); // string (player name or empty)
 		t["level"] = tile.getPropertyLevel();
+		t["isOccupied"] = tile.getOccupied();
 		saveData["tiles"].push_back(t);
 	}
 
@@ -611,8 +612,13 @@ bool Game::loadGame(const std::string& filename)
 	auto& tiles = map.getTiles();
 	for (size_t i = 0; i < tiles.size(); ++i)
 	{
+		//int x = i / 8;
+		//int y = i % 8;
+		//Tile& tile = map.getTile(x, y);
+
 		tiles[i].setOwner(saveData["tiles"][i]["owner"]);
 		tiles[i].setPropertyLevel(saveData["tiles"][i]["level"]);
+		tiles[i].setOccupied(saveData["tiles"][i]["isOccupied"]);
 	}
 
 	currentPlayerIndex = saveData["currentPlayerIndex"];
