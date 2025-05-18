@@ -253,13 +253,7 @@ void Card::applyEffect(Player& player, std::vector<Player>& players, Map& map)
 		// 獲取選擇的玩家
 		Player& targetPlayer = players[validChoices[playerChoice - 1]];
 
-		// Move to hospital
-		Game& game = Game::getInstance();
-		Map& map = game.getMap();
-		Tile& hospitalTile = map.getTileById(15); // Hospital tile ID
-
-		targetPlayer.sendToHospital();;  // Hospital coordinates (7, 6)
-		//targetPlayer.setHospitalRounds(2); // Set hospital rounds to 2
+		targetPlayer.sendToHospital();
 		std::cout << targetPlayer.getName() << " was sent to the hospital for 2 rounds!\n";
 		map.drawBoard(players);
 		player.removeCard("Rocket Card");

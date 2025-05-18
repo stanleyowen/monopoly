@@ -365,16 +365,12 @@ void Command::execute(Game& game, const std::string& input)
 		std::cout << "/refresh    - Refresh the game board.\n";
 		std::cout << "\n";
 	}
-	else
-	{
-		std::cout << "Unknown command.\n";
-	}
-
-	if (input == "/save")
+	else if (input == "/save")
 	{
 		std::string filename;
 		std::cout << "Enter filename to save: ";
 		std::cin >> filename;
+		std::cin.ignore();
 		if (game.saveGame(filename))
 		{
 			std::cout << "Game saved to " << filename << "\n";
@@ -385,23 +381,32 @@ void Command::execute(Game& game, const std::string& input)
 		}
 		return;
 	}
-	if (input == "/load")
+	else if (input == "/load")
 	{
 		std::string filename;
 		std::cout << "Enter filename to load: ";
 		std::cin >> filename;
+		std::cin.ignore();
 		if (game.loadGame(filename))
 		{
 			std::cout << "Game loaded from " << filename << "\n";
+			Utils::pressEnterToContinue();
+			Utils::clearScreen();
+			game.getMap().drawBoard(game.getPlayers());
+			game.checkWinCondition();
 		}
 		else
 		{
 			std::cout << "Failed to load game.\n";
 		}
+
 		return;
 	}
+	else
+	{
+		std::cout << "Unknown command.\n";
+	}
 
-	// Utils::clearScreen();
-	// game.getMap().drawBoard(game.getPlayers());
-	// game.checkWinCondition();
+
+
 }
