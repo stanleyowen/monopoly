@@ -160,7 +160,7 @@ void Tile::handleEvent(Player& player, Map& map)
 			bool chose = 0;
 			while (!chose) {
 				char choice;
-
+				std::cout << "Price:" << tileConfig.price << "\n";
 				Utils::displayDialogue("player_action.moved.property_unowned");
 				std::cout << "> ";
 				std::cin >> choice;
