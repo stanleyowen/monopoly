@@ -4,6 +4,7 @@
 #include "Game/Player.h"
 #include "Tile.h"
 #include "Game/GameConfig.h"
+#include "Minigame.h"
 #include <iostream>
 
 Card::Card(const std::string& type) : type(type) {}
@@ -189,6 +190,80 @@ void Card::applyEffect(Player& player, std::vector<Player>& players, Map& map)
 		Utils::clearScreen();
 		map.drawBoard(players);
 		std::cout << "Destroy Card used! Property \"" << propertyName << "\" has been destroyed.\n";
+	}
+	else if (type == "Fate Card") { //命運卡
+		std::cout << "Triggering a Fate event.\n";
+
+
+		srand(static_cast<unsigned>(time(nullptr)));
+		int rng = rand() % 4;
+
+		if (rng == 0)
+		{
+			MiniGame::playHorseRace(player);
+		}
+		else if (rng == 1)
+		{
+			MiniGame::playDragonGate(player);
+		}
+		else if (rng == 2)
+		{
+			MiniGame::playMazeEscape(player);
+		}
+		else if (rng == 3)
+		{
+			MiniGame::playTreasureHunt(player);
+		}
+		else
+		{
+			std::cout << "You found nothing special.\n";
+		}
+		map.drawBoard(players);
+		player.removeCard("Fate Card");
+	}
+	else if (type == "Rocket Card") { //火箭卡
+		std::cout << "Sending a player to the hospital for 2 turns.\n";
+
+		// List all players except the current player
+		std::cout << "Choose a player to send to the hospital (cannot choose yourself):\n";
+		int index = 1;
+		std::vector<int> validChoices;
+
+		for (size_t i = 0; i < players.size(); ++i)
+		{
+			if (players[i].getName() != player.getName()) // 過濾掉自己
+			{
+				std::cout << index << ". " << players[i].getName() << "\n";
+				validChoices.push_back(i); // 存下有效選項的實際索引
+				index++;
+			}
+		}
+
+		int playerChoice;
+		std::cout << "Enter player number (0 to cancel): ";
+		std::cin >> playerChoice;
+		std::cin.ignore();
+
+		if (playerChoice <= 0 || playerChoice > validChoices.size())
+		{
+			std::cout << "Invalid choice. Canceling rocket action.\n";
+			return;
+		}
+
+		// 獲取選擇的玩家
+		Player& targetPlayer = players[validChoices[playerChoice - 1]];
+
+		// Move to hospital
+		Game& game = Game::getInstance();
+		Map& map = game.getMap();
+		Tile& hospitalTile = map.getTileById(15); // Hospital tile ID
+
+		targetPlayer.sendToHospital();;  // Hospital coordinates (7, 6)
+		//targetPlayer.setHospitalRounds(2); // Set hospital rounds to 2
+		std::cout << targetPlayer.getName() << " was sent to the hospital for 2 rounds!\n";
+		map.drawBoard(players);
+		player.removeCard("Rocket Card");
+
 	}
 	else
 	{

@@ -141,6 +141,7 @@ void Tile::handleEvent(Player& player, Map& map)
 	}
 	else if (tileConfig.type == "fate" || tileConfig.type == "chance")
 	{
+
 		std::cout << "You triggered a " << tileConfig.type << " event!\n";
 
 		srand(static_cast<unsigned>(time(nullptr)));

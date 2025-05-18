@@ -101,6 +101,8 @@ void Game::initializePlayers()
 		players.back().addCard(Card("Dice Card"));      // 骰控卡
 		//players.back().addCard(Card("Barrier Card"));   // 路障卡
 		players.back().addCard(Card("Destroy Card"));   // 拆除卡
+		players.back().addCard(Card("Rocket Card"));   // 火箭卡
+		players.back().addCard(Card("Fate Card"));   // 命運卡
 	}
 }
 
