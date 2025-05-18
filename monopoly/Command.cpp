@@ -242,6 +242,7 @@ void Command::execute(Game& game, const std::string& input)
 	}
 	else if (cmd == "/refresh")
 	{
+		Utils::clearScreen();
 		game.getMap().drawBoard(game.getPlayers());
 		std::cout << "[系統] 地圖已重新繪製。\n";
 		return; // 不切換回合

@@ -98,24 +98,46 @@ void Tile::handleEvent(Player& player, Map& map)
 	else if (tileConfig.type == "store")
 	{
 		Utils::displayDialogue("player_action.moved.store");
-
+		bool chose = 0;
 		char choice;
 		std::cout << "> ";
 		std::cin >> choice;
 		std::cin.ignore();
+		while (!chose) {
+			if (choice == 'E' || choice == 'e')
+			{
+				enterShop(player);
+				chose = 1;
+			}
+			else if (choice == 'I' || choice == 'i') {
+				player.showInfo();
 
-		if (choice == 'E' || choice == 'e')
-		{
-			enterShop(player);
+				int cardChoice;
+				std::cout << "Enter the card number to use (0 to cancel): ";
+				std::cin >> cardChoice;
+				std::cin.ignore();
+
+				if (cardChoice > 0 && cardChoice <= player.getCards().size())
+				{
+					Card chosenCard = player.getCards()[cardChoice - 1];
+					std::vector<Player>& players = game.getPlayers();
+					chosenCard.applyEffect(player, players, map);
+					game.getMap().drawBoard(game.getPlayers());
+
+				}
+				else {
+					std::cout << "Returning to game.\n";
+					Utils::clearScreen();
+					game.getMap().drawBoard(game.getPlayers());
+				}
+			}
+			else
+			{
+				chose = 1;
+				std::cout << "You chose to pass.\n";
+			}
 		}
-		else if (choice == 'I' || choice == 'i')
-		{
-			player.showInfo();
-		}
-		else
-		{
-			std::cout << "You chose to pass.\n";
-		}
+
 	}
 	else if (tileConfig.type == "fate" || tileConfig.type == "chance")
 	{
@@ -167,18 +189,17 @@ void Tile::handleEvent(Player& player, Map& map)
 				std::cin.ignore();
 				if (choice == 'R' || choice == 'r')
 				{
+					chose = 1;
 					if (player.getMoney() >= tileConfig.price)
 					{
 						player.subtractMoney(tileConfig.price);
 						player.addProperty(player.getX(), player.getY());
 						setOwner(player.getName());
 						setOccupied(true);
-						chose = 1;
 						std::cout << "You have purchased this property.\n";
 					}
 					else
 					{
-						chose = 1;
 						std::cout << "You don't have enough money to buy this property.\n";
 					}
 				}
@@ -235,59 +256,88 @@ void Tile::handleEvent(Player& player, Map& map)
 		}
 		else if (getOccupied() && getOwner() == player.getName())
 		{
-			char choice;
+			bool chose = 0;
+			while (!chose) {
+				char choice;
+				std::cout << "Upgrade Price:" << tileConfig.price << "\n";
+				std::cout << "Sell Price:" << propertyLevel * tileConfig.price << "\n";
+				Utils::displayDialogue("player_action.moved.property_owned");
+				std::cout << "> ";
+				std::cin >> choice;
+				std::cin.ignore();
 
-			Utils::displayDialogue("player_action.moved.property_owned");
-			std::cout << "> ";
-			std::cin >> choice;
-			std::cin.ignore();
-
-			if (choice == 'R' || choice == 'r')
-			{
-
-				if (propertyLevel < 3)
+				if (choice == 'R' || choice == 'r')
 				{
-					GameConfig& config = GameConfig::getInstance();
-					auto boardTiles = config.getBoardTiles();
-					auto it = std::find_if(boardTiles.begin(), boardTiles.end(), [index](const TileConfig& tile)
-						{ return tile.id == index; });
-
-					if (it != boardTiles.end())
+					chose = 1;
+					if (propertyLevel < 3)
 					{
-						const TileConfig& tileConfig = *it;
-						if (player.getMoney() >= tileConfig.price)
+						GameConfig& config = GameConfig::getInstance();
+						auto boardTiles = config.getBoardTiles();
+						auto it = std::find_if(boardTiles.begin(), boardTiles.end(), [index](const TileConfig& tile)
+							{ return tile.id == index; });
+
+						if (it != boardTiles.end())
 						{
-							player.subtractMoney(tileConfig.price);
-							setPropertyLevel(getPropertyLevel() + 1);
-							std::cout << "Property upgraded to level " << getPropertyLevel() << "!\n";
-						}
-						else
-						{
-							std::cout << "You don't have enough money to upgrade this property.\n";
+							const TileConfig& tileConfig = *it;
+							if (player.getMoney() >= tileConfig.price)
+							{
+								player.subtractMoney(tileConfig.price);
+								setPropertyLevel(getPropertyLevel() + 1);
+								std::cout << "Property upgraded to level " << getPropertyLevel() << "!\n";
+							}
+							else
+							{
+								std::cout << "You don't have enough money to upgrade this property.\n";
+							}
 						}
 					}
+
+					else
+					{
+						std::cout << "This property is already at the maximum level (3).\n";
+					}
+
+				}
+				else if (choice == 'I' || choice == 'i') {
+					player.showInfo();
+
+					int cardChoice;
+					std::cout << "Enter the card number to use (0 to cancel): ";
+					std::cin >> cardChoice;
+					std::cin.ignore();
+
+					if (cardChoice > 0 && cardChoice <= player.getCards().size())
+					{
+						Card chosenCard = player.getCards()[cardChoice - 1];
+						std::vector<Player>& players = game.getPlayers();
+						chosenCard.applyEffect(player, players, map);
+						game.getMap().drawBoard(game.getPlayers());
+
+					}
+					else {
+						std::cout << "Returning to game.\n";
+						Utils::clearScreen();
+						game.getMap().drawBoard(game.getPlayers());
+					}
+				}
+				else if (choice == 'S' || choice == 's')
+				{
+					chose = 1;
+					int sellPrice = propertyLevel * tileConfig.price;
+					propertyLevel = 1;
+
+					player.addMoney(sellPrice);
+					setOccupied(false);
+					setOwner("");
+
+					std::cout << "You sold this property for $" << sellPrice << ".\n";
 				}
 				else
 				{
-					std::cout << "This property is already at the maximum level (3).\n";
+					std::cout << "You chose not to upgrade or sell the property.\n";
+					chose = 1;
 				}
 			}
-			else if (choice == 'S' || choice == 's')
-			{
-				int sellPrice = propertyLevel * tileConfig.price;
-				propertyLevel = 1;
-
-				player.addMoney(sellPrice);
-				setOccupied(false);
-				setOwner("");
-
-				std::cout << "You sold this property for $" << sellPrice << ".\n";
-			}
-			else
-			{
-				std::cout << "You chose not to upgrade or sell the property.\n";
-			}
-
 			Utils::pressEnterToContinue();
 
 		}
