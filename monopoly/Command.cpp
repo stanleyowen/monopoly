@@ -44,12 +44,18 @@ void Command::execute(Game& game, const std::string& input)
 			try
 			{
 				destinationId = std::stoi(subCmd);
+
 			}
 			catch (const std::invalid_argument&)
 			{
 				std::cout << "[錯誤] 無效的指令格式：" << subCmd << "\n";
 				return;
 			}
+		}
+
+		if (destinationId > 27 || destinationId < 0) {
+			std::cout << "[錯誤] 無效的位置：" << subCmd << "\n";
+			return;
 		}
 
 		const auto& config = GameConfig::getInstance();

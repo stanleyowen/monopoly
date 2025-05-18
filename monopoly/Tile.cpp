@@ -182,7 +182,7 @@ void Tile::handleEvent(Player& player, Map& map)
 			bool chose = 0;
 			while (!chose) {
 				char choice;
-				std::cout << "Price:" << tileConfig.price << "\n";
+				std::cout << tileConfig.id << " " << tileConfig.name << " Price:" << tileConfig.price << "\n";
 				Utils::displayDialogue("player_action.moved.property_unowned");
 				std::cout << "> ";
 				std::cin >> choice;
@@ -227,10 +227,11 @@ void Tile::handleEvent(Player& player, Map& map)
 				}
 				else
 				{
+					chose = 1;
 					std::cout << "You chose not to buy the property.\n";
-				}
 
-				//Utils::pressEnterToContinue();
+				}
+				Utils::pressEnterToContinue();
 				Utils::clearScreen();
 				game.getMap().drawBoard(game.getPlayers());
 			}
@@ -259,6 +260,7 @@ void Tile::handleEvent(Player& player, Map& map)
 			bool chose = 0;
 			while (!chose) {
 				char choice;
+				std::cout << tileConfig.id << " " << tileConfig.name << "\n";
 				std::cout << "Upgrade Price:" << tileConfig.price << "\n";
 				std::cout << "Sell Price:" << propertyLevel * tileConfig.price << "\n";
 				Utils::displayDialogue("player_action.moved.property_owned");
@@ -291,9 +293,9 @@ void Tile::handleEvent(Player& player, Map& map)
 							}
 						}
 					}
-
 					else
 					{
+						chose = 0;
 						std::cout << "This property is already at the maximum level (3).\n";
 					}
 
