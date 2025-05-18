@@ -16,7 +16,7 @@ int main()
 	Utils::loadDialogueData();
 
 	// Start the game
-	Game game;
+	Game& game = Game::getInstance();
 	game.start();
 
 	return 0;

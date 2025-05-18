@@ -416,8 +416,17 @@ void Game::processTurn()
 				Card chosenCard = currentPlayer.getCards()[cardChoice - 1];
 				chosenCard.applyEffect(currentPlayer, players, map);
 			}
+			else if (cardChoice == 0) {
+				std::cout << "Returning to game.\n";
+				Utils::pressEnterToContinue();
+				Utils::clearScreen();
+				map.drawBoard(players);
+			}
 			else {
 				std::cout << "Invalid choice. Returning to game.\n";
+				Utils::pressEnterToContinue();
+				Utils::clearScreen();
+				map.drawBoard(players);
 			}
 		}
 		else if (!input.empty() && input[0] == '/')
@@ -472,7 +481,7 @@ void Game::displayDiceAnimation(int dice1, int dice2, const std::vector<Player>&
 void Game::handleTileEvents(Player& player)
 {
 	Tile& currentTile = map.getTile(player.getX(), player.getY());
-	currentTile.handleEvent(player);
+	currentTile.handleEvent(player, map);
 
 	Utils::clearScreen();
 	map.drawBoard(players);
@@ -517,12 +526,12 @@ void Game::checkWinCondition()
 	}
 }
 
-bool Game::saveGame(const std::string &filename) const
+bool Game::saveGame(const std::string& filename) const
 {
 	nlohmann::json saveData;
 
 	// Save players
-	for (const auto &player : players)
+	for (const auto& player : players)
 	{
 		nlohmann::json p;
 		p["name"] = player.getName();
@@ -534,24 +543,24 @@ bool Game::saveGame(const std::string &filename) const
 
 		// Cards as vector of strings
 		std::vector<std::string> cardTypes;
-		for (const auto &card : player.getCards())
+		for (const auto& card : player.getCards())
 			cardTypes.push_back(card.getType());
 		p["cards"] = cardTypes;
 
 		// Properties as vector of {x, y}
 		nlohmann::json props = nlohmann::json::array();
-		for (const auto &prop : player.getProperties())
-			props.push_back({{"x", prop.first}, {"y", prop.second}});
+		for (const auto& prop : player.getProperties())
+			props.push_back({ {"x", prop.first}, {"y", prop.second} });
 		p["properties"] = props;
 
 		p["status"] = {
 			{"inHospital", player.isInHospital()},
-			{"hospitalTurnsLeft", player.getHospitalTurnsLeft()}};
+			{"hospitalTurnsLeft", player.getHospitalTurnsLeft()} };
 		saveData["players"].push_back(p);
 	}
 
 	// Save tiles
-	for (const auto &tile : map.getTiles())
+	for (const auto& tile : map.getTiles())
 	{
 		nlohmann::json t;
 		t["owner"] = tile.getOwner(); // string (player name or empty)
@@ -568,7 +577,7 @@ bool Game::saveGame(const std::string &filename) const
 	return true;
 }
 
-bool Game::loadGame(const std::string &filename)
+bool Game::loadGame(const std::string& filename)
 {
 	std::ifstream in(filename);
 	if (!in.is_open())
@@ -578,18 +587,18 @@ bool Game::loadGame(const std::string &filename)
 	in >> saveData;
 
 	players.clear();
-	for (const auto &p : saveData["players"])
+	for (const auto& p : saveData["players"])
 	{
 		Player player(p["name"], p["symbol"], p["money"]);
 		player.setColor(p["color"]);
 		player.setPosition(p["x"], p["y"]);
 
 		// Cards
-		for (const auto &cardType : p["cards"])
+		for (const auto& cardType : p["cards"])
 			player.addCard(Card(cardType));
 
 		// Properties
-		for (const auto &prop : p["properties"])
+		for (const auto& prop : p["properties"])
 			player.addProperty(prop["x"], prop["y"]);
 
 		player.setInHospital(p["status"]["inHospital"]);
@@ -597,7 +606,7 @@ bool Game::loadGame(const std::string &filename)
 		players.push_back(player);
 	}
 
-	auto &tiles = map.getTiles();
+	auto& tiles = map.getTiles();
 	for (size_t i = 0; i < tiles.size(); ++i)
 	{
 		tiles[i].setOwner(saveData["tiles"][i]["owner"]);

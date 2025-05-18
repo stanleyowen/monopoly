@@ -64,10 +64,10 @@ int Tile::getPositionId() const
 	return positionId;
 }
 
-void Tile::handleEvent(Player& player)
+void Tile::handleEvent(Player& player, Map& map)
 {
 	GameConfig& config = GameConfig::getInstance();
-
+	Game& game = Game::getInstance();
 
 	auto boardTiles = config.getBoardTiles();
 
@@ -189,23 +189,19 @@ void Tile::handleEvent(Player& player)
 					std::cout << "Enter the card number to use (0 to cancel): ";
 					std::cin >> cardChoice;
 					std::cin.ignore();
-					Game& game = Game::getInstance();
+
 					if (cardChoice > 0 && cardChoice <= player.getCards().size())
 					{
 						Card chosenCard = player.getCards()[cardChoice - 1];
-
-						Map& map = game.getMap();
 						std::vector<Player>& players = game.getPlayers();
 						chosenCard.applyEffect(player, players, map);
-						//Game& game = Game::getInstance();
-						//game.getMap().drawBoard(game.getPlayers());
+						game.getMap().drawBoard(game.getPlayers());
 
 					}
 					else {
-						std::cout << "Invalid choice. Returning to game.\n";
+						std::cout << "Returning to game.\n";
 						Utils::clearScreen();
-						//Game& game = Game::getInstance();
-						//game.getMap().drawBoard(game.getPlayers());
+						game.getMap().drawBoard(game.getPlayers());
 					}
 				}
 				else
@@ -213,18 +209,16 @@ void Tile::handleEvent(Player& player)
 					std::cout << "You chose not to buy the property.\n";
 				}
 
-				Utils::pressEnterToContinue();
-				//Utils::clearScreen();
-				//Game& game = Game::getInstance();
-				//game.getMap().drawBoard(game.getPlayers());
+				//Utils::pressEnterToContinue();
+				Utils::clearScreen();
+				game.getMap().drawBoard(game.getPlayers());
 			}
 
 		}
 		else if (getOccupied() && getOwner() != player.getName())
 		{
 			int totalToll = tileConfig.toll * getPropertyLevel();
-
-			Utils::displayDialogue("player_action.moved.property_toll");
+			//Utils::displayDialogue("player_action.moved.property_toll");
 			std::cout << "You have to pay a toll of $" << totalToll << " to " << getOwner() << ".\n";
 
 			if (player.getMoney() < totalToll)
@@ -237,6 +231,7 @@ void Tile::handleEvent(Player& player)
 				player.subtractMoney(totalToll);
 				std::cout << "You paid $" << totalToll << " to " << getOwner() << ".\n";
 			}
+			Utils::pressEnterToContinue();
 		}
 		else if (getOccupied() && getOwner() == player.getName())
 		{

@@ -44,28 +44,34 @@ void Card::applyEffect(Player& player, std::vector<Player>& players, Map& map)
 	if (type == "Dice Card") //控骰卡
 	{
 		int diceValue;
-		std::cout << "Choose your dice value (1-12): ";
-		std::cin >> diceValue;
-		std::cin.ignore();
+		bool  chose = 0;
+		while (!chose) {
+			std::cout << "Choose your dice value (2-12): ";
+			std::cin >> diceValue;
+			std::cin.ignore();
 
-		if (diceValue >= 1 && diceValue <= 12)
-		{
-			player.setNextDiceValue(diceValue);
-			std::cout << "Dice Control Card used! Next dice will roll: " << diceValue << "\n";
-			player.removeCard("Dice Card");
+			if (diceValue >= 2 && diceValue <= 12)
+			{
+				chose = 1;
+				player.setNextDiceValue(diceValue);
+				std::cout << "Dice Control Card used! Next dice will roll: " << diceValue << "\n";
+				player.removeCard("Dice Card");
+			}
+			else
+			{
+				std::cout << "Invalid dice value. Please enter a number between 2 and 12.\n";
+
+			}
+
 		}
-		else
-		{
-			std::cout << "Invalid dice value. Please enter a number between 1 and 12.\n";
-		}
+
 	}
 	else if (type == "Barrier Card") { //路障卡
 		std::cout << "Placing a barrier on a tile to block players.\n";
 		// Implement barrier logic here
 	}
 	else if (type == "Destroy Card") { //拆除卡
-		//std::cout << "Destroying another player's property.\n";
-		// Implement property destruction logic here
+
 		std::cout << "Choose a player to destroy their property:\n";
 
 		// 列出所有玩家
@@ -121,8 +127,6 @@ void Card::applyEffect(Player& player, std::vector<Player>& players, Map& map)
 			// 獲取地名
 			std::string propertyName = (locationMap.find(tileId) != locationMap.end()) ? locationMap[tileId] : "Unknown";
 
-			//Game& game = Game::getInstance();
-			//Map& map = game.getMap();
 			Tile& tile = map.getTile(x, y);
 			std::cout << tile.getSymbol() << "\n";
 			int buildingLevel = tile.getPropertyLevel();
@@ -165,8 +169,6 @@ void Card::applyEffect(Player& player, std::vector<Player>& players, Map& map)
 		auto locationMap = config.getLocationMap();
 		std::string propertyName = (locationMap.find(tileId) != locationMap.end()) ? locationMap[tileId] : "Unknown";
 
-
-
 		if (tile.getPropertyLevel() > 1)
 		{
 			tile.setPropertyLevel(tile.getPropertyLevel() - 1);
@@ -194,51 +196,4 @@ void Card::applyEffect(Player& player, std::vector<Player>& players, Map& map)
 	}
 }
 
-/* void Card::applyEffect(Player& player, std::vector<std::shared_ptr<Player>>& players) {
-	if (type == "Barrier Card") { //路障卡
-		std::cout << "Placing a barrier on a tile to block players.\n";
-		// Implement barrier logic here
-	}
-	else if (type == "Dice Card") { //骰控卡
-		std::cout << "Choose the number you roll on the dice.\n";
-		// Implement dice control logic here
-		int diceValue;
-		std::cout << "Choose your dice value (1-12): ";
-		std::cin >> diceValue;
 
-		if (diceValue >= 1 && diceValue <= 12) {
-			player.setNextDiceValue(diceValue);
-			std::cout << "Dice Control Card used! Next dice will roll: " << diceValue << "\n";
-			player.removeCard("Dice Card");
-		}
-		else {
-			std::cout << "Invalid dice value. Please enter a number between 1 and 12.\n";
-		}
-	}
-	else if (type == "Destroy Card") { //拆除卡
-		std::cout << "Destroying another player's property.\n";
-		// Implement property destruction logic here
-
-	}
-	else if (type == "Fate Card") { //命運卡
-		std::cout << "Triggering a Fate event.\n";
-		// Implement fate event logic here
-		int fate = rand() % 2;
-		if (fate == 0) {
-			std::cout << "You gained $500.\n";
-			player.addMoney(500);
-		}
-		else {
-			std::cout << "You lost $300.\n";
-			player.subtractMoney(300);
-		}
-	}
-	else if (type == "Rocket Card") { //火箭卡
-		std::cout << "Sending a player to the hospital for 2 turns.\n";
-		// Implement rocket card logic here
-
-	}
-	else {
-		std::cout << "Unknown card type.\n";
-	}
-}*/

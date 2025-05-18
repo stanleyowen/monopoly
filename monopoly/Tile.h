@@ -28,7 +28,7 @@ public:
 	void setOwner(const std::string& newOwner);
 
 	// Event handling methods for random events, etc.
-	void handleEvent(Player& player);
+	void handleEvent(Player& player, Map& map);
 	void enterShop(Player& player);
 
 
