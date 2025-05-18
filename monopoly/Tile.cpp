@@ -97,13 +97,13 @@ void Tile::handleEvent(Player& player, Map& map)
 	}
 	else if (tileConfig.type == "store")
 	{
-		Utils::displayDialogue("player_action.moved.store");
 		bool chose = 0;
-		char choice;
-		std::cout << "> ";
-		std::cin >> choice;
-		std::cin.ignore();
 		while (!chose) {
+			Utils::displayDialogue("player_action.moved.store");
+			char choice;
+			std::cout << "> ";
+			std::cin >> choice;
+			std::cin.ignore();
 			if (choice == 'E' || choice == 'e')
 			{
 				enterShop(player);
@@ -361,81 +361,88 @@ void Tile::enterShop(Player& player)
 	std::cout << "[0] Exit store\n";
 	std::cout << "Enter the number of the card you want to buy: ";
 
-	int choice;
-	std::cin >> choice;
-	std::cin.ignore();
-	switch (choice)
-	{
-	case 1:
-		if (player.getMoney() >= 1500)
+	bool chose = 1;
+	do {
+		int choice;
+		chose = 1;
+		std::cin >> choice;
+		std::cin.ignore();
+		switch (choice)
 		{
-			player.subtractMoney(1500);
-			Card barrierCard("Barrier Card");
-			player.addCard(barrierCard);
-			std::cout << "You bought a Barrier Card.\n";
+		case 1:
+			if (player.getMoney() >= 1500)
+			{
+				player.subtractMoney(1500);
+				Card barrierCard("Barrier Card");
+				player.addCard(barrierCard);
+				std::cout << "You bought a Barrier Card.\n";
+			}
+			else
+			{
+				std::cout << "You don't have enough money to buy this card.\n";
+			}
+			break;
+		case 2:
+			if (player.getMoney() >= 2000)
+			{
+				player.subtractMoney(2000);
+				Card diceCard("Dice Card");
+				player.addCard(diceCard);
+				std::cout << "You bought a Dice Card.\n";
+			}
+			else
+			{
+				std::cout << "You don't have enough money to buy this card.\n";
+			}
+			break;
+		case 3:
+			if (player.getMoney() >= 2500)
+			{
+				player.subtractMoney(2500);
+				Card destroyCard("Destroy Card");
+				player.addCard(destroyCard);
+				std::cout << "You bought a Destroy Card.\n";
+			}
+			else
+			{
+				std::cout << "You don't have enough money to buy this card.\n";
+			}
+			break;
+		case 4:
+			if (player.getMoney() >= 1000)
+			{
+				player.subtractMoney(1000);
+				Card fateCard("Fate Card");
+				player.addCard(fateCard);
+				std::cout << "You bought a Fate Card.\n";
+			}
+			else
+			{
+				std::cout << "You don't have enough money to buy this card.\n";
+			}
+			break;
+		case 5:
+			if (player.getMoney() >= 3000)
+			{
+				player.subtractMoney(3000);
+				Card rocketCard("Rocket Card");
+				player.addCard(rocketCard);
+				std::cout << "You bought a Rocket Card.\n";
+			}
+			else
+			{
+				std::cout << "You don't have enough money to buy this card.\n";
+			}
+			break;
+		case 0:
+			std::cout << "Exiting the store.\n";
+			break;
+		default:
+			std::cout << "Invalid choice. Exiting the store.\n";
+			std::cout << "Enter the number of the card you want to buy: ";
+			chose = 0;
+			break;
 		}
-		else
-		{
-			std::cout << "You don't have enough money to buy this card.\n";
-		}
-		break;
-	case 2:
-		if (player.getMoney() >= 2000)
-		{
-			player.subtractMoney(2000);
-			Card diceCard("Dice Card");
-			player.addCard(diceCard);
-			std::cout << "You bought a Dice Card.\n";
-		}
-		else
-		{
-			std::cout << "You don't have enough money to buy this card.\n";
-		}
-		break;
-	case 3:
-		if (player.getMoney() >= 2500)
-		{
-			player.subtractMoney(2500);
-			Card destroyCard("Destroy Card");
-			player.addCard(destroyCard);
-			std::cout << "You bought a Destroy Card.\n";
-		}
-		else
-		{
-			std::cout << "You don't have enough money to buy this card.\n";
-		}
-		break;
-	case 4:
-		if (player.getMoney() >= 1000)
-		{
-			player.subtractMoney(1000);
-			Card fateCard("Fate Card");
-			player.addCard(fateCard);
-			std::cout << "You bought a Fate Card.\n";
-		}
-		else
-		{
-			std::cout << "You don't have enough money to buy this card.\n";
-		}
-		break;
-	case 5:
-		if (player.getMoney() >= 3000)
-		{
-			player.subtractMoney(3000);
-			Card rocketCard("Rocket Card");
-			player.addCard(rocketCard);
-			std::cout << "You bought a Rocket Card.\n";
-		}
-		else
-		{
-			std::cout << "You don't have enough money to buy this card.\n";
-		}
-		break;
-	case 0:
-		std::cout << "Exiting the store.\n";
-		break;
-	default:
-		std::cout << "Invalid choice. Exiting the store.\n";
-		break;
-	}
+	} while (chose == 0);
+	Utils::pressEnterToContinue();
 }
