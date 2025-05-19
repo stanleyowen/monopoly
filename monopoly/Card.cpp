@@ -4,16 +4,18 @@
 #include "Game/Player.h"
 #include "Tile.h"
 #include "Game/GameConfig.h"
-#include "Minigame.h"
+#include "MiniGame.h"
 #include <iostream>
 
-Card::Card(const std::string& type) : type(type) {}
+Card::Card(const std::string &type) : type(type) {}
 
-std::string Card::getType() const {
+std::string Card::getType() const
+{
 	return type;
 }
 
-std::string Card::getAbbreviatedName() const {
+std::string Card::getAbbreviatedName() const
+{
 	std::string t = type;
 
 	// Trim leading/trailing spaces
@@ -25,28 +27,37 @@ std::string Card::getAbbreviatedName() const {
 	std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
 
 	// Match normalized names
-	if (lower == "dice card") return "Di";
-	if (lower == "destroy card") return "Dst";
-	if (lower == "fate card") return "Fa";
-	if (lower == "rocket card") return "Ro";
-	if (lower == "barrier card") return "Ba";
+	if (lower == "dice card")
+		return "Di";
+	if (lower == "destroy card")
+		return "Dst";
+	if (lower == "fate card")
+		return "Fa";
+	if (lower == "rocket card")
+		return "Ro";
+	if (lower == "barrier card")
+		return "Ba";
 
 	// Fallback (first two non-space letters)
 	std::string fallback;
-	for (char c : t) {
-		if (!isspace(c)) fallback += c;
-		if (fallback.size() == 2) break;
+	for (char c : t)
+	{
+		if (!isspace(c))
+			fallback += c;
+		if (fallback.size() == 2)
+			break;
 	}
 	return fallback.empty() ? "??" : fallback;
 }
 
-void Card::applyEffect(Player& player, std::vector<Player>& players, Map& map)
+void Card::applyEffect(Player &player, std::vector<Player> &players, Map &map)
 {
-	if (type == "Dice Card") //±±»ë¥d
+	if (type == "Dice Card") // ï¿½ï¿½ï¿½ï¿½d
 	{
 		int diceValue;
-		bool  chose = 0;
-		while (!chose) {
+		bool chose = 0;
+		while (!chose)
+		{
 			std::cout << "Choose your dice value (2-12): ";
 			std::cin >> diceValue;
 			std::cin.ignore();
@@ -61,21 +72,20 @@ void Card::applyEffect(Player& player, std::vector<Player>& players, Map& map)
 			else
 			{
 				std::cout << "Invalid dice value. Please enter a number between 2 and 12.\n";
-
 			}
-
 		}
-
 	}
-	else if (type == "Barrier Card") { //¸ô»Ù¥d
+	else if (type == "Barrier Card")
+	{ // ï¿½ï¿½ï¿½Ù¥d
 		std::cout << "Placing a barrier on a tile to block players.\n";
 		// Implement barrier logic here
 	}
-	else if (type == "Destroy Card") { //©î°£¥d
+	else if (type == "Destroy Card")
+	{ // ï¿½î°£ï¿½d
 
 		std::cout << "Choose a player to destroy their property:\n";
 
-		// ¦C¥X©Ò¦³ª±®a
+		// ï¿½Cï¿½Xï¿½Ò¦ï¿½ï¿½ï¿½ï¿½a
 		for (size_t i = 0; i < players.size(); ++i)
 		{
 			std::cout << i + 1 << ". " << players[i].getName() << "\n";
@@ -92,25 +102,25 @@ void Card::applyEffect(Player& player, std::vector<Player>& players, Map& map)
 			return;
 		}
 
-		Player& targetPlayer = players[playerChoice - 1];
-		const auto& properties = targetPlayer.getProperties();
+		Player &targetPlayer = players[playerChoice - 1];
+		const auto &properties = targetPlayer.getProperties();
 
-		// ÀË¬dª±®a¬O§_¦³©Ð²£
+		// ï¿½Ë¬dï¿½ï¿½ï¿½aï¿½Oï¿½_ï¿½ï¿½ï¿½Ð²ï¿½
 		if (properties.empty())
 		{
 			std::cout << targetPlayer.getName() << " has no properties to destroy.\n";
 			return;
 		}
 
-		// ¦C¥X¥Ø¼Ðª±®aªº©Ò¦³©Ð²£
+		// ï¿½Cï¿½Xï¿½Ø¼Ðªï¿½ï¿½aï¿½ï¿½ï¿½Ò¦ï¿½ï¿½Ð²ï¿½
 		std::cout << "Choose a property to destroy:\n";
 		for (size_t i = 0; i < properties.size(); ++i)
 		{
-			// ¥¿½TÀò¨ú©Ð²£¦ì¸m (x, y)
+			// ï¿½ï¿½ï¿½Tï¿½ï¿½ï¿½ï¿½Ð²ï¿½ï¿½ï¿½m (x, y)
 			int x = properties[i].first;
 			int y = properties[i].second;
 
-			// ­pºâ tileId (°²³]¦a¹Ï¬° 8x8)
+			// ï¿½pï¿½ï¿½ tileId (ï¿½ï¿½ï¿½]ï¿½aï¿½Ï¬ï¿½ 8x8)
 			int tileId = -1;
 
 			if (x == 0)
@@ -122,13 +132,13 @@ void Card::applyEffect(Player& player, std::vector<Player>& players, Map& map)
 			else if (y == 0)
 				tileId = 7 + 7 + 7 + (7 - x);
 
-			GameConfig& config = GameConfig::getInstance();
+			GameConfig &config = GameConfig::getInstance();
 			auto locationMap = config.getLocationMap();
 
-			// Àò¨ú¦a¦W
+			// ï¿½ï¿½ï¿½ï¿½aï¿½W
 			std::string propertyName = (locationMap.find(tileId) != locationMap.end()) ? locationMap[tileId] : "Unknown";
 
-			Tile& tile = map.getTile(x, y);
+			Tile &tile = map.getTile(x, y);
 			std::cout << tile.getSymbol() << "\n";
 			int buildingLevel = tile.getPropertyLevel();
 
@@ -146,11 +156,11 @@ void Card::applyEffect(Player& player, std::vector<Player>& players, Map& map)
 			return;
 		}
 
-		// Àò¨ú¿ï¤¤ªº©Ð²£®y¼Ð
+		// ï¿½ï¿½ï¿½ï¿½ï¤¤ï¿½ï¿½ï¿½Ð²ï¿½ï¿½yï¿½ï¿½
 		int x = properties[propertyChoice - 1].first;
 		int y = properties[propertyChoice - 1].second;
 
-		// ­pºâ tileId
+		// ï¿½pï¿½ï¿½ tileId
 		int tileId = -1;
 
 		if (x == 0)
@@ -162,11 +172,11 @@ void Card::applyEffect(Player& player, std::vector<Player>& players, Map& map)
 		else if (y == 0)
 			tileId = 7 + 7 + 7 + (7 - x);
 
-		//Game& game = Game::getInstance();
-		//Map& map = game.getMap();
-		Tile& tile = map.getTile(x, y);
+		// Game& game = Game::getInstance();
+		// Map& map = game.getMap();
+		Tile &tile = map.getTile(x, y);
 		std::cout << tile.getSymbol() << "\n";
-		GameConfig& config = GameConfig::getInstance();
+		GameConfig &config = GameConfig::getInstance();
 		auto locationMap = config.getLocationMap();
 		std::string propertyName = (locationMap.find(tileId) != locationMap.end()) ? locationMap[tileId] : "Unknown";
 
@@ -191,9 +201,9 @@ void Card::applyEffect(Player& player, std::vector<Player>& players, Map& map)
 		map.drawBoard(players);
 		std::cout << "Destroy Card used! Property \"" << propertyName << "\" has been destroyed.\n";
 	}
-	else if (type == "Fate Card") { //©R¹B¥d
+	else if (type == "Fate Card")
+	{ // ï¿½Rï¿½Bï¿½d
 		std::cout << "Triggering a Fate event.\n";
-
 
 		srand(static_cast<unsigned>(time(nullptr)));
 		int rng = rand() % 4;
@@ -221,7 +231,8 @@ void Card::applyEffect(Player& player, std::vector<Player>& players, Map& map)
 		map.drawBoard(players);
 		player.removeCard("Fate Card");
 	}
-	else if (type == "Rocket Card") { //¤õ½b¥d
+	else if (type == "Rocket Card")
+	{ // ï¿½ï¿½ï¿½bï¿½d
 		std::cout << "Sending a player to the hospital for 2 turns.\n";
 
 		// List all players except the current player
@@ -231,10 +242,10 @@ void Card::applyEffect(Player& player, std::vector<Player>& players, Map& map)
 
 		for (size_t i = 0; i < players.size(); ++i)
 		{
-			if (players[i].getName() != player.getName()) // ¹LÂo±¼¦Û¤v
+			if (players[i].getName() != player.getName()) // ï¿½Lï¿½oï¿½ï¿½ï¿½Û¤v
 			{
 				std::cout << index << ". " << players[i].getName() << "\n";
-				validChoices.push_back(i); // ¦s¤U¦³®Ä¿ï¶µªº¹ê»Ú¯Á¤Þ
+				validChoices.push_back(i); // ï¿½sï¿½Uï¿½ï¿½ï¿½Ä¿ï¶µï¿½ï¿½ï¿½ï¿½Ú¯ï¿½ï¿½ï¿½
 				index++;
 			}
 		}
@@ -250,19 +261,16 @@ void Card::applyEffect(Player& player, std::vector<Player>& players, Map& map)
 			return;
 		}
 
-		// Àò¨ú¿ï¾Üªºª±®a
-		Player& targetPlayer = players[validChoices[playerChoice - 1]];
+		// ï¿½ï¿½ï¿½ï¿½ï¿½Üªï¿½ï¿½ï¿½ï¿½a
+		Player &targetPlayer = players[validChoices[playerChoice - 1]];
 
 		targetPlayer.sendToHospital();
 		std::cout << targetPlayer.getName() << " was sent to the hospital for 2 rounds!\n";
 		map.drawBoard(players);
 		player.removeCard("Rocket Card");
-
 	}
 	else
 	{
 		std::cout << "Unknown or unsupported card type.\n";
 	}
 }
-
-

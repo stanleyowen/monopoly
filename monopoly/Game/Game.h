@@ -23,27 +23,27 @@ class Game
 {
 public:
 	Game();
-	static Game& getInstance(); // ��ҼҦ���k
-	Map& getMap();
+	static Game &getInstance(); // ��ҼҦ���k
+	Map &getMap();
 	void initializePlayers();
-	std::vector<Player>& getPlayers();
+	std::vector<Player> &getPlayers();
 	void start();
-	void animatePlayerMovement(Player& player, int steps, int dice1, int dice2);
-	void animateControlledPlayerMovement(Player& player, int steps, int diceValue);
-	void displayDiceAnimation(int dice1, int dice2, const std::vector<Player>& players);
+	void animatePlayerMovement(Player &player, int steps, int dice1, int dice2);
+	void animateControlledPlayerMovement(Player &player, int steps, int diceValue);
+	void displayDiceAnimation(int dice1, int dice2, const std::vector<Player> &players);
 	void processTurn();
 
-	void handleTileEvents(Player& player);
+	void handleTileEvents(Player &player);
 	void checkWinCondition();
 	int getCurrentPlayerIndex() const;
 	void setCurrentPlayerIndex(int index);
-	int getTileIdByName(const std::string& name) const;
+	int getTileIdByName(const std::string &name) const;
 
 	void setGameState(GameState state);
 	GameState getGameState() const;
 
-	bool saveGame(const std::string& filename) const;
-	bool loadGame(const std::string& filename);
+	bool saveGame(const std::string &filename);
+	bool loadGame(const std::string &filename);
 
 private:
 	Map map;
@@ -53,7 +53,7 @@ private:
 
 	GameState currentState = GameState::INIT;
 
-	Game(const Game&) = delete;			// �R�������c�y
-	Game& operator=(const Game&) = delete; // �R����ȹB��
+	Game(const Game &) = delete;			// �R�������c�y
+	Game &operator=(const Game &) = delete; // �R����ȹB��
 	static Game instance;					// ��ҹ��
 };

@@ -4,17 +4,18 @@
 #include "Tile.h"
 #include <iostream>
 
-class Map {
+class Map
+{
 private:
 	Tile board[8][8];
 
 public:
 	Map();
 	void setTile(int x, int y, char tileSymbol);
-	Tile& getTile(int x, int y);
+	Tile &getTile(int x, int y);
 
 	void setupBoard();
-	void drawBoard(const std::vector<Player>& players) const;
+	void drawBoard(const std::vector<Player> &players) const;
 
 	void resetProperty(int x, int y);
 	Tile &getTileById(int tileId);

@@ -1,0 +1,283 @@
+{
+    "currentPlayerIndex": 0,
+    "players": [
+        {
+            "cards": [
+                "Dice Card",
+                "Destroy Card",
+                "Rocket Card",
+                "Fate Card"
+            ],
+            "color": "\u001b[91m",
+            "money": 75280,
+            "name": "Player1",
+            "properties": [
+                {
+                    "x": 7,
+                    "y": 3
+                },
+                {
+                    "x": 7,
+                    "y": 1
+                }
+            ],
+            "status": {
+                "hospitalTurnsLeft": 0,
+                "inHospital": false
+            },
+            "symbol": "[A]",
+            "x": 7,
+            "y": 1
+        },
+        {
+            "cards": [
+                "Dice Card",
+                "Destroy Card",
+                "Rocket Card",
+                "Fate Card"
+            ],
+            "color": "\u001b[92m",
+            "money": 84450,
+            "name": "Player2",
+            "properties": [
+                {
+                    "x": 7,
+                    "y": 2
+                }
+            ],
+            "status": {
+                "hospitalTurnsLeft": 0,
+                "inHospital": false
+            },
+            "symbol": "[B]",
+            "x": 7,
+            "y": 2
+        }
+    ],
+    "tiles": [
+        {
+            "isOccupied": false,
+            "level": 1,
+            "owner": "",
+            "symbol": "S",
+            "x": 0,
+            "y": 0
+        },
+        {
+            "isOccupied": false,
+            "level": 1,
+            "owner": "",
+            "symbol": "P",
+            "x": 0,
+            "y": 1
+        },
+        {
+            "isOccupied": false,
+            "level": 1,
+            "owner": "",
+            "symbol": "F",
+            "x": 0,
+            "y": 2
+        },
+        {
+            "isOccupied": false,
+            "level": 1,
+            "owner": "",
+            "symbol": "P",
+            "x": 0,
+            "y": 3
+        },
+        {
+            "isOccupied": false,
+            "level": 1,
+            "owner": "",
+            "symbol": "I",
+            "x": 0,
+            "y": 4
+        },
+        {
+            "isOccupied": false,
+            "level": 1,
+            "owner": "",
+            "symbol": "P",
+            "x": 0,
+            "y": 5
+        },
+        {
+            "isOccupied": false,
+            "level": 1,
+            "owner": "",
+            "symbol": "P",
+            "x": 0,
+            "y": 6
+        },
+        {
+            "isOccupied": false,
+            "level": 1,
+            "owner": "",
+            "symbol": "P",
+            "x": 0,
+            "y": 7
+        },
+        {
+            "isOccupied": false,
+            "level": 1,
+            "owner": "",
+            "symbol": "P",
+            "x": 1,
+            "y": 0
+        },
+        {
+            "isOccupied": false,
+            "level": 1,
+            "owner": "",
+            "symbol": "P",
+            "x": 1,
+            "y": 7
+        },
+        {
+            "isOccupied": false,
+            "level": 1,
+            "owner": "",
+            "symbol": "P",
+            "x": 2,
+            "y": 0
+        },
+        {
+            "isOccupied": false,
+            "level": 1,
+            "owner": "",
+            "symbol": "P",
+            "x": 2,
+            "y": 7
+        },
+        {
+            "isOccupied": false,
+            "level": 1,
+            "owner": "",
+            "symbol": "P",
+            "x": 3,
+            "y": 0
+        },
+        {
+            "isOccupied": false,
+            "level": 1,
+            "owner": "",
+            "symbol": "C",
+            "x": 3,
+            "y": 7
+        },
+        {
+            "isOccupied": false,
+            "level": 1,
+            "owner": "",
+            "symbol": "C",
+            "x": 4,
+            "y": 0
+        },
+        {
+            "isOccupied": false,
+            "level": 1,
+            "owner": "",
+            "symbol": "P",
+            "x": 4,
+            "y": 7
+        },
+        {
+            "isOccupied": false,
+            "level": 1,
+            "owner": "",
+            "symbol": "P",
+            "x": 5,
+            "y": 0
+        },
+        {
+            "isOccupied": false,
+            "level": 1,
+            "owner": "",
+            "symbol": "P",
+            "x": 5,
+            "y": 7
+        },
+        {
+            "isOccupied": false,
+            "level": 1,
+            "owner": "",
+            "symbol": "P",
+            "x": 6,
+            "y": 0
+        },
+        {
+            "isOccupied": false,
+            "level": 1,
+            "owner": "",
+            "symbol": "P",
+            "x": 6,
+            "y": 7
+        },
+        {
+            "isOccupied": false,
+            "level": 1,
+            "owner": "",
+            "symbol": "P",
+            "x": 7,
+            "y": 0
+        },
+        {
+            "isOccupied": true,
+            "level": 1,
+            "owner": "Player1",
+            "symbol": "P",
+            "x": 7,
+            "y": 1
+        },
+        {
+            "isOccupied": true,
+            "level": 2,
+            "owner": "Player2",
+            "symbol": "P",
+            "x": 7,
+            "y": 2
+        },
+        {
+            "isOccupied": true,
+            "level": 1,
+            "owner": "Player1",
+            "symbol": "P",
+            "x": 7,
+            "y": 3
+        },
+        {
+            "isOccupied": false,
+            "level": 1,
+            "owner": "",
+            "symbol": "P",
+            "x": 7,
+            "y": 4
+        },
+        {
+            "isOccupied": false,
+            "level": 1,
+            "owner": "",
+            "symbol": "F",
+            "x": 7,
+            "y": 5
+        },
+        {
+            "isOccupied": false,
+            "level": 1,
+            "owner": "",
+            "symbol": "H",
+            "x": 7,
+            "y": 6
+        },
+        {
+            "isOccupied": false,
+            "level": 1,
+            "owner": "",
+            "symbol": "P",
+            "x": 7,
+            "y": 7
+        }
+    ]
+}
