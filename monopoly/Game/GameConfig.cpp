@@ -34,6 +34,7 @@ void GameConfig::loadConfig()
 	{
 		std::cout << dialogue["input_player_num"].get<std::string>() << "\n";
 		std::cin >> playersNum;
+		std::cin.ignore();
 
 		playerNames.resize(playersNum);
 		for (int i = 0; i < playersNum; ++i)

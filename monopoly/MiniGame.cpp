@@ -22,6 +22,7 @@ void MiniGame::playHorseRace(Player& player)
 	while (betHorse < 1 || betHorse > 4)
 	{
 		std::cin >> betHorse;
+		std::cin.ignore();
 		if (betHorse < 1 || betHorse > 4)
 			std::cout << "Invalid horse. Pick 1 to 4: ";
 	}
