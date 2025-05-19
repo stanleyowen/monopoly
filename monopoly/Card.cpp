@@ -7,7 +7,7 @@
 #include "MiniGame.h"
 #include <iostream>
 
-Card::Card(const std::string &type) : type(type) {}
+Card::Card(const std::string& type) : type(type) {}
 
 std::string Card::getType() const
 {
@@ -50,7 +50,7 @@ std::string Card::getAbbreviatedName() const
 	return fallback.empty() ? "??" : fallback;
 }
 
-void Card::applyEffect(Player &player, std::vector<Player> &players, Map &map)
+void Card::applyEffect(Player& player, std::vector<Player>& players, Map& map)
 {
 	if (type == "Dice Card") // ����d
 	{
@@ -102,8 +102,8 @@ void Card::applyEffect(Player &player, std::vector<Player> &players, Map &map)
 			return;
 		}
 
-		Player &targetPlayer = players[playerChoice - 1];
-		const auto &properties = targetPlayer.getProperties();
+		Player& targetPlayer = players[playerChoice - 1];
+		const auto& properties = targetPlayer.getProperties();
 
 		// �ˬd���a�O�_���в�
 		if (properties.empty())
@@ -132,13 +132,13 @@ void Card::applyEffect(Player &player, std::vector<Player> &players, Map &map)
 			else if (y == 0)
 				tileId = 7 + 7 + 7 + (7 - x);
 
-			GameConfig &config = GameConfig::getInstance();
+			GameConfig& config = GameConfig::getInstance();
 			auto locationMap = config.getLocationMap();
 
 			// ����a�W
 			std::string propertyName = (locationMap.find(tileId) != locationMap.end()) ? locationMap[tileId] : "Unknown";
 
-			Tile &tile = map.getTile(x, y);
+			Tile& tile = map.getTile(x, y);
 			std::cout << tile.getSymbol() << "\n";
 			int buildingLevel = tile.getPropertyLevel();
 
@@ -174,9 +174,9 @@ void Card::applyEffect(Player &player, std::vector<Player> &players, Map &map)
 
 		// Game& game = Game::getInstance();
 		// Map& map = game.getMap();
-		Tile &tile = map.getTile(x, y);
+		Tile& tile = map.getTile(x, y);
 		std::cout << tile.getSymbol() << "\n";
-		GameConfig &config = GameConfig::getInstance();
+		GameConfig& config = GameConfig::getInstance();
 		auto locationMap = config.getLocationMap();
 		std::string propertyName = (locationMap.find(tileId) != locationMap.end()) ? locationMap[tileId] : "Unknown";
 
@@ -262,7 +262,7 @@ void Card::applyEffect(Player &player, std::vector<Player> &players, Map &map)
 		}
 
 		// �����ܪ����a
-		Player &targetPlayer = players[validChoices[playerChoice - 1]];
+		Player& targetPlayer = players[validChoices[playerChoice - 1]];
 
 		targetPlayer.sendToHospital();
 		std::cout << targetPlayer.getName() << " was sent to the hospital for 2 rounds!\n";

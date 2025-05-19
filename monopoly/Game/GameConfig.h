@@ -108,7 +108,7 @@ public:
 
 	// Set and get event value range
 	void setEventValueRange(const std::map<std::string, std::pair<int, int>>& range);
-	std::map<std::string, std::pair<int, int>> getEventValueRange() const;
+	const std::map<std::string, std::pair<int, int>> getEventValueRange() const;
 
 	// Set and get animation status
 	void setAnimation(bool status);

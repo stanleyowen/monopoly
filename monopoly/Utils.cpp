@@ -27,7 +27,7 @@ void Utils::clearScreen()
 #endif
 }
 
-void Utils::displayDialogue(const std::string &key)
+void Utils::displayDialogue(const std::string& key)
 {
 	// Split the key into parts for nested access
 	std::istringstream keyStream(key);
@@ -59,7 +59,7 @@ void Utils::displayDialogue(const std::string &key)
 	// Display the options
 	if (current.contains("options"))
 	{
-		for (const auto &option : current["options"])
+		for (const auto& option : current["options"])
 		{
 			std::cout << "[" << option["key"].get<std::string>() << "] " << option["description"].get<std::string>() << "\n";
 		}

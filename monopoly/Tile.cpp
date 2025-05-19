@@ -1,4 +1,4 @@
-#include "Tile.h"
+﻿#include "Tile.h"
 #include "Utils.h"
 #include "Game/Player.h"
 #include "Game/GameConfig.h"
@@ -139,33 +139,154 @@ void Tile::handleEvent(Player& player, Map& map)
 		}
 
 	}
-	else if (tileConfig.type == "fate" || tileConfig.type == "chance")
+	else if (tileConfig.type == "fate")
 	{
+		std::cout << "You triggered a Fate tile...\n\n";
 
-		std::cout << "You triggered a " << tileConfig.type << " event!\n";
+		int roll = rand() % 100;
 
-		srand(static_cast<unsigned>(time(nullptr)));
-		int rng = rand() % 4;
+		if (roll < 25)
+		{
+			std::cout << "[Fate] A minigame has been triggered!\n\n";
+			int gameType = rand() % 4;
+			if (gameType == 0) MiniGame::playHorseRace(player);
+			else if (gameType == 1) MiniGame::playDragonGate(player);
+			else if (gameType == 2) MiniGame::playMazeEscape(player);
+			else MiniGame::playTreasureHunt(player);
 
-		if (rng == 0)
-		{
-			MiniGame::playHorseRace(player);
+			game.getMap().drawBoard(game.getPlayers());
 		}
-		else if (rng == 1)
+		else if (roll < 95) // 25–94 → 70% chance
 		{
-			MiniGame::playDragonGate(player);
-		}
-		else if (rng == 2)
-		{
-			MiniGame::playMazeEscape(player);
-		}
-		else if (rng == 3)
-		{
-			MiniGame::playTreasureHunt(player);
+			GameConfig& config = GameConfig::getInstance();
+			auto valueRange = config.getEventValueRange();
+
+			std::string typeUpper = tileConfig.type;
+			std::transform(typeUpper.begin(), typeUpper.end(), typeUpper.begin(), ::toupper);
+
+			auto it = valueRange.find(typeUpper);
+			if (it == valueRange.end())
+			{
+				std::cout << "[Error] No event value range defined for type: " << typeUpper << "\n";
+				return;
+			}
+
+			int min = it->second.first;
+			int max = it->second.second;
+			int amount = rand() % (max - min + 1) + min;
+			bool gain = rand() % 2;
+			int actualAmount = gain ? amount : -amount;
+
+			if (actualAmount > 0)
+				player.addMoney(actualAmount);
+			else
+				player.subtractMoney(-actualAmount);
+
+			std::vector<std::string> gainMsgs = {
+				"You found $",
+				"You sold old stuff and earned $",
+				"You received a mystery gift worth $"
+			};
+			std::vector<std::string> lossMsgs = {
+				"You paid a fine of $",
+				"You lost your wallet and lost $",
+				"You bought a useless app for $"
+			};
+
+			int msgIndex = rand() % 3;
+			std::string message = gain
+				? gainMsgs[msgIndex] + std::to_string(actualAmount) + "."
+				: lossMsgs[msgIndex] + std::to_string(-actualAmount) + ".";
+
+			std::cout << "[Fate] " << message << "\n\n";
+
+			Utils::pressEnterToContinue();
+			Utils::clearScreen();
+			game.getMap().drawBoard(game.getPlayers());
 		}
 		else
 		{
-			std::cout << "You found nothing special.\n";
+			std::cout << "[Fate] But nothing happened...\n\n";
+
+			Utils::pressEnterToContinue();
+			Utils::clearScreen();
+			game.getMap().drawBoard(game.getPlayers());
+		}
+	}
+	else if (tileConfig.type == "chance")
+	{
+		std::cout << "You triggered a Chance tile...\n\n";
+
+		int roll = rand() % 100;
+
+		if (roll < 35)
+		{
+			std::cout << "[Chance] A minigame has been triggered!\n\n";
+			int gameType = rand() % 4;
+			if (gameType == 0) MiniGame::playHorseRace(player);
+			else if (gameType == 1) MiniGame::playDragonGate(player);
+			else if (gameType == 2) MiniGame::playMazeEscape(player);
+			else MiniGame::playTreasureHunt(player);
+
+			game.getMap().drawBoard(game.getPlayers());
+		}
+		else if (roll < 90) // 35–89 → 55% chance
+		{
+			GameConfig& config = GameConfig::getInstance();
+			auto valueRange = config.getEventValueRange();
+
+			std::string typeUpper = tileConfig.type;
+			std::transform(typeUpper.begin(), typeUpper.end(), typeUpper.begin(), ::toupper);
+
+			auto it = valueRange.find(typeUpper);
+			if (it == valueRange.end())
+			{
+				std::cout << "[Error] No event value range defined for type: " << typeUpper << "\n";
+				return;
+			}
+
+			int min = it->second.first;
+			int max = it->second.second;
+			int amount = rand() % (max - min + 1) + min;
+			bool gain = rand() % 2;
+			int actualAmount = gain ? amount : -amount;
+
+			if (actualAmount > 0)
+				player.addMoney(actualAmount);
+			else
+				player.subtractMoney(-actualAmount);
+
+			std::vector<std::string> gainMsgs = {
+				"You won the lottery and gained $",
+				"You sold a startup and received $",
+				"You got a lucky inheritance of $",
+				"Your stocks exploded! You gained $"
+			};
+			std::vector<std::string> lossMsgs = {
+				"You got scammed and lost $",
+				"You paid unexpected hospital bills of $",
+				"Your car broke down. Repairs cost $",
+				"You invested in crypto at the wrong time. Lost $"
+			};
+
+			int msgIndex = rand() % 4;
+			std::string message = gain
+				? gainMsgs[msgIndex] + std::to_string(actualAmount) + "!"
+				: lossMsgs[msgIndex] + std::to_string(-actualAmount) + "...";
+
+			std::cout << "[Chance] " << message << "\n\n";
+
+			Utils::pressEnterToContinue();
+			Utils::clearScreen();
+			game.getMap().drawBoard(game.getPlayers());
+		}
+		else
+		{
+			std::cout << "[Chance] But nothing happened...\n\n";
+
+			Utils::pressEnterToContinue();
+			Utils::clearScreen();
+			game.getMap().drawBoard(game.getPlayers());
 		}
 	}
 	else if (tileConfig.type == "hospital")

@@ -101,4 +101,7 @@
     <CopyFileToFolders Include="json\command.json" />
     <CopyFileToFolders Include="json\dialogue.json" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="testing.json" />
+  </ItemGroup>
 </Project>

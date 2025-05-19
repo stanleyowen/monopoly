@@ -138,7 +138,7 @@ void GameConfig::setCards(const std::vector<CardConfig>& cards)
 std::vector<CardConfig> GameConfig::getCards() const { return cards; }
 
 void GameConfig::setEventValueRange(const std::map<std::string, std::pair<int, int>>& range) { eventValueRange = range; }
-std::map<std::string, std::pair<int, int>> GameConfig::getEventValueRange() const { return eventValueRange; }
+const std::map<std::string, std::pair<int, int>> GameConfig::getEventValueRange() const { return eventValueRange; }
 
 void GameConfig::setAnimation(bool status) { animation = status; }
 bool GameConfig::getAnimation() const { return animation; }
