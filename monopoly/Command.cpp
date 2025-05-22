@@ -147,6 +147,7 @@ void Command::execute(Game& game, const std::string& input)
 		}
 
 		// 更新遊戲畫面
+		Utils::clearScreen();
 		game.getMap().drawBoard(game.getPlayers());
 	}
 	else if (cmd == "/give")
@@ -191,6 +192,9 @@ void Command::execute(Game& game, const std::string& input)
 		{
 			std::cout << "[錯誤] " << currentPlayer.getName() << " 金錢不足。\n";
 		}
+
+		Utils::clearScreen();
+		game.getMap().drawBoard(game.getPlayers());
 	}
 	else if (cmd == "/card")
 	{
@@ -228,13 +232,10 @@ void Command::execute(Game& game, const std::string& input)
 	{
 		Utils::clearScreen();
 		game.getMap().drawBoard(game.getPlayers());
-		for (const Player& p : game.getPlayers())
-		{
-			p.showInfo();
-		}
+
 		// 獲取遊戲單例
 		const std::vector<Player>& players = game.getPlayers();	  // 獲取所有玩家
-		std::cout << "玩家數量: " << players.size() << std::endl; // 打印玩家數量
+		std::cout << "No. of players: " << players.size() << std::endl; // 打印玩家數量
 
 		if (players.empty())
 		{
@@ -292,6 +293,10 @@ void Command::execute(Game& game, const std::string& input)
 
 		game.setGameState(newState);
 		std::cout << "[Cheat] Changed the game state into " << stateStr << "\n";
+
+		Utils::pressEnterToContinue();
+		Utils::clearScreen();
+		game.getMap().drawBoard(game.getPlayers());
 	}
 	else if (cmd == "/minigame")
 	{
@@ -408,6 +413,5 @@ void Command::execute(Game& game, const std::string& input)
 		std::cout << "Unknown command.\n";
 	}
 
-
-
+	game.checkWinCondition();
 }
