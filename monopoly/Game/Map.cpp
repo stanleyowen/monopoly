@@ -11,12 +11,12 @@ void Map::setTile(int x, int y, char tileSymbol)
 	board[x][y].setSymbol(tileSymbol);
 }
 
-Tile &Map::getTile(int x, int y)
+Tile& Map::getTile(int x, int y)
 {
 	return board[x][y];
 }
 
-Tile &Map::getTileById(int tileId)
+Tile& Map::getTileById(int tileId)
 {
 	int x = tileId / 8;
 	int y = tileId % 8;
@@ -25,34 +25,44 @@ Tile &Map::getTileById(int tileId)
 
 void Map::setupBoard()
 {
-	// Set default to Property tile
 	for (int i = 0; i < 8; ++i)
 	{
 		for (int j = 0; j < 8; ++j)
 		{
-			setTile(i, j, 'P');
+			Tile& tile = getTile(i, j);
+
+			// Reset tile state
+			tile.setOccupied(false);
+			tile.setOwner("");
+			tile.setPropertyLevel(1);
+			tile.setSymbol(' ');
+
+			// Perimeter: Property
+			if (i == 0 || i == 7 || j == 0 || j == 7)
+				tile.setSymbol('P');
 		}
 	}
 
-	// Empty inner tiles
+	// Clear inner tiles
 	for (int i = 1; i < 7; ++i)
 	{
 		for (int j = 1; j < 7; ++j)
 		{
-			setTile(i, j, ' ');
+			getTile(i, j).setSymbol(' ');
 		}
 	}
 
-	setTile(0, 0, 'S'); // Start
-	setTile(0, 2, 'F'); // Fate
-	setTile(0, 4, 'I'); // Item Shop
-	setTile(3, 7, 'C'); // Chance
-	setTile(7, 6, 'H'); // Hospital
-	setTile(4, 0, 'C'); // Chance
-	setTile(7, 5, 'F'); // Fate
+	// Reassign special tiles
+	getTile(0, 0).setSymbol('S'); // Start
+	getTile(0, 2).setSymbol('F'); // Fate
+	getTile(0, 4).setSymbol('I'); // Item Shop
+	getTile(3, 7).setSymbol('C'); // Chance
+	getTile(7, 6).setSymbol('H'); // Hospital
+	getTile(4, 0).setSymbol('C'); // Chance
+	getTile(7, 5).setSymbol('F'); // Fate
 }
 
-void Map::drawBoard(const std::vector<Player> &players) const
+void Map::drawBoard(const std::vector<Player>& players) const
 {
 	// ANSI color codes
 	const std::string RESET = "\033[0m";
@@ -65,15 +75,15 @@ void Map::drawBoard(const std::vector<Player> &players) const
 	const std::string BOLD = "\033[1m";
 
 	// Access GameConfig instance
-	const auto &config = GameConfig::getInstance();
-	const auto &propertyLabels = config.getLocationMap();
-	const auto &playerSymbols = config.getPlayerIcons();
+	const auto& config = GameConfig::getInstance();
+	const auto& propertyLabels = config.getLocationMap();
+	const auto& playerSymbols = config.getPlayerIcons();
 
-	auto getTileColor = [&](char sym, const Tile &tile) -> std::string
+	auto getTileColor = [&](char sym, const Tile& tile) -> std::string
 	{
 		if (tile.getOccupied()) // Check if the tile is owned
 		{
-			for (const auto &player : players)
+			for (const auto& player : players)
 			{
 				if (player.getName() == tile.getOwner())
 				{
@@ -167,7 +177,7 @@ void Map::drawBoard(const std::vector<Player> &players) const
 			std::stringstream rawIcons;
 			for (size_t playerIndex = 0; playerIndex < players.size(); ++playerIndex)
 			{
-				const auto &player = players[playerIndex];
+				const auto& player = players[playerIndex];
 				if (player.getX() == i && player.getY() == j)
 				{
 					// Fetch player symbol and color
@@ -204,7 +214,7 @@ void Map::drawBoard(const std::vector<Player> &players) const
 		for (int j = 0; j < 8; ++j)
 		{
 			std::stringstream levelDisplay;
-			const Tile &tile = board[i][j];
+			const Tile& tile = board[i][j];
 
 			if (tile.getOccupied()) // Check if the property is owned
 			{
@@ -229,11 +239,11 @@ void Map::drawBoard(const std::vector<Player> &players) const
 	std::cout << "| Player Name  |  Assets  | Property                     | Cards               |\n";
 	std::cout << "+--------------+----------+------------------------------+---------------------+\n";
 
-	for (const auto &player : players)
+	for (const auto& player : players)
 	{
 		// Cards: convert to comma-separated string
 		std::stringstream cardList;
-		for (const auto &card : player.getCards())
+		for (const auto& card : player.getCards())
 		{
 			cardList << card.getAbbreviatedName() << ",";
 		}
@@ -243,7 +253,7 @@ void Map::drawBoard(const std::vector<Player> &players) const
 
 		// Properties: convert (x,y) to tile numbers
 		std::stringstream propList;
-		for (const auto &coord : player.getProperties())
+		for (const auto& coord : player.getProperties())
 		{
 			int x = coord.first;
 			int y = coord.second;
@@ -270,10 +280,10 @@ void Map::drawBoard(const std::vector<Player> &players) const
 
 		// Display player information with colored symbol
 		std::cout << "| " << std::left << std::setw(22)
-				  << (color + playerSymbol + RESET + " " + player.getName())
-				  << "| " << std::right << std::setw(8) << player.getMoney()
-				  << " | " << std::left << std::setw(29) << propsStr
-				  << "| " << std::left << std::setw(20) << cardsStr << "|\n";
+			<< (color + playerSymbol + RESET + " " + player.getName())
+			<< "| " << std::right << std::setw(8) << player.getMoney()
+			<< " | " << std::left << std::setw(29) << propsStr
+			<< "| " << std::left << std::setw(20) << cardsStr << "|\n";
 	}
 
 	std::cout << "+--------------+----------+------------------------------+---------------------+\n";
@@ -290,7 +300,7 @@ void Map::resetProperty(int x, int y)
 	}
 }
 
-std::vector<Tile> &Map::getTiles()
+std::vector<Tile>& Map::getTiles()
 {
 	// Flatten the 2D board to a 1D vector
 	static std::vector<Tile> flatTiles;
@@ -301,7 +311,7 @@ std::vector<Tile> &Map::getTiles()
 	return flatTiles;
 }
 
-const std::vector<Tile> &Map::getTiles() const
+const std::vector<Tile>& Map::getTiles() const
 {
 	static std::vector<Tile> flatTiles;
 	flatTiles.clear();
