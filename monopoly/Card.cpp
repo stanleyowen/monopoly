@@ -194,11 +194,6 @@ void Card::applyEffect(Player& player, std::vector<Player>& players, Map& map)
 			std::cout << "Property \"" << propertyName << "\" destroyed!\n";
 		}
 		player.removeCard("Destroy Card");
-
-		// Clear the screen and redraw the board
-		Utils::pressEnterToContinue();
-		Utils::clearScreen();
-		map.drawBoard(players);
 		std::cout << "Destroy Card used! Property \"" << propertyName << "\" has been destroyed.\n";
 	}
 	else if (type == "Fate Card")
@@ -211,6 +206,9 @@ void Card::applyEffect(Player& player, std::vector<Player>& players, Map& map)
 		if (roll < 25)
 		{
 			std::cout << "[Fate] A minigame has been triggered!\n\n";
+			Utils::pressEnterToContinue();
+			Utils::clearScreen();
+
 			int gameType = rand() % 4;
 			if (gameType == 0)
 				MiniGame::playHorseRace(player);
@@ -335,9 +333,6 @@ void Card::applyEffect(Player& player, std::vector<Player>& players, Map& map)
 			// Move player to hospital location
 			targetPlayer.setPosition(hospitalX, hospitalY);
 			std::cout << targetPlayer.getName() << " was sent to the hospital for 2 rounds!\n";
-
-			// Update the map display
-			map.drawBoard(players);
 
 			// Remove the used card
 			player.removeCard("Rocket Card");
