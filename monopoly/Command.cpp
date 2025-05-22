@@ -34,7 +34,7 @@ void Command::execute(Game& game, const std::string& input)
 			destinationId = game.getTileIdByName(destinationName);
 			if (destinationId == -1)
 			{
-				std::cout << "[錯誤] 找不到地名：" << destinationName << "\n";
+				std::cout << "[Error] Property not found：" << destinationName << "\n";
 				return;
 			}
 		}
@@ -48,13 +48,13 @@ void Command::execute(Game& game, const std::string& input)
 			}
 			catch (const std::invalid_argument&)
 			{
-				std::cout << "[錯誤] 無效的指令格式：" << subCmd << "\n";
+				std::cout << "[Error] Invalid instruction format：" << subCmd << "\n";
 				return;
 			}
 		}
 
 		if (destinationId > 27 || destinationId < 0) {
-			std::cout << "[錯誤] 無效的位置：" << subCmd << "\n";
+			std::cout << "[Error] Invalid location：" << subCmd << "\n";
 			return;
 		}
 

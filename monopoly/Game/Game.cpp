@@ -183,8 +183,8 @@ void Game::start()
 			break;
 
 		case GameState::FINISH:
-			std::cout << "\n🏁 Game Over!\n";
 			gameRunning = false;
+			displayGameOver();
 			break;
 		}
 	}
@@ -523,8 +523,14 @@ void Game::checkWinCondition()
 	{
 		gameRunning = false;
 		Utils::clearScreen();
+		displayGameOver();
+	}
+}
 
-		std::cout << R"(
+void Game::displayGameOver() {
+	Utils::clearScreen();
+
+	std::cout << R"(
   ______                                            ______                                 __ 
  /      \                                          /      \                               /  |
 /$$$$$$  |  ______   _____  ____    ______        /$$$$$$  | __     __  ______    ______  $$ |
@@ -537,43 +543,42 @@ $$    $$/ $$    $$ |$$ | $$ | $$ |$$       |      $$    $$/    $$$/   $$       |
                                                                                               
 )" << "\n";
 
-		// Sort players by money descending
-		std::vector<Player> sortedPlayers = players;
-		std::sort(sortedPlayers.begin(), sortedPlayers.end(), [](const Player& a, const Player& b) {
-			return a.getMoney() > b.getMoney();
-			});
+	// Sort players by money descending
+	std::vector<Player> sortedPlayers = players;
+	std::sort(sortedPlayers.begin(), sortedPlayers.end(), [](const Player& a, const Player& b) {
+		return a.getMoney() > b.getMoney();
+		});
 
-		int count = (sortedPlayers.size() < 3) ? sortedPlayers.size() : 3;
-		const std::vector<std::string> places = { "[1] 1st Place", "[2] 2nd Place", "[3] 3rd Place" };
+	int count = (sortedPlayers.size() < 3) ? sortedPlayers.size() : 3;
+	const std::vector<std::string> places = { "[1] 1st Place", "[2] 2nd Place", "[3] 3rd Place" };
 
-		for (int i = 0; i < count; ++i)
-		{
-			const Player& p = sortedPlayers[i];
-			std::cout << places[i] << ": " << p.getSymbol() << " " << p.getName() << " | $" << p.getMoney() << "\n";
+	for (int i = 0; i < count; ++i)
+	{
+		const Player& p = sortedPlayers[i];
+		std::cout << places[i] << ": " << p.getSymbol() << " " << p.getName() << " | $" << p.getMoney() << "\n";
 
-			// Cards
-			std::cout << "  Cards: ";
-			const auto& cards = p.getCards();
-			if (cards.empty()) std::cout << "None";
-			else {
-				for (const auto& card : cards)
-					std::cout << card.getAbbreviatedName() << " ";
-			}
-			std::cout << "\n";
-
-			// Properties
-			std::cout << "  Properties: ";
-			const auto& props = p.getProperties();
-			if (props.empty()) std::cout << "None";
-			else {
-				for (const auto& pos : props)
-					std::cout << "(" << pos.first << "," << pos.second << ") ";
-			}
-			std::cout << "\n\n";
+		// Cards
+		std::cout << "  Cards: ";
+		const auto& cards = p.getCards();
+		if (cards.empty()) std::cout << "None";
+		else {
+			for (const auto& card : cards)
+				std::cout << card.getAbbreviatedName() << " ";
 		}
+		std::cout << "\n";
 
-		std::cout << "Congratulations! Thanks for playing.\n";
+		// Properties
+		std::cout << "  Properties: ";
+		const auto& props = p.getProperties();
+		if (props.empty()) std::cout << "None";
+		else {
+			for (const auto& pos : props)
+				std::cout << "(" << pos.first << "," << pos.second << ") ";
+		}
+		std::cout << "\n\n";
 	}
+
+	std::cout << "Congratulations! Thanks for playing.\n";
 }
 
 bool Game::saveGame(const std::string& filename)

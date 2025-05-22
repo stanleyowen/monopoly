@@ -35,6 +35,8 @@ public:
 
 	void handleTileEvents(Player& player);
 	void checkWinCondition();
+	void displayGameOver();
+
 	int getCurrentPlayerIndex() const;
 	void setCurrentPlayerIndex(int index);
 	int getTileIdByName(const std::string& name) const;
