@@ -125,7 +125,6 @@ void Tile::handleEvent(Player &player, Map &map)
 					Card chosenCard = player.getCards()[cardChoice - 1];
 					std::vector<Player> &players = game.getPlayers();
 					chosenCard.applyEffect(player, players, map);
-					game.getMap().drawBoard(game.getPlayers());
 				}
 				else
 				{
@@ -342,7 +341,6 @@ void Tile::handleEvent(Player &player, Map &map)
 						Card chosenCard = player.getCards()[cardChoice - 1];
 						std::vector<Player> &players = game.getPlayers();
 						chosenCard.applyEffect(player, players, map);
-						game.getMap().drawBoard(game.getPlayers());
 					}
 					else
 					{
@@ -437,13 +435,10 @@ void Tile::handleEvent(Player &player, Map &map)
 						Card chosenCard = player.getCards()[cardChoice - 1];
 						std::vector<Player> &players = game.getPlayers();
 						chosenCard.applyEffect(player, players, map);
-						game.getMap().drawBoard(game.getPlayers());
 					}
 					else
 					{
 						std::cout << "Returning to game.\n";
-						Utils::clearScreen();
-						game.getMap().drawBoard(game.getPlayers());
 					}
 				}
 				else if (choice == 'S' || choice == 's')
@@ -464,7 +459,10 @@ void Tile::handleEvent(Player &player, Map &map)
 					chose = 1;
 				}
 			}
+
 			Utils::pressEnterToContinue();
+			Utils::clearScreen();
+			game.getMap().drawBoard(game.getPlayers());
 		}
 	}
 	else
