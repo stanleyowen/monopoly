@@ -186,6 +186,7 @@ void Game::start()
 		case GameState::FINISH:
 			gameRunning = false;
 			displayGameOver();
+			Utils::pressEnterToContinue();
 			break;
 		}
 	}
