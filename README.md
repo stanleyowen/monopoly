@@ -33,20 +33,24 @@ A fully playable **Monopoly** board game implemented in **C++ programming**, run
 
 ---
 
-## 🕹️ Gameplay Overview
+## 🕹️ Game Flow Overview
 
-- Each player takes turns to **roll dice** and move around a square 8×8 board (28 tiles perimeter (numbered 0-27)).
-- Landing on a tile triggers one of several effects depending on the tile type:
-  - 🏠 **Property Tile**: Buy, upgrade, or pay toll
-  - 🏬 **Item Shop Tile**: Use or purchase special cards
-  - 🎴 **Fate & Chance Tiles**:
-    - **Fate Tile**: 25% chance for a minigame, 70% for a small money event, 5% nothing
-    - **Chance Tile**: 35% chance for a minigame, 55% for a large money event, 10% nothing
-  - 🏥 **Hospital Tile**: Forces the player to skip turns unless they roll value of 10+ or pay
-  - 🚀 **Special Cards**: like Rocket, Destroy, Dice Control cards, allow strategic gameplay and interactions
-- Players earn or lose money, collect properties, and use cards to gain an edge!
-- Passing the **Start** tile grants a configurable bonus
-- The game ends when:
+1. Players are initialized with starting money and cards.
+2. Each player rolls dice and move around a square 8×8 board (28 tiles perimeter (numbered 0-27)).
+3. The landed tile triggers:
+   
+| Tile Type   | Symbol/Icon | Description                                                 |
+|-------------|-------------|-------------------------------------------------------------|
+| `start`     | 🏁          | Grants a bonus when passed                                  |
+| `property`  | 🏠          | Buy, upgrade, pay toll, or sell                             |
+| `store`     | 🏬          | Use or purchase cards like Dice, Rocket, Destroy, etc.      |
+| `fate`      | 🎴          | 25% minigame, 70% money event, 5% nothing                   |
+| `chance`    | 🃏          | 35% minigame, 55% money event, 10% nothing                  |
+| `hospital`  | 🏥          | Skip up to 3 turns unless you roll ≥ 10 or pay to leave     |
+
+5. 🚀 **Special Cards**: like Rocket, Destroy, Dice Control cards, allow strategic gameplay and interactions
+6. Players use cards strategically or trigger minigames.
+7. The game ends when:
   - A player reaches a specified amount of money (`winMoney`)
   - All other players are bankrupt
 
@@ -66,7 +70,7 @@ A fully playable **Monopoly** board game implemented in **C++ programming**, run
 ```
 monopoly/
 ├── Game/              # Core logic (Game, Config, Map, Player)
-├── include/           # nlohmann include configurations
+├── include/           # 3rd party headers (nlohmann/json in this project)
 ├── json/              # Configuration, Commands, and Dialogue data
 ├── WelcomingScreen/   # ASCII-style Welcoming Screen renders
 ├── Card.cpp           # Cards and their effects
@@ -74,8 +78,8 @@ monopoly/
 ├── Event.cpp          # Tile effects
 ├── Minigame.cpp       # Various minigames
 ├── Store.cpp          # Item Shop
-├── Tile.cpp           # Initialization of board game tiles
-├── Utils.cpp          # Miscellanous commands and utilities
+├── Tile.cpp           # Initialisation of board game tiles
+├── Utils.cpp          # Miscellaneous commands and utilities
 ├── main.cpp           # Entry point
 ├── testing.json       # Saved game data
 ```
@@ -137,7 +141,7 @@ g++ -std=c++17 -o monopoly main.cpp -I./include -lsomeDependencies
 
 - 💡 AI/Computer-played opponents
 - 📡 LAN Multiplayer
-- 🎨 Playable Grapical User Interface
+- 🎨 Graphical User Interface (GUI)
 - 🔄 Undo/Redo system
 
 ---
