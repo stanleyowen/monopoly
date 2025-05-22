@@ -435,12 +435,12 @@ void Game::processTurn()
 				// Clear the error flag
 				std::cin.clear();
 				// Discard invalid input
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+				std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
 				std::cout << "Invalid input. Please enter a number.\n";
 			}
 			else
 			{
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+				std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
 			}
 
 			if (cardChoice > 0 && cardChoice <= currentPlayer.getCards().size())

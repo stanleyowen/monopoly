@@ -68,11 +68,11 @@ void Card::applyEffect(Player &player, std::vector<Player> &players, Map &map)
 				// Clear the error flag
 				std::cin.clear();
 				// Discard invalid input
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+				std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
 			}
 			else
 			{
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+				std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
 			}
 
 			if (diceValue >= 2 && diceValue <= 12)
@@ -113,11 +113,11 @@ void Card::applyEffect(Player &player, std::vector<Player> &players, Map &map)
 			// Clear the error flag
 			std::cin.clear();
 			// Discard invalid input
-			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
 		}
 		else
 		{
-			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
 		}
 
 		if (playerChoice <= 0 || playerChoice > players.size())
@@ -177,11 +177,11 @@ void Card::applyEffect(Player &player, std::vector<Player> &players, Map &map)
 			// Clear the error flag
 			std::cin.clear();
 			// Discard invalid input
-			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
 		}
 		else
 		{
-			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
 		}
 
 		if (propertyChoice <= 0 || propertyChoice > properties.size())

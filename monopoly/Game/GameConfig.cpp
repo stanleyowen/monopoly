@@ -40,11 +40,11 @@ void GameConfig::loadConfig()
 			// Clear the error flag
 			std::cin.clear();
 			// Discard invalid input
-			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
 		}
 		else
 		{
-			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
 		}
 
 		playerNames.resize(playersNum);

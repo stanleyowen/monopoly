@@ -27,11 +27,11 @@ void MiniGame::playHorseRace(Player &player)
 			// Clear the error flag
 			std::cin.clear();
 			// Discard invalid input
-			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
 		}
 		else
 		{
-			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
 		}
 
 		if (betHorse < 1 || betHorse > 4)
@@ -446,11 +446,11 @@ void MiniGame::playMazeEscape(Player &player)
 			// Clear the error flag
 			std::cin.clear();
 			// Discard invalid input
-			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
 		}
 		else
 		{
-			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
 		}
 
 		// Update the player's position based on the move

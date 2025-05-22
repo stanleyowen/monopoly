@@ -333,11 +333,11 @@ void Command::execute(Game &game, const std::string &input)
 				// Clear the error flag
 				std::cin.clear();
 				// Discard invalid input
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+				std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
 			}
 			else
 			{
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+				std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
 			}
 
 			switch (choice)

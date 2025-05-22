@@ -17,11 +17,11 @@ void Store::open(Player &player)
 		// Clear the error flag
 		std::cin.clear();
 		// Discard invalid input
-		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
 	}
 	else
 	{
-		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
 	}
 
 	if (choice == 1 && player.getMoney() >= 1000)
