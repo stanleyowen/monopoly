@@ -425,17 +425,15 @@ void Game::processTurn()
 			else if (cardChoice == 0)
 			{
 				std::cout << "Returning to game.\n";
-				Utils::pressEnterToContinue();
-				Utils::clearScreen();
-				map.drawBoard(players);
 			}
 			else
 			{
 				std::cout << "Invalid choice. Returning to game.\n";
-				Utils::pressEnterToContinue();
-				Utils::clearScreen();
-				map.drawBoard(players);
 			}
+
+			Utils::pressEnterToContinue();
+			Utils::clearScreen();
+			map.drawBoard(players);
 		}
 		else if (!input.empty() && input[0] == '/')
 		{

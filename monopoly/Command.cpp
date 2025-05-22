@@ -220,6 +220,7 @@ void Command::execute(Game& game, const std::string& input)
 		std::cout << "[作弊] " << currentPlayer.getName() << " 獲得卡牌：" << cardName << "\n";
 
 		// 更新遊戲畫面
+		Utils::clearScreen();
 		game.getMap().drawBoard(game.getPlayers());
 		return; // 不切換回合
 	}
