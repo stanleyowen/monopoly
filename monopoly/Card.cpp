@@ -17,6 +17,9 @@ std::string Card::getType() const
 
 std::string Card::getAbbreviatedName() const
 {
+	GameConfig &config = GameConfig::getInstance();
+	std::vector<CardConfig> cards = config.getCards();
+
 	std::string t = type;
 
 	// Trim leading/trailing spaces
@@ -27,24 +30,35 @@ std::string Card::getAbbreviatedName() const
 	std::string lower = t;
 	std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
 
-	// Match normalized names
-	if (lower == "dice card")
-		return "Di";
-	if (lower == "destroy card")
-		return "Dst";
-	if (lower == "fate card")
-		return "Fa";
-	if (lower == "rocket card")
-		return "Ro";
+	// Look for matching card in config to get its icon (abbreviation)
+	for (const auto &card : cards)
+	{
+		std::string cardNameLower = card.name;
+		std::transform(cardNameLower.begin(), cardNameLower.end(), cardNameLower.begin(), ::tolower);
+
+		if (cardNameLower == lower)
+		{
+			// Use the icon from config as the abbreviation
+			if (!card.icon.empty())
+			{
+				return card.icon;
+			}
+			break;
+		}
+	}
 
 	// Fallback (first two non-space letters)
 	std::string fallback;
 	for (char c : t)
 	{
 		if (!isspace(c))
+		{
 			fallback += c;
+		}
 		if (fallback.size() == 2)
+		{
 			break;
+		}
 	}
 	return fallback.empty() ? "??" : fallback;
 }

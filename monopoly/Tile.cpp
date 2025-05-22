@@ -550,12 +550,20 @@ void Tile::handleEvent(Player &player, Map &map)
 
 void Tile::enterShop(Game &game, Player &player)
 {
+	GameConfig &config = GameConfig::getInstance();
+	std::vector<CardConfig> cards = config.getCards();
+
 	std::cout << "=== Welcome to the Card Store ===\n";
-	std::cout << "[1] Dice Card       - Price: $2000       - Effect: Choose the number you roll on the dice.\n";
-	std::cout << "[2] Destroy Card    - Price: $2500       - Effect: Destroy another player's property.\n";
-	std::cout << "[3] Fate Card       - Price: $1000       - Effect: Trigger a Fate event.\n";
-	std::cout << "[4] Rocket Card     - Price: $3000       - Effect: Send a player to the hospital for 2 turns.\n";
-	std::cout << "[5] Exit store\n";
+
+	// Display all available cards
+	for (size_t i = 0; i < cards.size(); i++)
+	{
+		std::cout << "[" << (i + 1) << "] " << cards[i].name
+				  << " - Price: $" << cards[i].price
+				  << " - Effect: " << cards[i].effect << "\n";
+	}
+
+	std::cout << "[" << (cards.size() + 1) << "] Exit store\n";
 	std::cout << "Enter the number of the card you want to buy: ";
 
 	bool chose = 1;
@@ -567,9 +575,7 @@ void Tile::enterShop(Game &game, Player &player)
 
 		if (std::cin.fail())
 		{
-			// Clear the error flag
 			std::cin.clear();
-			// Discard invalid input
 			std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
 		}
 		else
@@ -577,79 +583,46 @@ void Tile::enterShop(Game &game, Player &player)
 			std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
 		}
 
-		switch (choice)
+		if (choice > 0 && choice <= cards.size())
 		{
-		case 1:
-			if (player.getMoney() >= 2000)
+			// User selected a card
+			const CardConfig &selectedCard = cards[choice - 1];
+
+			if (player.getMoney() >= selectedCard.price)
 			{
-				player.subtractMoney(2000);
-				Card diceCard("Dice Card");
-				player.addCard(diceCard);
-				std::cout << "You bought a Dice Card.\n";
+				player.subtractMoney(selectedCard.price);
+				Card card(selectedCard.name);
+				player.addCard(card);
+				std::cout << "You bought a " << selectedCard.name << ".\n";
 			}
 			else
 			{
 				std::cout << "You don't have enough money to buy this card.\n";
 			}
-			break;
-		case 2:
-			if (player.getMoney() >= 2500)
-			{
-				player.subtractMoney(2500);
-				Card destroyCard("Destroy Card");
-				player.addCard(destroyCard);
-				std::cout << "You bought a Destroy Card.\n";
-			}
-			else
-			{
-				std::cout << "You don't have enough money to buy this card.\n";
-			}
-			break;
-		case 3:
-			if (player.getMoney() >= 1000)
-			{
-				player.subtractMoney(1000);
-				Card fateCard("Fate Card");
-				player.addCard(fateCard);
-				std::cout << "You bought a Fate Card.\n";
-			}
-			else
-			{
-				std::cout << "You don't have enough money to buy this card.\n";
-			}
-			break;
-		case 4:
-			if (player.getMoney() >= 3000)
-			{
-				player.subtractMoney(3000);
-				Card rocketCard("Rocket Card");
-				player.addCard(rocketCard);
-				std::cout << "You bought a Rocket Card.\n";
-			}
-			else
-			{
-				std::cout << "You don't have enough money to buy this card.\n";
-			}
-			break;
-		case 5:
+		}
+		else if (choice == cards.size() + 1)
+		{
 			std::cout << "Exiting the store.\n";
-			break;
-		default:
+		}
+		else
+		{
 			std::cout << "Invalid choice. Please try again.\n";
 			Utils::pressEnterToContinue();
 			Utils::clearScreen();
 			game.getMap().drawBoard(game.getPlayers());
 
+			// Redisplay the store menu
 			std::cout << "=== Welcome to the Card Store ===\n";
-			std::cout << "[1] Dice Card       - Price: $2000       - Effect: Choose the number you roll on the dice.\n";
-			std::cout << "[2] Destroy Card    - Price: $2500       - Effect: Destroy another player's property.\n";
-			std::cout << "[3] Fate Card       - Price: $1000       - Effect: Trigger a Fate event.\n";
-			std::cout << "[4] Rocket Card     - Price: $3000       - Effect: Send a player to the hospital for 2 turns.\n";
-			std::cout << "[5] Exit store\n";
+			for (size_t i = 0; i < cards.size(); i++)
+			{
+				std::cout << "[" << (i + 1) << "] " << cards[i].name
+						  << " - Price: $" << cards[i].price
+						  << " - Effect: " << cards[i].effect << "\n";
+			}
+			std::cout << "[" << (cards.size() + 1) << "] Exit store\n";
 			std::cout << "Enter the number of the card you want to buy: ";
 
 			chose = 0;
-			break;
 		}
 	} while (chose == 0);
 }
