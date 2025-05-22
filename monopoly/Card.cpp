@@ -206,29 +206,66 @@ void Card::applyEffect(Player& player, std::vector<Player>& players, Map& map)
 		std::cout << "Triggering a Fate event.\n";
 
 		srand(static_cast<unsigned>(time(nullptr)));
-		int rng = rand() % 4;
+		int roll = rand() % 100;
 
-		if (rng == 0)
+		if (roll < 25)
 		{
-			MiniGame::playHorseRace(player);
+			std::cout << "[Fate] A minigame has been triggered!\n\n";
+			int gameType = rand() % 4;
+			if (gameType == 0)
+				MiniGame::playHorseRace(player);
+			else if (gameType == 1)
+				MiniGame::playDragonGate(player);
+			else if (gameType == 2)
+				MiniGame::playMazeEscape(player);
+			else
+				MiniGame::playTreasureHunt(player);
 		}
-		else if (rng == 1)
+		else if (roll < 95) // 25-94 → 70% chance
 		{
-			MiniGame::playDragonGate(player);
-		}
-		else if (rng == 2)
-		{
-			MiniGame::playMazeEscape(player);
-		}
-		else if (rng == 3)
-		{
-			MiniGame::playTreasureHunt(player);
+			GameConfig &config = GameConfig::getInstance();
+			auto valueRange = config.getEventValueRange();
+
+			std::string typeUpper = "FATE";
+
+			auto it = valueRange.find(typeUpper);
+			if (it == valueRange.end())
+			{
+				std::cout << "[Error] No event value range defined for type: " << typeUpper << "\n";
+				return;
+			}
+
+			int min = it->second.first;
+			int max = it->second.second;
+			int amount = rand() % (max - min + 1) + min;
+			bool gain = rand() % 2;
+			int actualAmount = gain ? amount : -amount;
+
+			if (actualAmount > 0)
+				player.addMoney(actualAmount);
+			else
+				player.subtractMoney(-actualAmount);
+
+			std::vector<std::string> gainMsgs = {
+				"You found $",
+				"You sold old stuff and earned $",
+				"You received a mystery gift worth $"};
+			std::vector<std::string> lossMsgs = {
+				"You paid a fine of $",
+				"You lost your wallet and lost $",
+				"You bought a useless app for $"};
+
+			int msgIndex = rand() % 3;
+			std::string message = gain
+									  ? gainMsgs[msgIndex] + std::to_string(actualAmount) + "."
+									  : lossMsgs[msgIndex] + std::to_string(-actualAmount) + ".";
+
+			std::cout << "[Fate] " << message << "\n";
 		}
 		else
 		{
-			std::cout << "You found nothing special.\n";
+			std::cout << "[Fate] But nothing happened...\n";
 		}
-		map.drawBoard(players);
 		player.removeCard("Fate Card");
 	}
 	else if (type == "Rocket Card")
