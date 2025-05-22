@@ -186,7 +186,6 @@ void Game::start()
 		case GameState::FINISH:
 			gameRunning = false;
 			displayGameOver();
-			Utils::pressEnterToContinue();
 			break;
 		}
 	}
@@ -641,6 +640,7 @@ $$    $$/ $$    $$ |$$ | $$ | $$ |$$       |      $$    $$/    $$$/   $$       |
 	}
 
 	std::cout << "Congratulations! Thanks for playing.\n";
+	Utils::pressEnterToContinue();
 }
 
 bool Game::saveGame(const std::string &filename)
