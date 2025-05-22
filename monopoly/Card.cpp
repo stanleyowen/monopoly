@@ -268,42 +268,82 @@ void Card::applyEffect(Player& player, std::vector<Player>& players, Map& map)
 		player.removeCard("Fate Card");
 	}
 	else if (type == "Rocket Card")
-	{ // ���b�d
-		std::cout << "Sending a player to the hospital for 2 turns.\n";
-
-		// List all players except the current player
-		std::cout << "Choose a player to send to the hospital (cannot choose yourself):\n";
-		int index = 1;
+	{
+		// Display all players that can be targeted
+		std::cout << "Choose a player to send to the hospital:\n";
 		std::vector<int> validChoices;
 
 		for (size_t i = 0; i < players.size(); ++i)
 		{
-			if (players[i].getName() != player.getName()) // �L�o���ۤv
+			// Don't allow targeting yourself
+			if (&players[i] != &player)
 			{
-				std::cout << index << ". " << players[i].getName() << "\n";
-				validChoices.push_back(i); // �s�U���Ŀﶵ����گ���
-				index++;
+				std::cout << validChoices.size() + 1 << ". " << players[i].getName() << " (" << players[i].getSymbol() << ")\n";
+				validChoices.push_back(i);
 			}
 		}
 
-		int playerChoice;
-		std::cout << "Enter player number (0 to cancel): ";
-		std::cin >> playerChoice;
-		std::cin.ignore();
-
-		if (playerChoice <= 0 || playerChoice > validChoices.size())
+		// Get player choice
+		int playerChoice = 0;
+		while (playerChoice < 1 || playerChoice > validChoices.size())
 		{
-			std::cout << "Invalid choice. Canceling rocket action.\n";
-			return;
+			std::cout << "Enter player number (1-" << validChoices.size() << "): ";
+			std::cin >> playerChoice;
+			std::cin.ignore();
+
+			if (std::cin.fail() || playerChoice < 1 || playerChoice > validChoices.size())
+			{
+				std::cin.clear();
+				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+				std::cout << "Invalid choice. Please try again.\n";
+				playerChoice = 0;
+			}
 		}
 
-		// �����ܪ����a
-		Player& targetPlayer = players[validChoices[playerChoice - 1]];
+		// Select the target player
+		Player &targetPlayer = players[validChoices[playerChoice - 1]];
 
-		targetPlayer.sendToHospital();
-		std::cout << targetPlayer.getName() << " was sent to the hospital for 2 rounds!\n";
-		map.drawBoard(players);
-		player.removeCard("Rocket Card");
+		// Find hospital tile location on the map
+		int hospitalX = -1;
+		int hospitalY = -1;
+
+		// Find the hospital tile by scanning the map
+		for (int x = 0; x < 8; x++)
+		{
+			for (int y = 0; y < 8; y++)
+			{
+				Tile &tile = map.getTile(x, y);
+				if (tile.getSymbol() == 'H') // Hospital is marked with 'H'
+				{
+					hospitalX = x;
+					hospitalY = y;
+					break;
+				}
+			}
+			if (hospitalX != -1)
+				break;
+		}
+
+		// Move the player to the hospital if found
+		if (hospitalX != -1 && hospitalY != -1)
+		{
+			// Send to hospital for 2 turns
+			targetPlayer.sendToHospital(2);
+
+			// Move player to hospital location
+			targetPlayer.setPosition(hospitalX, hospitalY);
+			std::cout << targetPlayer.getName() << " was sent to the hospital for 2 rounds!\n";
+
+			// Update the map display
+			map.drawBoard(players);
+
+			// Remove the used card
+			player.removeCard("Rocket Card");
+		}
+		else
+		{
+			std::cout << "Error: Hospital tile not found on the map!\n";
+		}
 	}
 	else
 	{
