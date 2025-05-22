@@ -295,8 +295,8 @@ void Game::processTurn()
 		{
 			std::string input;
 
-			Utils::displayDialogue("player_action.moved.hospital");
-			std::cout << "[醫院] " << currentPlayer.getName() << " is in the hospital! Turns left: " << currentPlayer.getHospitalTurnsLeft() << "\n";
+			Utils::displayDialogue("player_action.moved.hospital\n");
+			std::cout << "[Hospital] " << currentPlayer.getName() << " is in the hospital! Turns left: " << currentPlayer.getHospitalTurnsLeft() << "\n";
 			std::cout << "> ";
 			std::cin >> input;
 			std::cin.ignore();
@@ -381,11 +381,11 @@ void Game::processTurn()
 			int boardSize = 28;
 
 			// Check passing start BEFORE moving
-			if (totalSteps == 0 || (totalSteps > 0 && ((currentPositionId + totalSteps) >= boardSize || (currentPositionId + totalSteps) % boardSize < currentPositionId)))
+			/* if (totalSteps == 0 || (totalSteps > 0 && ((currentPositionId + totalSteps) >= boardSize || (currentPositionId + totalSteps) % boardSize < currentPositionId)))
 			{
 				currentPlayer.addMoney(GameConfig::getInstance().getPassingStartBonus());
 				std::cout << "[系統] " << currentPlayer.getName() << " 通過起點，獲得 $" << GameConfig::getInstance().getPassingStartBonus() << "!\n";
-			}
+			}*/
 
 			if (currentPlayer.hasNextDiceValue())
 			{

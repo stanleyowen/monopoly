@@ -9,7 +9,7 @@ Player::Player(const std::string& name, std::string symbol, int startMoney)
 
 void Player::showInfo() const
 {
-	std::cout << name << "'s Cards:\n";
+	std::cout << "\n" << name << "'s Cards:\n";
 	std::cout << "+----------------------------------------------------------------------------+\n";
 	std::cout << "| No. | Card Name             | Effect                                       |\n";
 	std::cout << "+----------------------------------------------------------------------------+\n";

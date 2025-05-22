@@ -197,6 +197,7 @@ void Card::applyEffect(Player& player, std::vector<Player>& players, Map& map)
 		player.removeCard("Destroy Card");
 
 		// Clear the screen and redraw the board
+		Utils::pressEnterToContinue();
 		Utils::clearScreen();
 		map.drawBoard(players);
 		std::cout << "Destroy Card used! Property \"" << propertyName << "\" has been destroyed.\n";
@@ -223,7 +224,7 @@ void Card::applyEffect(Player& player, std::vector<Player>& players, Map& map)
 		}
 		else if (roll < 95) // 25-94 → 70% chance
 		{
-			GameConfig &config = GameConfig::getInstance();
+			GameConfig& config = GameConfig::getInstance();
 			auto valueRange = config.getEventValueRange();
 
 			std::string typeUpper = "FATE";
@@ -249,16 +250,16 @@ void Card::applyEffect(Player& player, std::vector<Player>& players, Map& map)
 			std::vector<std::string> gainMsgs = {
 				"You found $",
 				"You sold old stuff and earned $",
-				"You received a mystery gift worth $"};
+				"You received a mystery gift worth $" };
 			std::vector<std::string> lossMsgs = {
 				"You paid a fine of $",
 				"You lost your wallet and lost $",
-				"You bought a useless app for $"};
+				"You bought a useless app for $" };
 
 			int msgIndex = rand() % 3;
 			std::string message = gain
-									  ? gainMsgs[msgIndex] + std::to_string(actualAmount) + "."
-									  : lossMsgs[msgIndex] + std::to_string(-actualAmount) + ".";
+				? gainMsgs[msgIndex] + std::to_string(actualAmount) + "."
+				: lossMsgs[msgIndex] + std::to_string(-actualAmount) + ".";
 
 			std::cout << "[Fate] " << message << "\n";
 		}

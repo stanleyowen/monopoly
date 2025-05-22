@@ -137,7 +137,6 @@ void Tile::handleEvent(Player& player, Map& map)
 				std::cout << "You chose to pass.\n";
 			}
 		}
-
 	}
 	else if (tileConfig.type == "fate")
 	{
