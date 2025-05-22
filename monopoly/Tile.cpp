@@ -424,6 +424,18 @@ void Tile::handleEvent(Player &player, Map &map)
 			else
 			{
 				player.subtractMoney(totalToll);
+
+				// Find the owner player and add the toll to their money
+				std::vector<Player> &players = game.getPlayers();
+				for (Player &p : players)
+				{
+					if (p.getName() == getOwner())
+					{
+						p.addMoney(totalToll);
+						break;
+					}
+				}
+
 				std::cout << "You paid $" << totalToll << " to " << getOwner() << ".\n";
 			}
 			Utils::pressEnterToContinue();

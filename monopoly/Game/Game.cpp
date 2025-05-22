@@ -11,6 +11,7 @@
 #include <limits>
 #include <ios>
 #include <fstream>
+#include <algorithm>
 #include <nlohmann/json.hpp>
 
 void Game::setGameState(GameState state)
@@ -404,7 +405,7 @@ void Game::processTurn()
 				}
 				else
 				{
-					dice1 = std::min(6, totalValue - 1);
+					dice1 = std::min<int>(6, totalValue - 1); // Fix the error by specifying the type
 					dice2 = totalValue - dice1;
 				}
 
