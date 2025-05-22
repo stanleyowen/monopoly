@@ -5,6 +5,7 @@
 #include "Tile.h"
 #include "Game/GameConfig.h"
 #include "MiniGame.h"
+#include <limits> 
 #include <iostream>
 
 Card::Card(const std::string& type) : type(type) {}
@@ -294,7 +295,8 @@ void Card::applyEffect(Player& player, std::vector<Player>& players, Map& map)
 			if (std::cin.fail() || playerChoice < 1 || playerChoice > validChoices.size())
 			{
 				std::cin.clear();
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+				std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
+
 				std::cout << "Invalid choice. Please try again.\n";
 				playerChoice = 0;
 			}
