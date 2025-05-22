@@ -295,8 +295,10 @@ void Game::processTurn()
 		{
 			std::string input;
 
+			std::cout << "[Hospital] " << currentPlayer.getName() << " is in the hospital!\n";
+			std::cout << "Turns left: " << currentPlayer.getHospitalTurnsLeft() << "\n\n";
+
 			Utils::displayDialogue("player_action.moved.hospital");
-			std::cout << "[Hospital] " << currentPlayer.getName() << " is in the hospital! Turns left: " << currentPlayer.getHospitalTurnsLeft() << "\n";
 			std::cout << "> ";
 			std::cin >> input;
 			std::cin.ignore();
@@ -318,11 +320,13 @@ void Game::processTurn()
 					std::cout << "[Hospital] Not enough! You remain in the hospital.\n";
 					currentPlayer.decrementHospitalTurns();
 				}
+
 				hospitalActionDone = true;
 			}
 			else if (input == "R" || input == "r")
 			{
 				int bill = 2000;
+
 				if (currentPlayer.getMoney() >= bill)
 				{
 					currentPlayer.addMoney(-bill);
@@ -333,6 +337,7 @@ void Game::processTurn()
 				{
 					std::cout << "[Hospital] Not enough money to pay the bill!\n";
 				}
+
 				hospitalActionDone = true;
 			}
 			else if (input == "I" || input == "i")
@@ -348,6 +353,10 @@ void Game::processTurn()
 				hospitalActionDone = true;
 			}
 		}
+
+		Utils::pressEnterToContinue();
+		Utils::clearScreen();
+		map.drawBoard(players);
 
 		if (currentPlayer.isInHospital())
 		{
@@ -430,10 +439,6 @@ void Game::processTurn()
 			{
 				std::cout << "Invalid choice. Returning to game.\n";
 			}
-
-			Utils::pressEnterToContinue();
-			Utils::clearScreen();
-			map.drawBoard(players);
 		}
 		else if (!input.empty() && input[0] == '/')
 		{
@@ -448,6 +453,10 @@ void Game::processTurn()
 		{
 			Utils::displayDialogue("invalid_input");
 		}
+
+		Utils::pressEnterToContinue();
+		Utils::clearScreen();
+		map.drawBoard(players);
 	}
 }
 
