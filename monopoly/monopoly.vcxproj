@@ -153,7 +153,6 @@
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="Event.cpp" />
-    <ClCompile Include="Store.cpp" />
     <ClCompile Include="MiniGame.cpp" />
     <ClCompile Include="Card.cpp" />
     <ClCompile Include="Command.cpp" />
@@ -168,7 +167,6 @@
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="Event.h" />
-    <ClInclude Include="Store.h" />
     <ClInclude Include="MiniGame.h" />
     <ClInclude Include="Card.h" />
     <ClInclude Include="Command.h" />
