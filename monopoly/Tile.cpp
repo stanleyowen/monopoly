@@ -120,7 +120,7 @@ void Tile::handleEvent(Player &player, Map &map)
 
 			if (choice == 'E' || choice == 'e')
 			{
-				enterShop(player);
+				enterShop(game, player);
 				chose = 1;
 			}
 			else if (choice == 'I' || choice == 'i')
@@ -548,15 +548,14 @@ void Tile::handleEvent(Player &player, Map &map)
 	}
 }
 
-void Tile::enterShop(Player &player)
+void Tile::enterShop(Game &game, Player &player)
 {
 	std::cout << "=== Welcome to the Card Store ===\n";
-	std::cout << "[1] Barrier Card    - Price: $1500       - Effect: Place a barrier on a tile to block players.\n";
-	std::cout << "[2] Dice Card       - Price: $2000       - Effect: Choose the number you roll on the dice.\n";
-	std::cout << "[3] Destroy Card    - Price: $2500       - Effect: Destroy another player's property.\n";
-	std::cout << "[4] Fate Card       - Price: $1000       - Effect: Trigger a Fate event.\n";
-	std::cout << "[5] Rocket Card     - Price: $3000       - Effect: Send a player to the hospital for 2 turns.\n";
-	std::cout << "[0] Exit store\n";
+	std::cout << "[1] Dice Card       - Price: $2000       - Effect: Choose the number you roll on the dice.\n";
+	std::cout << "[2] Destroy Card    - Price: $2500       - Effect: Destroy another player's property.\n";
+	std::cout << "[3] Fate Card       - Price: $1000       - Effect: Trigger a Fate event.\n";
+	std::cout << "[4] Rocket Card     - Price: $3000       - Effect: Send a player to the hospital for 2 turns.\n";
+	std::cout << "[5] Exit store\n";
 	std::cout << "Enter the number of the card you want to buy: ";
 
 	bool chose = 1;
@@ -581,19 +580,6 @@ void Tile::enterShop(Player &player)
 		switch (choice)
 		{
 		case 1:
-			if (player.getMoney() >= 1500)
-			{
-				player.subtractMoney(1500);
-				Card barrierCard("Barrier Card");
-				player.addCard(barrierCard);
-				std::cout << "You bought a Barrier Card.\n";
-			}
-			else
-			{
-				std::cout << "You don't have enough money to buy this card.\n";
-			}
-			break;
-		case 2:
 			if (player.getMoney() >= 2000)
 			{
 				player.subtractMoney(2000);
@@ -606,7 +592,7 @@ void Tile::enterShop(Player &player)
 				std::cout << "You don't have enough money to buy this card.\n";
 			}
 			break;
-		case 3:
+		case 2:
 			if (player.getMoney() >= 2500)
 			{
 				player.subtractMoney(2500);
@@ -619,7 +605,7 @@ void Tile::enterShop(Player &player)
 				std::cout << "You don't have enough money to buy this card.\n";
 			}
 			break;
-		case 4:
+		case 3:
 			if (player.getMoney() >= 1000)
 			{
 				player.subtractMoney(1000);
@@ -632,7 +618,7 @@ void Tile::enterShop(Player &player)
 				std::cout << "You don't have enough money to buy this card.\n";
 			}
 			break;
-		case 5:
+		case 4:
 			if (player.getMoney() >= 3000)
 			{
 				player.subtractMoney(3000);
@@ -645,15 +631,25 @@ void Tile::enterShop(Player &player)
 				std::cout << "You don't have enough money to buy this card.\n";
 			}
 			break;
-		case 0:
+		case 5:
 			std::cout << "Exiting the store.\n";
 			break;
 		default:
-			std::cout << "Invalid choice. Exiting the store.\n";
+			std::cout << "Invalid choice. Please try again.\n";
+			Utils::pressEnterToContinue();
+			Utils::clearScreen();
+			game.getMap().drawBoard(game.getPlayers());
+
+			std::cout << "=== Welcome to the Card Store ===\n";
+			std::cout << "[1] Dice Card       - Price: $2000       - Effect: Choose the number you roll on the dice.\n";
+			std::cout << "[2] Destroy Card    - Price: $2500       - Effect: Destroy another player's property.\n";
+			std::cout << "[3] Fate Card       - Price: $1000       - Effect: Trigger a Fate event.\n";
+			std::cout << "[4] Rocket Card     - Price: $3000       - Effect: Send a player to the hospital for 2 turns.\n";
+			std::cout << "[5] Exit store\n";
 			std::cout << "Enter the number of the card you want to buy: ";
+
 			chose = 0;
 			break;
 		}
 	} while (chose == 0);
-	Utils::pressEnterToContinue();
 }

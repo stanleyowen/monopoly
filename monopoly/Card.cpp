@@ -36,8 +36,6 @@ std::string Card::getAbbreviatedName() const
 		return "Fa";
 	if (lower == "rocket card")
 		return "Ro";
-	if (lower == "barrier card")
-		return "Ba";
 
 	// Fallback (first two non-space letters)
 	std::string fallback;
@@ -89,11 +87,6 @@ void Card::applyEffect(Player &player, std::vector<Player> &players, Map &map)
 				std::cout << "Invalid dice value. Please enter a number between 2 and 12.\n";
 			}
 		}
-	}
-	else if (type == "Barrier Card")
-	{ // ���٥d
-		std::cout << "Placing a barrier on a tile to block players.\n";
-		// Implement barrier logic here
 	}
 	else if (type == "Destroy Card")
 	{ // ��d

@@ -273,12 +273,6 @@
   ],
   "cards": [
     {
-      "name": "Barrier Card",
-      "icon": "B",
-      "price": 1500,
-      "effect": "Place a barrier on a tile to block players.."
-    },
-    {
       "name": "Dice Card",
       "icon": "Di",
       "price": 2000,
