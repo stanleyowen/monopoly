@@ -360,16 +360,14 @@ void Command::execute(Game &game, const std::string &input)
 				break;
 			case 5:
 				std::cout << "[Return] Returning to the main board。\n";
-				game.getMap().drawBoard(game.getPlayers());
-
 				break;
 			default:
 				std::cout << "[Error] Invalid choice，please input 1-5。\n";
-				Utils::pressEnterToContinue();
 				break;
 			}
 
 			// 更新地圖顯示
+			Utils::pressEnterToContinue();
 			Utils::clearScreen();
 			game.getMap().drawBoard(game.getPlayers());
 			return;
