@@ -92,7 +92,6 @@ void Tile::handleEvent(Player& player, Map& map)
 
 	if (tileConfig.type == "start")
 	{
-		player.addMoney(config.getPassingStartBonus());
 		std::cout << "You received a bonus of $" << config.getPassingStartBonus() << "!\n";
 	}
 	else if (tileConfig.type == "store")
