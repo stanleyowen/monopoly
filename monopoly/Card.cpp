@@ -17,6 +17,9 @@ std::string Card::getType() const
 
 std::string Card::getAbbreviatedName() const
 {
+	GameConfig &config = GameConfig::getInstance();
+	std::vector<CardConfig> cards = config.getCards();
+
 	std::string t = type;
 
 	// Trim leading/trailing spaces
@@ -27,32 +30,43 @@ std::string Card::getAbbreviatedName() const
 	std::string lower = t;
 	std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
 
-	// Match normalized names
-	if (lower == "dice card")
-		return "Di";
-	if (lower == "destroy card")
-		return "Dst";
-	if (lower == "fate card")
-		return "Fa";
-	if (lower == "rocket card")
-		return "Ro";
-	if (lower == "barrier card")
-		return "Ba";
+	// Look for matching card in config to get its icon (abbreviation)
+	for (const auto &card : cards)
+	{
+		std::string cardNameLower = card.name;
+		std::transform(cardNameLower.begin(), cardNameLower.end(), cardNameLower.begin(), ::tolower);
+
+		if (cardNameLower == lower)
+		{
+			// Use the icon from config as the abbreviation
+			if (!card.icon.empty())
+			{
+				return card.icon;
+			}
+			break;
+		}
+	}
 
 	// Fallback (first two non-space letters)
 	std::string fallback;
 	for (char c : t)
 	{
 		if (!isspace(c))
+		{
 			fallback += c;
+		}
 		if (fallback.size() == 2)
+		{
 			break;
+		}
 	}
 	return fallback.empty() ? "??" : fallback;
 }
 
 void Card::applyEffect(Player &player, std::vector<Player> &players, Map &map)
 {
+	srand(static_cast<unsigned>(time(nullptr)));
+
 	if (type == "Dice Card") // ����d
 	{
 		int diceValue;
@@ -87,11 +101,6 @@ void Card::applyEffect(Player &player, std::vector<Player> &players, Map &map)
 				std::cout << "Invalid dice value. Please enter a number between 2 and 12.\n";
 			}
 		}
-	}
-	else if (type == "Barrier Card")
-	{ // ���٥d
-		std::cout << "Placing a barrier on a tile to block players.\n";
-		// Implement barrier logic here
 	}
 	else if (type == "Destroy Card")
 	{ // ��d
@@ -234,7 +243,6 @@ void Card::applyEffect(Player &player, std::vector<Player> &players, Map &map)
 	{ // �R�B�d
 		std::cout << "Triggering a Fate event.\n";
 
-		srand(static_cast<unsigned>(time(nullptr)));
 		int roll = rand() % 100;
 
 		if (roll < 25)

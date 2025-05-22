@@ -24,7 +24,7 @@ A fully playable **Monopoly** board game implemented in **C++ programming**, run
 
 - 🗺️ Fully functional 8x8 Monopoly board layout with various event tiles
 - 💰 Property buying, upgrading, and toll-paying
-- 🎴 Card system: Dice, Destroy, Rocket, Barrier, Fate, etc.
+- 🎴 Card system: Dice, Destroy, Rocket, Fate, etc.
 - 🎲 Fate and Chance tiles with config-based randomized effects and minigames
 - 🏥 Hospital logic, players can skip turns or pay to exit the tile
 - 🎮 Built-in mini-games (Horse Race, Maze Escape, Treasure Chest etc.)

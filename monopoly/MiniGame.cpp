@@ -1,6 +1,7 @@
 #include "Utils.h"
 #include "MiniGame.h"
 #include "Game/Game.h"
+#include "Game/GameConfig.h"
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
@@ -24,9 +25,7 @@ void MiniGame::playHorseRace(Player &player)
 		std::cin >> betHorse;
 		if (std::cin.fail())
 		{
-			// Clear the error flag
 			std::cin.clear();
-			// Discard invalid input
 			std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
 		}
 		else
@@ -37,6 +36,54 @@ void MiniGame::playHorseRace(Player &player)
 		if (betHorse < 1 || betHorse > 4)
 			std::cout << "Invalid horse. Pick 1 to 4: ";
 	}
+
+	// Get the player's current position ID
+	int playerPositionId = player.getPositionId();
+
+	// Get configuration instance
+	GameConfig &config = GameConfig::getInstance();
+
+	// Get the tile configuration for the player's current position
+	const auto &boardTiles = config.getBoardTiles();
+	auto it = std::find_if(boardTiles.begin(), boardTiles.end(),
+						   [playerPositionId](const TileConfig &tile)
+						   {
+							   return tile.id == playerPositionId;
+						   });
+
+	// Determine event type based on player's location
+	std::string eventType = "CHANCE"; // Default
+
+	if (it != boardTiles.end())
+	{
+		// Convert the tile type to uppercase for map lookup
+		std::string tileType = it->type;
+		std::transform(tileType.begin(), tileType.end(), tileType.begin(), ::toupper);
+
+		if (tileType == "FATE" || tileType == "CHANCE")
+		{
+			eventType = tileType;
+		}
+		// If on other tile types, use default
+	}
+
+	// Get the value range for the determined event type
+	auto valueRange = config.getEventValueRange();
+	auto rangeIt = valueRange.find(eventType);
+
+	// Default values if the range isn't found
+	int minValue = 500;
+	int maxValue = 1000;
+
+	if (rangeIt != valueRange.end())
+	{
+		minValue = rangeIt->second.first;
+		maxValue = rangeIt->second.second;
+	}
+
+	// Generate random reward and penalty values based on the range
+	srand(static_cast<unsigned>(time(nullptr)));
+	int costs = (rand() % (maxValue - minValue + 1) + minValue);
 
 	const int finishLine = 50;
 	int positions[4] = {0, 0, 0, 0};
@@ -102,23 +149,21 @@ void MiniGame::playHorseRace(Player &player)
 
 	if (betHorse == winner + 1)
 	{
-		std::cout << "You won the bet! You gain $1000!\n";
-		player.addMoney(1000);
+		std::cout << "You won the bet! You gain $" << costs << "!\n";
+		player.addMoney(costs);
 	}
 	else
 	{
-		std::cout << "You lost the bet. You lose $500.\n";
-		player.subtractMoney(500);
+		std::cout << "You lost the bet. You lose $" << costs / 2 << ".\n";
+		player.subtractMoney(costs / 2);
 	}
-
-	Utils::pressEnterToContinue();
-	Utils::clearScreen();
 }
 
 void MiniGame::playDragonGate(Player &player)
 {
 	Utils::clearScreen();
 	srand(static_cast<unsigned>(time(nullptr)));
+
 	std::cout << "--- MiniGame: Dragon Gate ---\n";
 	int card1 = rand() % 13 + 1;
 	int card2 = rand() % 13 + 1;
@@ -262,9 +307,6 @@ void MiniGame::playDragonGate(Player &player)
 			player.subtractMoney(wager);
 		}
 	}
-
-	Utils::pressEnterToContinue();
-	Utils::clearScreen();
 }
 
 void MiniGame::playTreasureHunt(Player &player)
@@ -284,26 +326,65 @@ void MiniGame::playTreasureHunt(Player &player)
 			std::cout << "Invalid choice. Pick a chest (1, 2, or 3): ";
 	}
 
+	// Get the player's current position ID
+	int playerPositionId = player.getPositionId();
+
+	// Get configuration instance
+	GameConfig &config = GameConfig::getInstance();
+
+	// Get the tile configuration for the player's current position
+	const auto &boardTiles = config.getBoardTiles();
+	auto it = std::find_if(boardTiles.begin(), boardTiles.end(),
+						   [playerPositionId](const TileConfig &tile)
+						   {
+							   return tile.id == playerPositionId;
+						   });
+
+	// Determine event type based on player's location
+	std::string eventType = "CHANCE"; // Default
+
+	if (it != boardTiles.end())
+	{
+		// Convert the tile type to uppercase for map lookup
+		std::string tileType = it->type;
+		std::transform(tileType.begin(), tileType.end(), tileType.begin(), ::toupper);
+
+		if (tileType == "FATE" || tileType == "CHANCE")
+		{
+			eventType = tileType;
+		}
+		// If on other tile types, could use a different strategy
+	}
+
+	// Get the value range for the determined event type
+	auto valueRange = config.getEventValueRange();
+	auto rangeIt = valueRange.find(eventType);
+
+	// Default values if the range isn't found
+	int minValue = 500;
+	int maxValue = 1000;
+
+	if (rangeIt != valueRange.end())
+	{
+		minValue = rangeIt->second.first;
+		maxValue = rangeIt->second.second;
+	}
+
 	// Randomly determine which chest contains the treasure
 	srand(static_cast<unsigned>(time(nullptr)));
-	int treasureChest = rand() % 3 + 1;
+	int treasureChest = rand() % 3 + 1,
+		costs = (rand() % (maxValue - minValue + 1) + minValue);
 
 	if (chosenChest == treasureChest)
 	{
-		// Random reward between $500 and $2000
-		int reward = (rand() % 1501 + 500);
-		std::cout << "Congratulations! You found the treasure and won $" << reward << "!\n";
-		player.addMoney(reward);
+		std::cout << "Congratulations! You found the treasure and won $" << costs << "!\n";
+		player.addMoney(costs);
 	}
 	else
 	{
-		int penalty = 500;
-		std::cout << "Oops! The treasure was in chest " << treasureChest << ". You lose $" << penalty << ".\n";
-		player.subtractMoney(penalty);
+		std::cout << "Oops! The treasure was in chest " << treasureChest << ". You lose $" << costs << ".\n";
+		player.subtractMoney(costs);
 	}
-
-	Utils::pressEnterToContinue();
-	Utils::clearScreen();
 }
 
 // Function to calculate the shortest path using BFS
@@ -344,10 +425,6 @@ int calculateShortestPath(char maze[10][10], int startX, int startY, int endX, i
 
 void MiniGame::playMazeEscape(Player &player)
 {
-	Utils::clearScreen();
-	std::cout << "--- MiniGame: Maze Escape ---\n";
-	std::cout << "Navigate through the maze to reach the exit (E)!\n";
-
 	const int mazeSize = 10; // Maze size
 	char maze[mazeSize][mazeSize];
 	bool visited[mazeSize][mazeSize] = {false};
@@ -411,10 +488,60 @@ void MiniGame::playMazeEscape(Player &player)
 	// Set the number of moves allowed to the shortest path + 1
 	int movesLeft = shortestPath + 1;
 
-	while (movesLeft > 0)
+	// Get the player's current position ID
+	int playerPositionId = player.getPositionId();
+
+	// Get configuration instance
+	GameConfig &config = GameConfig::getInstance();
+
+	// Get the tile configuration for the player's current position
+	const auto &boardTiles = config.getBoardTiles();
+	auto it = std::find_if(boardTiles.begin(), boardTiles.end(),
+						   [playerPositionId](const TileConfig &tile)
+						   {
+							   return tile.id == playerPositionId;
+						   });
+
+	// Determine event type based on player's location
+	std::string eventType = "CHANCE"; // Default
+
+	if (it != boardTiles.end())
 	{
-		// Display the maze
+		// Convert the tile type to uppercase for map lookup
+		std::string tileType = it->type;
+		std::transform(tileType.begin(), tileType.end(), tileType.begin(), ::toupper);
+
+		if (tileType == "FATE" || tileType == "CHANCE")
+		{
+			eventType = tileType;
+		}
+		// If on other tile types, use default
+	}
+
+	// Get the value range for the determined event type
+	auto valueRange = config.getEventValueRange();
+	auto rangeIt = valueRange.find(eventType);
+
+	// Default values if the range isn't found
+	int minValue = 500;
+	int maxValue = 1000;
+
+	if (rangeIt != valueRange.end())
+	{
+		minValue = rangeIt->second.first;
+		maxValue = rangeIt->second.second;
+	}
+
+	// Generate random reward and penalty values based on the range
+	srand(static_cast<unsigned>(time(nullptr)));
+	int costs = (rand() % (maxValue - minValue + 1) + minValue);
+
+	while (movesLeft >= 0)
+	{
 		Utils::clearScreen();
+		std::cout << "--- MiniGame: Maze Escape ---\n";
+		std::cout << "Navigate through the maze to reach the exit (E)!\n";
+
 		for (int i = 0; i < mazeSize; ++i)
 		{
 			for (int j = 0; j < mazeSize; ++j)
@@ -430,8 +557,8 @@ void MiniGame::playMazeEscape(Player &player)
 		// Check if the player has reached the exit
 		if (playerX == exitX && playerY == exitY)
 		{
-			std::cout << "Congratulations! You escaped the maze and won $5000!\n";
-			player.addMoney(5000);
+			std::cout << "Congratulations! You escaped the maze and won $" << costs << "!\n";
+			player.addMoney(costs);
 			return;
 		}
 
@@ -484,9 +611,6 @@ void MiniGame::playMazeEscape(Player &player)
 	}
 
 	// If the player runs out of moves
-	std::cout << "You ran out of moves! You lose $2000.\n";
-	player.subtractMoney(2000);
-	std::cout << "Press Enter to return to the game...";
-	std::cin.get();
-	Utils::clearScreen();
+	std::cout << "You ran out of moves! You lose $" << costs << ".\n";
+	player.subtractMoney(costs);
 }

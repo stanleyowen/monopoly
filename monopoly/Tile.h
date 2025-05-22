@@ -10,7 +10,7 @@ private:
 	bool isOccupied;
 	int propertyLevel = 1; // 1-3
 	std::string owner;
-	int positionId;  // ·s¼W¦ì¸m ID
+	int positionId; // ï¿½sï¿½Wï¿½ï¿½m ID
 
 public:
 	Tile();
@@ -25,11 +25,9 @@ public:
 	int getPositionId() const;
 
 	std::string getOwner() const;
-	void setOwner(const std::string& newOwner);
+	void setOwner(const std::string &newOwner);
 
 	// Event handling methods for random events, etc.
-	void handleEvent(Player& player, Map& map);
-	void enterShop(Player& player);
-
-
+	void handleEvent(Player &player, Map &map);
+	void enterShop(Game &game, Player &player);
 };

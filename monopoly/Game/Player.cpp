@@ -1,42 +1,43 @@
 #include "Player.h"
+#include "GameConfig.h"
 #include <iostream>
 #include <iomanip>
 
-Player::Player(const std::string& name) : name(name), money(5000), x(0), y(0), houseCount(0) {}
+Player::Player(const std::string &name) : name(name), money(5000), x(0), y(0), houseCount(0) {}
 
-Player::Player(const std::string& name, std::string symbol, int startMoney)
+Player::Player(const std::string &name, std::string symbol, int startMoney)
 	: name(name), symbol(symbol), money(startMoney), x(0), y(0), houseCount(0) {}
 
 void Player::showInfo() const
 {
-	std::cout << "\n" << name << "'s Cards:\n";
+	std::cout << "\n"
+			  << name << "'s Cards:\n";
 	std::cout << "+----------------------------------------------------------------------------+\n";
 	std::cout << "| No. | Card Name             | Effect                                       |\n";
 	std::cout << "+----------------------------------------------------------------------------+\n";
 
+	GameConfig &config = GameConfig::getInstance();
+	std::vector<CardConfig> cardConfigs = config.getCards();
+
 	for (size_t i = 0; i < cards.size(); ++i)
 	{
-		std::string name = cards[i].getType(); // assuming getType() returns name
-		std::string effect;
+		std::string cardName = cards[i].getType();
+		std::string effect = "Unknown card effect.";
 
-		// Match known effects � feel free to expand this list
-		if (name == "Barrier Card")
-			effect = "Place a barrier on a tile to blcok players..";
-		else if (name == "Dice Card")
-			effect = "Choose the number you roll on the dice.";
-		else if (name == "Destroy Card")
-			effect = "Destroy another player's property.";
-		else if (name == "Fate Card")
-			effect = "Trigger a Fate event.";
-		else if (name == "Rocket Card")
-			effect = "Send a player to the hospital for 2 turns.";
-		else
-			effect = "Unknown card effect.";
+		// Look up the effect from the config
+		for (const auto &cardConfig : cardConfigs)
+		{
+			if (cardConfig.name == cardName)
+			{
+				effect = cardConfig.effect;
+				break;
+			}
+		}
 
 		// Format line (fixed-width using std::setw)
 		std::cout << "| " << std::setw(3) << (i + 1) << " | "
-			<< std::setw(21) << std::left << name << " | "
-			<< std::setw(43) << std::left << effect << "|\n";
+				  << std::setw(21) << std::left << cardName << " | "
+				  << std::setw(43) << std::left << effect << "|\n";
 	}
 
 	std::cout << "+----------------------------------------------------------------------------+\n";
@@ -124,17 +125,17 @@ void Player::addProperty(int x, int y)
 	ownedTiles.emplace_back(x, y);
 }
 
-const std::vector<std::pair<int, int>>& Player::getProperties() const
+const std::vector<std::pair<int, int>> &Player::getProperties() const
 {
 	return ownedTiles;
 }
 
-const std::vector<Card>& Player::getCards() const
+const std::vector<Card> &Player::getCards() const
 {
 	return cards;
 }
 
-void Player::addCard(const Card& card)
+void Player::addCard(const Card &card)
 {
 	cards.push_back(card);
 }
@@ -169,7 +170,7 @@ void Player::setPosition(int newX, int newY)
 	y = newY;
 }
 
-void Player::setColor(const std::string& color)
+void Player::setColor(const std::string &color)
 {
 	this->color = color;
 }
@@ -179,42 +180,49 @@ std::string Player::getColor() const
 	return color;
 }
 
-void Player::removeCard(const std::string& cardType) {
-	auto it = std::find_if(cards.begin(), cards.end(), [&](const Card& card) {
-		return card.getType() == cardType;
-		});
+void Player::removeCard(const std::string &cardType)
+{
+	auto it = std::find_if(cards.begin(), cards.end(), [&](const Card &card)
+						   { return card.getType() == cardType; });
 
-	if (it != cards.end()) {
+	if (it != cards.end())
+	{
 		cards.erase(it);
 		std::cout << "Card removed: " << cardType << "\n";
 	}
-	else {
+	else
+	{
 		std::cout << "Card not found: " << cardType << "\n";
 	}
 }
 
-void Player::setNextDiceValue(int value) {
+void Player::setNextDiceValue(int value)
+{
 	nextDiceValue = value;
 }
 
-int Player::getNextDiceValue() const {
+int Player::getNextDiceValue() const
+{
 	return nextDiceValue;
 }
 
-bool Player::hasNextDiceValue() const {
+bool Player::hasNextDiceValue() const
+{
 	return nextDiceValue != 0;
 }
 
-void Player::clearNextDiceValue() {
+void Player::clearNextDiceValue()
+{
 	nextDiceValue = 0;
 }
 
 void Player::removeProperty(int x, int y)
 {
 	auto it = std::remove_if(ownedTiles.begin(), ownedTiles.end(),
-		[x, y](const std::pair<int, int>& coord) {
-			return coord.first == x && coord.second == y;
-		});
+							 [x, y](const std::pair<int, int> &coord)
+							 {
+								 return coord.first == x && coord.second == y;
+							 });
 
 	if (it != ownedTiles.end())
 	{
