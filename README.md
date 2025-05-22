@@ -14,9 +14,9 @@ A fully playable **Monopoly** board game implemented in **C++ programming**, run
 
 ## 👥 Team Members
 
-B11315014 劉施伲
-B11315015 張銘元
-B11315032 曾湘晴
+- B11315014 劉施伲
+- B11315015 張銘元
+- B11315032 曾湘晴
 
 ---
 
