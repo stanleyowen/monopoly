@@ -45,6 +45,11 @@
     "iomanip": "cpp",
     "__tree": "cpp",
     "chrono": "cpp",
-    "thread": "cpp"
+    "thread": "cpp",
+    "__node_handle": "cpp",
+    "deque": "cpp",
+    "forward_list": "cpp",
+    "span": "cpp",
+    "unordered_map": "cpp"
   }
 }
