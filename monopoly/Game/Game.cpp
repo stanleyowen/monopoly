@@ -357,7 +357,7 @@ void Game::processTurn()
 		}
 		else
 		{
-			std::cout << "[醫院] You are free to move next turn!\n";
+			std::cout << "[Hospital] You are free to move next turn!\n";
 			currentState = GameState::ROUND_END;
 			return;
 		}
@@ -384,7 +384,7 @@ void Game::processTurn()
 			if (totalSteps == 0 || (totalSteps > 0 && ((currentPositionId + totalSteps) >= boardSize || (currentPositionId + totalSteps) % boardSize < currentPositionId)))
 			{
 				currentPlayer.addMoney(GameConfig::getInstance().getPassingStartBonus());
-				std::cout << "[系統] " << currentPlayer.getName() << " 通過起點，獲得 $" << GameConfig::getInstance().getPassingStartBonus() << "!\n";
+				std::cout << "[System] " << currentPlayer.getName() << " passed through Start，Received $" << GameConfig::getInstance().getPassingStartBonus() << "!\n";
 			}
 
 			if (currentPlayer.hasNextDiceValue())

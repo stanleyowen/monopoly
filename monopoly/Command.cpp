@@ -324,28 +324,28 @@ void Command::execute(Game& game, const std::string& input)
 			switch (choice)
 			{
 			case 1:
-				std::cout << "\n[小遊戲] 進入 Horse Racing Game！\n";
+				std::cout << "\n[Minigame] Entering Horse Racing Game！\n";
 				MiniGame::playHorseRace(currentPlayer);
 				break;
 			case 2:
-				std::cout << "\n[小遊戲] 進入 Dragon Gate Game！\n";
+				std::cout << "\n[Minigame] Entering Dragon Gate Game！\n";
 				MiniGame::playDragonGate(currentPlayer);
 				break;
 			case 3:
-				std::cout << "\n[小遊戲] 進入 Treasure Hunt Game！\n";
+				std::cout << "\n[Minigame] Entering Treasure Hunt Game！\n";
 				MiniGame::playTreasureHunt(currentPlayer);
 				break;
 			case 4:
-				std::cout << "\n[小遊戲] 進入 Maze Escape Game！\n";
+				std::cout << "\n[Minigame] Entering Maze Escape Game！\n";
 				MiniGame::playMazeEscape(currentPlayer);
 				break;
 			case 5:
-				std::cout << "[返回] 回到主畫面。\n";
+				std::cout << "[Return] Returning to the main board。\n";
 				game.getMap().drawBoard(game.getPlayers());
 
 				break;
 			default:
-				std::cout << "[錯誤] 無效的選擇，請輸入 1~5。\n";
+				std::cout << "[Error] Invalid choice，please input 1-5。\n";
 				Utils::pressEnterToContinue();
 				break;
 			}
