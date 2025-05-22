@@ -295,7 +295,7 @@ void Game::processTurn()
 		{
 			std::string input;
 
-			Utils::displayDialogue("player_action.moved.hospital\n");
+			Utils::displayDialogue("player_action.moved.hospital");
 			std::cout << "[Hospital] " << currentPlayer.getName() << " is in the hospital! Turns left: " << currentPlayer.getHospitalTurnsLeft() << "\n";
 			std::cout << "> ";
 			std::cin >> input;
@@ -306,16 +306,16 @@ void Game::processTurn()
 				int dice1 = rand() % 6 + 1;
 				int dice2 = rand() % 6 + 1;
 				int diceRoll = dice1 + dice2;
-				std::cout << "[醫院] You rolled (" << dice1 << ", " << dice2 << ") = " << diceRoll << "\n";
+				std::cout << "[Hospital] You rolled (" << dice1 << ", " << dice2 << ") = " << diceRoll << "\n";
 
 				if (diceRoll >= 10)
 				{
-					std::cout << "[醫院] You rolled 10 or more! You are released from the hospital!\n";
+					std::cout << "[Hospital] You rolled 10 or more! You are released from the hospital!\n";
 					currentPlayer.leaveHospital();
 				}
 				else
 				{
-					std::cout << "[醫院] Not enough! You remain in the hospital.\n";
+					std::cout << "[Hospital] Not enough! You remain in the hospital.\n";
 					currentPlayer.decrementHospitalTurns();
 				}
 				hospitalActionDone = true;
@@ -326,12 +326,12 @@ void Game::processTurn()
 				if (currentPlayer.getMoney() >= bill)
 				{
 					currentPlayer.addMoney(-bill);
-					std::cout << "[醫院] You paid $" << bill << " and are released from the hospital!\n";
+					std::cout << "[Hospital] You paid $" << bill << " and are released from the hospital!\n";
 					currentPlayer.leaveHospital();
 				}
 				else
 				{
-					std::cout << "[醫院] Not enough money to pay the bill!\n";
+					std::cout << "[Hospital] Not enough money to pay the bill!\n";
 				}
 				hospitalActionDone = true;
 			}
@@ -344,7 +344,7 @@ void Game::processTurn()
 			else
 			{
 				currentPlayer.decrementHospitalTurns();
-				std::cout << "[醫院] You skipped your chance to roll. Turns left: " << currentPlayer.getHospitalTurnsLeft() << "\n";
+				std::cout << "[Hospital] You skipped your chance to roll. Turns left: " << currentPlayer.getHospitalTurnsLeft() << "\n";
 				hospitalActionDone = true;
 			}
 		}
@@ -498,39 +498,81 @@ void Game::checkWinCondition()
 {
 	int winMoney = GameConfig::getInstance().getWinMoney();
 
-	// Fallback default if config file failed to load properly
 	if (winMoney <= 0)
 	{
 		winMoney = 300000;
 		std::cout << "[Warning] Invalid winMoney in config. Defaulting to $300000.\n";
 	}
 
-	int aliveCount = 0;
-	int richestIndex = -1;
-
-	for (int i = 0; i < players.size(); ++i)
+	// Check if any player meets the win condition
+	for (const auto& p : players)
 	{
-		if (players[i].getMoney() >= winMoney)
+		if (p.getMoney() >= winMoney)
 		{
-			std::cout << "🏆 " << players[i].getSymbol() << " " << players[i].getName()
-				<< " wins with $" << players[i].getMoney() << "!\n";
 			gameRunning = false;
-			return;
-		}
-
-		if (players[i].getMoney() > 0)
-		{
-			aliveCount++;
-			richestIndex = i;
+			break;
 		}
 	}
 
-	// Only one player still has money
-	if (aliveCount == 1 && richestIndex != -1)
+	// Check survival (only one left with money)
+	int aliveCount = 0;
+	for (const auto& p : players)
+		if (p.getMoney() > 0) ++aliveCount;
+
+	if (aliveCount == 1 || !gameRunning)
 	{
-		std::cout << "🏆 " << players[richestIndex].getSymbol() << " " << players[richestIndex].getName()
-			<< " wins by survival with $" << players[richestIndex].getMoney() << "!\n";
 		gameRunning = false;
+		Utils::clearScreen();
+
+		std::cout << R"(
+  ______                                            ______                                 __ 
+ /      \                                          /      \                               /  |
+/$$$$$$  |  ______   _____  ____    ______        /$$$$$$  | __     __  ______    ______  $$ |
+$$ | _$$/  /      \ /     \/    \  /      \       $$ |  $$ |/  \   /  |/      \  /      \ $$ |
+$$ |/    | $$$$$$  |$$$$$$ $$$$  |/$$$$$$  |      $$ |  $$ |$$  \ /$$//$$$$$$  |/$$$$$$  |$$ |
+$$ |$$$$ | /    $$ |$$ | $$ | $$ |$$    $$ |      $$ |  $$ | $$  /$$/ $$    $$ |$$ |  $$/ $$/ 
+$$ \__$$ |/$$$$$$$ |$$ | $$ | $$ |$$$$$$$$/       $$ \__$$ |  $$ $$/  $$$$$$$$/ $$ |       __ 
+$$    $$/ $$    $$ |$$ | $$ | $$ |$$       |      $$    $$/    $$$/   $$       |$$ |      /  |
+ $$$$$$/   $$$$$$$/ $$/  $$/  $$/  $$$$$$$/        $$$$$$/      $/     $$$$$$$/ $$/       $$/ 
+                                                                                              
+)" << "\n";
+
+		// Sort players by money descending
+		std::vector<Player> sortedPlayers = players;
+		std::sort(sortedPlayers.begin(), sortedPlayers.end(), [](const Player& a, const Player& b) {
+			return a.getMoney() > b.getMoney();
+			});
+
+		int count = (sortedPlayers.size() < 3) ? sortedPlayers.size() : 3;
+		const std::vector<std::string> places = { "[1] 1st Place", "[2] 2nd Place", "[3] 3rd Place" };
+
+		for (int i = 0; i < count; ++i)
+		{
+			const Player& p = sortedPlayers[i];
+			std::cout << places[i] << ": " << p.getSymbol() << " " << p.getName() << " | $" << p.getMoney() << "\n";
+
+			// Cards
+			std::cout << "  Cards: ";
+			const auto& cards = p.getCards();
+			if (cards.empty()) std::cout << "None";
+			else {
+				for (const auto& card : cards)
+					std::cout << card.getAbbreviatedName() << " ";
+			}
+			std::cout << "\n";
+
+			// Properties
+			std::cout << "  Properties: ";
+			const auto& props = p.getProperties();
+			if (props.empty()) std::cout << "None";
+			else {
+				for (const auto& pos : props)
+					std::cout << "(" << pos.first << "," << pos.second << ") ";
+			}
+			std::cout << "\n\n";
+		}
+
+		std::cout << "Congratulations! Thanks for playing.\n";
 	}
 }
 

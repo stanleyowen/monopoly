@@ -139,7 +139,6 @@ void Card::applyEffect(Player& player, std::vector<Player>& players, Map& map)
 			std::string propertyName = (locationMap.find(tileId) != locationMap.end()) ? locationMap[tileId] : "Unknown";
 
 			Tile& tile = map.getTile(x, y);
-			std::cout << tile.getSymbol() << "\n";
 			int buildingLevel = tile.getPropertyLevel();
 
 			std::cout << i + 1 << ". " << propertyName << " (Level " << buildingLevel << ")\n";
@@ -175,7 +174,6 @@ void Card::applyEffect(Player& player, std::vector<Player>& players, Map& map)
 		// Game& game = Game::getInstance();
 		// Map& map = game.getMap();
 		Tile& tile = map.getTile(x, y);
-		std::cout << tile.getSymbol() << "\n";
 		GameConfig& config = GameConfig::getInstance();
 		auto locationMap = config.getLocationMap();
 		std::string propertyName = (locationMap.find(tileId) != locationMap.end()) ? locationMap[tileId] : "Unknown";
