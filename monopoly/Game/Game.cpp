@@ -300,10 +300,14 @@ void Game::processTurn()
 
 			Utils::displayDialogue("player_action.moved.hospital");
 			std::cout << "> ";
-			std::cin >> input;
-			std::cin.ignore();
+			std::getline(std::cin, input);
 
-			if (input == "T" || input == "t")
+			if (!input.empty() && input[0] == '/')
+			{
+				Command command;
+				command.execute(*this, input);
+			}
+			else if (input == "T" || input == "t")
 			{
 				int dice1 = rand() % 6 + 1;
 				int dice2 = rand() % 6 + 1;

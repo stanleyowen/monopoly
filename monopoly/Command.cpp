@@ -61,6 +61,13 @@ void Command::execute(Game &game, const std::string &input)
 		const auto &config = GameConfig::getInstance();
 		int currentPlayerIndex = game.getCurrentPlayerIndex();
 		Player &player = game.getPlayers()[currentPlayerIndex];
+
+		if (player.isInHospital())
+		{
+			player.leaveHospital();
+			std::cout << "[Cheat] " << player.getName() << " was released from the hospital!\n";
+		}
+
 		int currentPositionId = player.getPositionId();
 		int totalSteps = (destinationId - currentPositionId + 28) % 28; // Wrap around the board
 
