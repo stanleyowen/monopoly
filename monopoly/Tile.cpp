@@ -537,6 +537,8 @@ void Tile::handleEvent(Player &player, Map &map)
 					propertyLevel = 1;
 
 					player.addMoney(sellPrice);
+					player.removeProperty(player.getX(), player.getY());
+
 					setOccupied(false);
 					setOwner("");
 
