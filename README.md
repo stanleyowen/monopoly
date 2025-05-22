@@ -42,7 +42,7 @@ A fully playable **Monopoly** board game implemented in **C++ programming**, run
   - 🎴 **Fate & Chance Tiles**:
     - **Fate Tile**: 25% chance for a minigame, 70% for a small money event, 5% nothing
     - **Chance Tile**: 35% chance for a minigame, 55% for a large money event, 10% nothing
-  - 🏥 **Hospital Tile**: Forces the player to skip turns unless they roll double values or pay
+  - 🏥 **Hospital Tile**: Forces the player to skip turns unless they roll value of 10+ or pay
   - 🚀 **Special Cards**: like Rocket, Destroy, Dice Control cards, allow strategic gameplay and interactions
 - Players earn or lose money, collect properties, and use cards to gain an edge!
 - Passing the **Start** tile grants a configurable bonus
