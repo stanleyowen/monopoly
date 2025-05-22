@@ -1,7 +1,7 @@
 #ifndef MAP_H
 #define MAP_H
 
-#include "Tile.h"
+#include "../Tile.h"
 #include <iostream>
 
 class Map
