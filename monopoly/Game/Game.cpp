@@ -204,7 +204,9 @@ void Game::animateControlledPlayerMovement(Player &player, int steps, int diceVa
 		map.drawBoard(players);
 		std::cout << "\n[Dice Control] You directly moved " << steps << " steps.\n";
 		std::cout << "Dice result: (" << diceValue << ")\n";
-		std::cout << diceFaces[diceValue - 1] << std::endl;
+
+		if (diceValue >= 1 && diceValue <= 6)
+			std::cout << diceFaces[diceValue - 1] << std::endl;
 		return;
 	}
 
@@ -224,7 +226,6 @@ void Game::animateControlledPlayerMovement(Player &player, int steps, int diceVa
 		std::cout << "\n[Dice Control] Moving with controlled dice value: " << diceValue << "\n";
 		std::cout << "Step " << (i + 1) << " / " << steps << "\n";
 		std::cout << "Dice result: (" << diceValue << ")\n";
-		// std::cout << diceFaces[diceValue - 1] << std::endl;
 
 		// Pause for the duration specified by the animation speed
 		std::this_thread::sleep_for(std::chrono::milliseconds(animationSpeed));
@@ -391,9 +392,23 @@ void Game::processTurn()
 
 			if (currentPlayer.hasNextDiceValue())
 			{
-				dice1 = currentPlayer.getNextDiceValue();
-				dice2 = dice1;
-				diceRoll = dice1;
+				int totalValue = currentPlayer.getNextDiceValue();
+
+				// Split the total value into two dice (1-6 each)
+				// For values 2-7, use a random split
+				// For values 8-12, ensure each die is at most 6
+				if (totalValue <= 7)
+				{
+					dice1 = rand() % (totalValue - 1) + 1; // Random value between 1 and totalValue-1
+					dice2 = totalValue - dice1;
+				}
+				else
+				{
+					dice1 = std::min(6, totalValue - 1);
+					dice2 = totalValue - dice1;
+				}
+
+				diceRoll = totalValue;
 				currentPlayer.clearNextDiceValue();
 			}
 			else
