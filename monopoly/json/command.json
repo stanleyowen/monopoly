@@ -1,7 +1,7 @@
 {
   "move": {
     "description": "Move to a specific position on the board.",
-    "usage": "/move [location] or /move to [0-31]",
+    "usage": "/move [location] or /move to [0-27]",
     "examples": [
       "/move 5",
       "/move to 10"
@@ -76,6 +76,22 @@
       "/list"
     ],
     "prompt": "Available commands:"
+  },
+  "save": {
+    "description": "Save the current game state.",
+    "usage": "/save",
+    "examples": [
+      "/save"
+    ],
+    "prompt": "Game state has been saved."
+  },
+  "load": {
+    "description": "Load a saved game state.",
+    "usage": "/load",
+    "examples": [
+      "/load"
+    ],
+    "prompt": "Game state has been loaded."
   },
   "invalid_command": {
     "prompt": "Invalid command. Type /list to see available commands."

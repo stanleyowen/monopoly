@@ -7,10 +7,27 @@
 #include "Card.h"
 #include <iostream>
 #include <sstream>
+#include <fstream>
 #include <vector>
 #include <string>
 #include <chrono>
 #include <thread>
+
+nlohmann::json Command::commandData;
+
+void Command::loadCommandData()
+{
+	std::string commandPath = "json/command.json";
+	std::ifstream fileCommand(commandPath);
+
+	if (!fileCommand.is_open())
+	{
+		std::cerr << "Cannot open command file: " << commandPath << "\n";
+		return;
+	}
+
+	fileCommand >> commandData;
+}
 
 void Command::execute(Game &game, const std::string &input)
 {
@@ -377,16 +394,40 @@ void Command::execute(Game &game, const std::string &input)
 	{
 		Utils::clearScreen();
 		game.getMap().drawBoard(game.getPlayers());
-		std::cout << "\n";
-		std::cout << "/card       - Retrieve a specific card by name.\n";
-		std::cout << "/gamestate  - Change the game state.\n";
-		std::cout << "/get        - Get money from the system.\n";
-		std::cout << "/give       - Give money to another player.\n";
-		std::cout << "/info       - Display information about all players.\n";
-		std::cout << "/minigame   - Enter a minigame.\n";
-		std::cout << "/move       - Move to a specific position on the board.\n";
-		std::cout << "/refresh    - Refresh the game board.\n";
-		std::cout << "\n";
+		std::cout << "\n=== Available Commands ===\n\n";
+
+		// Display commands dynamically from the JSON file
+		if (commandData.is_null())
+		{
+			loadCommandData(); // Load command data if not loaded yet
+		}
+
+		// Display commands with description and usage
+		for (auto &[cmdName, cmdInfo] : commandData.items())
+		{
+			if (cmdName != "invalid_command")
+			{
+				std::cout << "/" << cmdName << "\n";
+				if (cmdInfo.contains("description"))
+				{
+					std::cout << "  Description: " << cmdInfo["description"].get<std::string>() << "\n";
+				}
+				if (cmdInfo.contains("usage"))
+				{
+					std::cout << "  Usage: " << cmdInfo["usage"].get<std::string>() << "\n";
+				}
+				if (cmdInfo.contains("examples") && cmdInfo["examples"].is_array())
+				{
+					std::cout << "  Examples: " << cmdInfo["examples"][0].get<std::string>();
+					for (size_t i = 1; i < cmdInfo["examples"].size(); ++i)
+					{
+						std::cout << ", " << cmdInfo["examples"][i].get<std::string>();
+					}
+					std::cout << "\n";
+				}
+				std::cout << "\n";
+			}
+		}
 	}
 	else if (input == "/save")
 	{
