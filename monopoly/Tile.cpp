@@ -32,7 +32,7 @@ void Tile::setOccupied(bool occupied)
 	isOccupied = occupied;
 }
 
-void Tile::setOwner(const std::string& newOwner)
+void Tile::setOwner(const std::string &newOwner)
 {
 	owner = newOwner;
 }
@@ -64,10 +64,10 @@ int Tile::getPositionId() const
 	return positionId;
 }
 
-void Tile::handleEvent(Player& player, Map& map)
+void Tile::handleEvent(Player &player, Map &map)
 {
-	GameConfig& config = GameConfig::getInstance();
-	Game& game = Game::getInstance();
+	GameConfig &config = GameConfig::getInstance();
+	Game &game = Game::getInstance();
 
 	auto boardTiles = config.getBoardTiles();
 
@@ -75,10 +75,10 @@ void Tile::handleEvent(Player& player, Map& map)
 	int index = player.getPositionId();
 
 	// Find the tile configuration based on the player's index
-	auto it = std::find_if(boardTiles.begin(), boardTiles.end(), [index](const TileConfig& tile)
-		{
-			return tile.id == index; // Match the index directly
-		});
+	auto it = std::find_if(boardTiles.begin(), boardTiles.end(), [index](const TileConfig &tile)
+						   {
+							   return tile.id == index; // Match the index directly
+						   });
 
 	if (it == boardTiles.end())
 	{
@@ -86,7 +86,7 @@ void Tile::handleEvent(Player& player, Map& map)
 		return;
 	}
 
-	const TileConfig& tileConfig = *it;
+	const TileConfig &tileConfig = *it;
 
 	std::cout << player.getName() << " landed on " << tileConfig.name << "!\n";
 
@@ -97,18 +97,22 @@ void Tile::handleEvent(Player& player, Map& map)
 	else if (tileConfig.type == "store")
 	{
 		bool chose = 0;
-		while (!chose) {
+		while (!chose)
+		{
 			Utils::displayDialogue("player_action.moved.store");
+
 			char choice;
 			std::cout << "> ";
 			std::cin >> choice;
 			std::cin.ignore();
+
 			if (choice == 'E' || choice == 'e')
 			{
 				enterShop(player);
 				chose = 1;
 			}
-			else if (choice == 'I' || choice == 'i') {
+			else if (choice == 'I' || choice == 'i')
+			{
 				player.showInfo();
 
 				int cardChoice;
@@ -119,15 +123,13 @@ void Tile::handleEvent(Player& player, Map& map)
 				if (cardChoice > 0 && cardChoice <= player.getCards().size())
 				{
 					Card chosenCard = player.getCards()[cardChoice - 1];
-					std::vector<Player>& players = game.getPlayers();
+					std::vector<Player> &players = game.getPlayers();
 					chosenCard.applyEffect(player, players, map);
 					game.getMap().drawBoard(game.getPlayers());
-
 				}
-				else {
+				else
+				{
 					std::cout << "Returning to game.\n";
-					Utils::clearScreen();
-					game.getMap().drawBoard(game.getPlayers());
 				}
 			}
 			else
@@ -136,6 +138,10 @@ void Tile::handleEvent(Player& player, Map& map)
 				std::cout << "You chose to pass.\n";
 			}
 		}
+
+		Utils::pressEnterToContinue();
+		Utils::clearScreen();
+		game.getMap().drawBoard(game.getPlayers());
 	}
 	else if (tileConfig.type == "fate")
 	{
@@ -146,17 +152,22 @@ void Tile::handleEvent(Player& player, Map& map)
 		if (roll < 25)
 		{
 			std::cout << "[Fate] A minigame has been triggered!\n\n";
-			int gameType = rand() % 4;
-			if (gameType == 0) MiniGame::playHorseRace(player);
-			else if (gameType == 1) MiniGame::playDragonGate(player);
-			else if (gameType == 2) MiniGame::playMazeEscape(player);
-			else MiniGame::playTreasureHunt(player);
+			Utils::pressEnterToContinue();
+			Utils::clearScreen();
 
-			game.getMap().drawBoard(game.getPlayers());
+			int gameType = rand() % 4;
+			if (gameType == 0)
+				MiniGame::playHorseRace(player);
+			else if (gameType == 1)
+				MiniGame::playDragonGate(player);
+			else if (gameType == 2)
+				MiniGame::playMazeEscape(player);
+			else
+				MiniGame::playTreasureHunt(player);
 		}
 		else if (roll < 95) // 25–94 → 70% chance
 		{
-			GameConfig& config = GameConfig::getInstance();
+			GameConfig &config = GameConfig::getInstance();
 			auto valueRange = config.getEventValueRange();
 
 			std::string typeUpper = tileConfig.type;
@@ -183,33 +194,27 @@ void Tile::handleEvent(Player& player, Map& map)
 			std::vector<std::string> gainMsgs = {
 				"You found $",
 				"You sold old stuff and earned $",
-				"You received a mystery gift worth $"
-			};
+				"You received a mystery gift worth $"};
 			std::vector<std::string> lossMsgs = {
 				"You paid a fine of $",
 				"You lost your wallet and lost $",
-				"You bought a useless app for $"
-			};
+				"You bought a useless app for $"};
 
 			int msgIndex = rand() % 3;
 			std::string message = gain
-				? gainMsgs[msgIndex] + std::to_string(actualAmount) + "."
-				: lossMsgs[msgIndex] + std::to_string(-actualAmount) + ".";
+									  ? gainMsgs[msgIndex] + std::to_string(actualAmount) + "."
+									  : lossMsgs[msgIndex] + std::to_string(-actualAmount) + ".";
 
 			std::cout << "[Fate] " << message << "\n\n";
-
-			Utils::pressEnterToContinue();
-			Utils::clearScreen();
-			game.getMap().drawBoard(game.getPlayers());
 		}
 		else
 		{
 			std::cout << "[Fate] But nothing happened...\n\n";
-
-			Utils::pressEnterToContinue();
-			Utils::clearScreen();
-			game.getMap().drawBoard(game.getPlayers());
 		}
+
+		Utils::pressEnterToContinue();
+		Utils::clearScreen();
+		game.getMap().drawBoard(game.getPlayers());
 	}
 	else if (tileConfig.type == "chance")
 	{
@@ -220,17 +225,22 @@ void Tile::handleEvent(Player& player, Map& map)
 		if (roll < 35)
 		{
 			std::cout << "[Chance] A minigame has been triggered!\n\n";
-			int gameType = rand() % 4;
-			if (gameType == 0) MiniGame::playHorseRace(player);
-			else if (gameType == 1) MiniGame::playDragonGate(player);
-			else if (gameType == 2) MiniGame::playMazeEscape(player);
-			else MiniGame::playTreasureHunt(player);
+			Utils::pressEnterToContinue();
+			Utils::clearScreen();
 
-			game.getMap().drawBoard(game.getPlayers());
+			int gameType = rand() % 4;
+			if (gameType == 0)
+				MiniGame::playHorseRace(player);
+			else if (gameType == 1)
+				MiniGame::playDragonGate(player);
+			else if (gameType == 2)
+				MiniGame::playMazeEscape(player);
+			else
+				MiniGame::playTreasureHunt(player);
 		}
 		else if (roll < 90) // 35–89 → 55% chance
 		{
-			GameConfig& config = GameConfig::getInstance();
+			GameConfig &config = GameConfig::getInstance();
 			auto valueRange = config.getEventValueRange();
 
 			std::string typeUpper = tileConfig.type;
@@ -258,34 +268,28 @@ void Tile::handleEvent(Player& player, Map& map)
 				"You won the lottery and gained $",
 				"You sold a startup and received $",
 				"You got a lucky inheritance of $",
-				"Your stocks exploded! You gained $"
-			};
+				"Your stocks exploded! You gained $"};
 			std::vector<std::string> lossMsgs = {
 				"You got scammed and lost $",
 				"You paid unexpected hospital bills of $",
 				"Your car broke down. Repairs cost $",
-				"You invested in crypto at the wrong time. Lost $"
-			};
+				"You invested in crypto at the wrong time. Lost $"};
 
 			int msgIndex = rand() % 4;
 			std::string message = gain
-				? gainMsgs[msgIndex] + std::to_string(actualAmount) + "!"
-				: lossMsgs[msgIndex] + std::to_string(-actualAmount) + "...";
+									  ? gainMsgs[msgIndex] + std::to_string(actualAmount) + "!"
+									  : lossMsgs[msgIndex] + std::to_string(-actualAmount) + "...";
 
 			std::cout << "[Chance] " << message << "\n\n";
-
-			Utils::pressEnterToContinue();
-			Utils::clearScreen();
-			game.getMap().drawBoard(game.getPlayers());
 		}
 		else
 		{
 			std::cout << "[Chance] But nothing happened...\n\n";
-
-			Utils::pressEnterToContinue();
-			Utils::clearScreen();
-			game.getMap().drawBoard(game.getPlayers());
 		}
+
+		Utils::pressEnterToContinue();
+		Utils::clearScreen();
+		game.getMap().drawBoard(game.getPlayers());
 	}
 	else if (tileConfig.type == "hospital")
 	{
@@ -300,7 +304,8 @@ void Tile::handleEvent(Player& player, Map& map)
 		{
 
 			bool chose = 0;
-			while (!chose) {
+			while (!chose)
+			{
 				char choice;
 				std::cout << tileConfig.id << " " << tileConfig.name << " Price:" << tileConfig.price << "\n";
 				Utils::displayDialogue("player_action.moved.property_unowned");
@@ -323,7 +328,8 @@ void Tile::handleEvent(Player& player, Map& map)
 						std::cout << "You don't have enough money to buy this property.\n";
 					}
 				}
-				else if (choice == 'I' || choice == 'i') {
+				else if (choice == 'I' || choice == 'i')
+				{
 					player.showInfo();
 
 					int cardChoice;
@@ -334,33 +340,30 @@ void Tile::handleEvent(Player& player, Map& map)
 					if (cardChoice > 0 && cardChoice <= player.getCards().size())
 					{
 						Card chosenCard = player.getCards()[cardChoice - 1];
-						std::vector<Player>& players = game.getPlayers();
+						std::vector<Player> &players = game.getPlayers();
 						chosenCard.applyEffect(player, players, map);
 						game.getMap().drawBoard(game.getPlayers());
-
 					}
-					else {
+					else
+					{
 						std::cout << "Returning to game.\n";
-						Utils::clearScreen();
-						game.getMap().drawBoard(game.getPlayers());
 					}
 				}
 				else
 				{
 					chose = 1;
 					std::cout << "You chose not to buy the property.\n";
-
 				}
+
 				Utils::pressEnterToContinue();
 				Utils::clearScreen();
 				game.getMap().drawBoard(game.getPlayers());
 			}
-
 		}
 		else if (getOccupied() && getOwner() != player.getName())
 		{
 			int totalToll = tileConfig.toll * getPropertyLevel();
-			//Utils::displayDialogue("player_action.moved.property_toll");
+			// Utils::displayDialogue("player_action.moved.property_toll");
 			std::cout << "You have to pay a toll of $" << totalToll << " to " << getOwner() << ".\n";
 
 			if (player.getMoney() < totalToll)
@@ -378,7 +381,8 @@ void Tile::handleEvent(Player& player, Map& map)
 		else if (getOccupied() && getOwner() == player.getName())
 		{
 			bool chose = 0;
-			while (!chose) {
+			while (!chose)
+			{
 				char choice;
 				std::cout << tileConfig.id << " " << tileConfig.name << "\n";
 				std::cout << "Upgrade Price:" << tileConfig.price << "\n";
@@ -393,14 +397,14 @@ void Tile::handleEvent(Player& player, Map& map)
 					chose = 1;
 					if (propertyLevel < 3)
 					{
-						GameConfig& config = GameConfig::getInstance();
+						GameConfig &config = GameConfig::getInstance();
 						auto boardTiles = config.getBoardTiles();
-						auto it = std::find_if(boardTiles.begin(), boardTiles.end(), [index](const TileConfig& tile)
-							{ return tile.id == index; });
+						auto it = std::find_if(boardTiles.begin(), boardTiles.end(), [index](const TileConfig &tile)
+											   { return tile.id == index; });
 
 						if (it != boardTiles.end())
 						{
-							const TileConfig& tileConfig = *it;
+							const TileConfig &tileConfig = *it;
 							if (player.getMoney() >= tileConfig.price)
 							{
 								player.subtractMoney(tileConfig.price);
@@ -418,9 +422,9 @@ void Tile::handleEvent(Player& player, Map& map)
 						chose = 0;
 						std::cout << "This property is already at the maximum level (3).\n";
 					}
-
 				}
-				else if (choice == 'I' || choice == 'i') {
+				else if (choice == 'I' || choice == 'i')
+				{
 					player.showInfo();
 
 					int cardChoice;
@@ -431,12 +435,12 @@ void Tile::handleEvent(Player& player, Map& map)
 					if (cardChoice > 0 && cardChoice <= player.getCards().size())
 					{
 						Card chosenCard = player.getCards()[cardChoice - 1];
-						std::vector<Player>& players = game.getPlayers();
+						std::vector<Player> &players = game.getPlayers();
 						chosenCard.applyEffect(player, players, map);
 						game.getMap().drawBoard(game.getPlayers());
-
 					}
-					else {
+					else
+					{
 						std::cout << "Returning to game.\n";
 						Utils::clearScreen();
 						game.getMap().drawBoard(game.getPlayers());
@@ -461,7 +465,6 @@ void Tile::handleEvent(Player& player, Map& map)
 				}
 			}
 			Utils::pressEnterToContinue();
-
 		}
 	}
 	else
@@ -470,7 +473,7 @@ void Tile::handleEvent(Player& player, Map& map)
 	}
 }
 
-void Tile::enterShop(Player& player)
+void Tile::enterShop(Player &player)
 {
 	std::cout << "=== Welcome to the Card Store ===\n";
 	std::cout << "[1] Barrier Card    - Price: $1500       - Effect: Place a barrier on a tile to block players.\n";
@@ -482,7 +485,8 @@ void Tile::enterShop(Player& player)
 	std::cout << "Enter the number of the card you want to buy: ";
 
 	bool chose = 1;
-	do {
+	do
+	{
 		int choice;
 		chose = 1;
 		std::cin >> choice;
