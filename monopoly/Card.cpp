@@ -5,10 +5,10 @@
 #include "Tile.h"
 #include "Game/GameConfig.h"
 #include "MiniGame.h"
-#include <limits> 
+#include <limits>
 #include <iostream>
 
-Card::Card(const std::string& type) : type(type) {}
+Card::Card(const std::string &type) : type(type) {}
 
 std::string Card::getType() const
 {
@@ -51,7 +51,7 @@ std::string Card::getAbbreviatedName() const
 	return fallback.empty() ? "??" : fallback;
 }
 
-void Card::applyEffect(Player& player, std::vector<Player>& players, Map& map)
+void Card::applyEffect(Player &player, std::vector<Player> &players, Map &map)
 {
 	if (type == "Dice Card") // ����d
 	{
@@ -61,7 +61,19 @@ void Card::applyEffect(Player& player, std::vector<Player>& players, Map& map)
 		{
 			std::cout << "Choose your dice value (2-12): ";
 			std::cin >> diceValue;
-			std::cin.ignore();
+
+			// If input fails (non-integer was entered)
+			if (std::cin.fail())
+			{
+				// Clear the error flag
+				std::cin.clear();
+				// Discard invalid input
+				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			}
+			else
+			{
+				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			}
 
 			if (diceValue >= 2 && diceValue <= 12)
 			{
@@ -95,7 +107,18 @@ void Card::applyEffect(Player& player, std::vector<Player>& players, Map& map)
 		int playerChoice;
 		std::cout << "Enter player number (0 to cancel): ";
 		std::cin >> playerChoice;
-		std::cin.ignore();
+
+		if (std::cin.fail())
+		{
+			// Clear the error flag
+			std::cin.clear();
+			// Discard invalid input
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		}
+		else
+		{
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		}
 
 		if (playerChoice <= 0 || playerChoice > players.size())
 		{
@@ -103,8 +126,8 @@ void Card::applyEffect(Player& player, std::vector<Player>& players, Map& map)
 			return;
 		}
 
-		Player& targetPlayer = players[playerChoice - 1];
-		const auto& properties = targetPlayer.getProperties();
+		Player &targetPlayer = players[playerChoice - 1];
+		const auto &properties = targetPlayer.getProperties();
 
 		// �ˬd���a�O�_���в�
 		if (properties.empty())
@@ -133,13 +156,13 @@ void Card::applyEffect(Player& player, std::vector<Player>& players, Map& map)
 			else if (y == 0)
 				tileId = 7 + 7 + 7 + (7 - x);
 
-			GameConfig& config = GameConfig::getInstance();
+			GameConfig &config = GameConfig::getInstance();
 			auto locationMap = config.getLocationMap();
 
 			// ����a�W
 			std::string propertyName = (locationMap.find(tileId) != locationMap.end()) ? locationMap[tileId] : "Unknown";
 
-			Tile& tile = map.getTile(x, y);
+			Tile &tile = map.getTile(x, y);
 			int buildingLevel = tile.getPropertyLevel();
 
 			std::cout << i + 1 << ". " << propertyName << " (Level " << buildingLevel << ")\n";
@@ -148,7 +171,18 @@ void Card::applyEffect(Player& player, std::vector<Player>& players, Map& map)
 		int propertyChoice;
 		std::cout << "Enter property number (0 to cancel): ";
 		std::cin >> propertyChoice;
-		std::cin.ignore();
+
+		if (std::cin.fail())
+		{
+			// Clear the error flag
+			std::cin.clear();
+			// Discard invalid input
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		}
+		else
+		{
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		}
 
 		if (propertyChoice <= 0 || propertyChoice > properties.size())
 		{
@@ -174,8 +208,8 @@ void Card::applyEffect(Player& player, std::vector<Player>& players, Map& map)
 
 		// Game& game = Game::getInstance();
 		// Map& map = game.getMap();
-		Tile& tile = map.getTile(x, y);
-		GameConfig& config = GameConfig::getInstance();
+		Tile &tile = map.getTile(x, y);
+		GameConfig &config = GameConfig::getInstance();
 		auto locationMap = config.getLocationMap();
 		std::string propertyName = (locationMap.find(tileId) != locationMap.end()) ? locationMap[tileId] : "Unknown";
 
@@ -221,7 +255,7 @@ void Card::applyEffect(Player& player, std::vector<Player>& players, Map& map)
 		}
 		else if (roll < 95) // 25-94 → 70% chance
 		{
-			GameConfig& config = GameConfig::getInstance();
+			GameConfig &config = GameConfig::getInstance();
 			auto valueRange = config.getEventValueRange();
 
 			std::string typeUpper = "FATE";
@@ -247,16 +281,16 @@ void Card::applyEffect(Player& player, std::vector<Player>& players, Map& map)
 			std::vector<std::string> gainMsgs = {
 				"You found $",
 				"You sold old stuff and earned $",
-				"You received a mystery gift worth $" };
+				"You received a mystery gift worth $"};
 			std::vector<std::string> lossMsgs = {
 				"You paid a fine of $",
 				"You lost your wallet and lost $",
-				"You bought a useless app for $" };
+				"You bought a useless app for $"};
 
 			int msgIndex = rand() % 3;
 			std::string message = gain
-				? gainMsgs[msgIndex] + std::to_string(actualAmount) + "."
-				: lossMsgs[msgIndex] + std::to_string(-actualAmount) + ".";
+									  ? gainMsgs[msgIndex] + std::to_string(actualAmount) + "."
+									  : lossMsgs[msgIndex] + std::to_string(-actualAmount) + ".";
 
 			std::cout << "[Fate] " << message << "\n";
 		}

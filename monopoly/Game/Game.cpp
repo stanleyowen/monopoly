@@ -25,12 +25,12 @@ GameState Game::getGameState() const
 
 Game Game::instance;
 
-Game& Game::getInstance()
+Game &Game::getInstance()
 {
 	return instance;
 }
 
-Map& Game::getMap()
+Map &Game::getMap()
 {
 	return map;
 }
@@ -77,7 +77,7 @@ const std::vector<std::string> diceFaces = {
 	 | o   o |
 	 | o   o |
 	 +-------+
-	)" };
+	)"};
 
 Game::Game() : currentPlayerIndex(0), gameRunning(true) {}
 
@@ -88,10 +88,10 @@ void Game::initializePlayers()
 		players.clear();
 	}
 
-	const auto& config = GameConfig::getInstance();
-	const auto& playerNames = config.getPlayerNames();
-	const auto& playerIcons = config.getPlayerIcons();
-	const auto& playerColors = config.getPlayerColors();
+	const auto &config = GameConfig::getInstance();
+	const auto &playerNames = config.getPlayerNames();
+	const auto &playerIcons = config.getPlayerIcons();
+	const auto &playerColors = config.getPlayerColors();
 	int startMoney = config.getStartMoney();
 
 	for (size_t i = 0; i < playerNames.size(); ++i)
@@ -109,7 +109,7 @@ void Game::initializePlayers()
 	}
 }
 
-std::vector<Player>& Game::getPlayers()
+std::vector<Player> &Game::getPlayers()
 {
 	return players;
 }
@@ -131,12 +131,12 @@ void Game::setCurrentPlayerIndex(int index)
 	}
 }
 
-int Game::getTileIdByName(const std::string& name) const
+int Game::getTileIdByName(const std::string &name) const
 {
-	const auto& config = GameConfig::getInstance();
-	const auto& tiles = config.getBoardTiles();
+	const auto &config = GameConfig::getInstance();
+	const auto &tiles = config.getBoardTiles();
 
-	for (const auto& tile : tiles)
+	for (const auto &tile : tiles)
 	{
 		if (tile.name == name)
 		{
@@ -190,10 +190,10 @@ void Game::start()
 	}
 }
 
-void Game::animateControlledPlayerMovement(Player& player, int steps, int diceValue)
+void Game::animateControlledPlayerMovement(Player &player, int steps, int diceValue)
 {
 	// Get the animation settings from the configuration
-	const auto& config = GameConfig::getInstance();
+	const auto &config = GameConfig::getInstance();
 	bool isAnimationEnabled = config.getAnimation();
 	int animationSpeed = config.getAnimationTime(); // Retrieve animation speed (in milliseconds)
 
@@ -233,10 +233,10 @@ void Game::animateControlledPlayerMovement(Player& player, int steps, int diceVa
 	std::cout << "[Completed] You moved " << steps << " steps using Dice Control.\n";
 }
 
-void Game::animatePlayerMovement(Player& player, int steps, int dice1, int dice2)
+void Game::animatePlayerMovement(Player &player, int steps, int dice1, int dice2)
 {
 	// Get the animation settings from the configuration
-	const auto& config = GameConfig::getInstance();
+	const auto &config = GameConfig::getInstance();
 	bool isAnimationEnabled = config.getAnimation();
 	int animationSpeed = config.getAnimationTime(); // Retrieve animation speed (in milliseconds)
 
@@ -285,7 +285,7 @@ void Game::processTurn()
 		return;
 	}
 
-	Player& currentPlayer = players[currentPlayerIndex];
+	Player &currentPlayer = players[currentPlayerIndex];
 
 	// Hospital logic
 	if (currentPlayer.isInHospital())
@@ -424,7 +424,20 @@ void Game::processTurn()
 			int cardChoice;
 			std::cout << "Enter the card number to use (0 to cancel): ";
 			std::cin >> cardChoice;
-			std::cin.ignore();
+
+			// If input fails (non-integer was entered)
+			if (std::cin.fail())
+			{
+				// Clear the error flag
+				std::cin.clear();
+				// Discard invalid input
+				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+				std::cout << "Invalid input. Please enter a number.\n";
+			}
+			else
+			{
+				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			}
 
 			if (cardChoice > 0 && cardChoice <= currentPlayer.getCards().size())
 			{
@@ -461,10 +474,12 @@ void Game::processTurn()
 }
 
 // Function to display dice rolling animation for two dice
-void Game::displayDiceAnimation(int dice1, int dice2, const std::vector<Player>& players)
+void Game::displayDiceAnimation(int dice1, int dice2, const std::vector<Player> &players)
 {
+	srand(static_cast<unsigned>(time(nullptr)));
+
 	// Get the animation settings from the configuration
-	const auto& config = GameConfig::getInstance();
+	const auto &config = GameConfig::getInstance();
 	bool isAnimationEnabled = config.getAnimation();
 	int animationSpeed = config.getAnimationTime();
 
@@ -494,9 +509,9 @@ void Game::displayDiceAnimation(int dice1, int dice2, const std::vector<Player>&
 	Utils::clearScreen();
 }
 
-void Game::handleTileEvents(Player& player)
+void Game::handleTileEvents(Player &player)
 {
-	Tile& currentTile = map.getTile(player.getX(), player.getY());
+	Tile &currentTile = map.getTile(player.getX(), player.getY());
 	currentTile.handleEvent(player, map);
 
 	Utils::clearScreen();
@@ -514,7 +529,7 @@ void Game::checkWinCondition()
 	}
 
 	// Check if any player meets the win condition
-	for (const auto& p : players)
+	for (const auto &p : players)
 	{
 		if (p.getMoney() >= winMoney)
 		{
@@ -525,8 +540,9 @@ void Game::checkWinCondition()
 
 	// Check survival (only one left with money)
 	int aliveCount = 0;
-	for (const auto& p : players)
-		if (p.getMoney() > 0) ++aliveCount;
+	for (const auto &p : players)
+		if (p.getMoney() > 0)
+			++aliveCount;
 
 	if (aliveCount == 1 || !gameRunning)
 	{
@@ -536,7 +552,8 @@ void Game::checkWinCondition()
 	}
 }
 
-void Game::displayGameOver() {
+void Game::displayGameOver()
+{
 	Utils::clearScreen();
 
 	std::cout << R"(
@@ -554,34 +571,37 @@ $$    $$/ $$    $$ |$$ | $$ | $$ |$$       |      $$    $$/    $$$/   $$       |
 
 	// Sort players by money descending
 	std::vector<Player> sortedPlayers = players;
-	std::sort(sortedPlayers.begin(), sortedPlayers.end(), [](const Player& a, const Player& b) {
-		return a.getMoney() > b.getMoney();
-		});
+	std::sort(sortedPlayers.begin(), sortedPlayers.end(), [](const Player &a, const Player &b)
+			  { return a.getMoney() > b.getMoney(); });
 
 	int count = (sortedPlayers.size() < 3) ? sortedPlayers.size() : 3;
-	const std::vector<std::string> places = { "[1] 1st Place", "[2] 2nd Place", "[3] 3rd Place" };
+	const std::vector<std::string> places = {"[1] 1st Place", "[2] 2nd Place", "[3] 3rd Place"};
 
 	for (int i = 0; i < count; ++i)
 	{
-		const Player& p = sortedPlayers[i];
+		const Player &p = sortedPlayers[i];
 		std::cout << places[i] << ": " << p.getSymbol() << " " << p.getName() << " | $" << p.getMoney() << "\n";
 
 		// Cards
 		std::cout << "  Cards: ";
-		const auto& cards = p.getCards();
-		if (cards.empty()) std::cout << "None";
-		else {
-			for (const auto& card : cards)
+		const auto &cards = p.getCards();
+		if (cards.empty())
+			std::cout << "None";
+		else
+		{
+			for (const auto &card : cards)
 				std::cout << card.getAbbreviatedName() << " ";
 		}
 		std::cout << "\n";
 
 		// Properties
 		std::cout << "  Properties: ";
-		const auto& props = p.getProperties();
-		if (props.empty()) std::cout << "None";
-		else {
-			for (const auto& pos : props)
+		const auto &props = p.getProperties();
+		if (props.empty())
+			std::cout << "None";
+		else
+		{
+			for (const auto &pos : props)
 				std::cout << "(" << pos.first << "," << pos.second << ") ";
 		}
 		std::cout << "\n\n";
@@ -590,12 +610,12 @@ $$    $$/ $$    $$ |$$ | $$ | $$ |$$       |      $$    $$/    $$$/   $$       |
 	std::cout << "Congratulations! Thanks for playing.\n";
 }
 
-bool Game::saveGame(const std::string& filename)
+bool Game::saveGame(const std::string &filename)
 {
 	nlohmann::json saveData;
 
 	// Save players
-	for (const auto& player : players)
+	for (const auto &player : players)
 	{
 		nlohmann::json p;
 		p["name"] = player.getName();
@@ -607,19 +627,19 @@ bool Game::saveGame(const std::string& filename)
 
 		// Cards as vector of strings
 		std::vector<std::string> cardTypes;
-		for (const auto& card : player.getCards())
+		for (const auto &card : player.getCards())
 			cardTypes.push_back(card.getType());
 		p["cards"] = cardTypes;
 
 		// Properties as vector of {x, y}
 		nlohmann::json props = nlohmann::json::array();
-		for (const auto& prop : player.getProperties())
-			props.push_back({ {"x", prop.first}, {"y", prop.second} });
+		for (const auto &prop : player.getProperties())
+			props.push_back({{"x", prop.first}, {"y", prop.second}});
 		p["properties"] = props;
 
 		p["status"] = {
 			{"inHospital", player.isInHospital()},
-			{"hospitalTurnsLeft", player.getHospitalTurnsLeft()} };
+			{"hospitalTurnsLeft", player.getHospitalTurnsLeft()}};
 		saveData["players"].push_back(p);
 	}
 
@@ -632,7 +652,7 @@ bool Game::saveGame(const std::string& filename)
 			// Only save tiles on the perimeter
 			if (i == 0 || i == 7 || j == 0 || j == 7)
 			{
-				Tile& tile = map.getTile(i, j);
+				Tile &tile = map.getTile(i, j);
 				nlohmann::json t;
 				t["x"] = i;
 				t["y"] = j;
@@ -654,7 +674,7 @@ bool Game::saveGame(const std::string& filename)
 	return true;
 }
 
-bool Game::loadGame(const std::string& filename)
+bool Game::loadGame(const std::string &filename)
 {
 	std::ifstream in(filename);
 	if (!in.is_open())
@@ -664,18 +684,18 @@ bool Game::loadGame(const std::string& filename)
 	in >> saveData;
 
 	players.clear();
-	for (const auto& p : saveData["players"])
+	for (const auto &p : saveData["players"])
 	{
 		Player player(p["name"], p["symbol"], p["money"]);
 		player.setColor(p["color"]);
 		player.setPosition(p["x"], p["y"]);
 
 		// Cards
-		for (const auto& cardType : p["cards"])
+		for (const auto &cardType : p["cards"])
 			player.addCard(Card(cardType));
 
 		// Properties
-		for (const auto& prop : p["properties"])
+		for (const auto &prop : p["properties"])
 			player.addProperty(prop["x"], prop["y"]);
 
 		player.setInHospital(p["status"]["inHospital"]);
@@ -687,11 +707,11 @@ bool Game::loadGame(const std::string& filename)
 	map.setupBoard();
 
 	// Then load saved tile data
-	for (const auto& t : saveData["tiles"])
+	for (const auto &t : saveData["tiles"])
 	{
 		int x = t["x"];
 		int y = t["y"];
-		Tile& tile = map.getTile(x, y);
+		Tile &tile = map.getTile(x, y);
 
 		// If tile contains symbol, set it
 		if (t.contains("symbol"))

@@ -104,7 +104,18 @@ void Tile::handleEvent(Player &player, Map &map)
 			char choice;
 			std::cout << "> ";
 			std::cin >> choice;
-			std::cin.ignore();
+
+			if (std::cin.fail())
+			{
+				// Clear the error flag
+				std::cin.clear();
+				// Discard invalid input
+				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			}
+			else
+			{
+				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			}
 
 			if (choice == 'E' || choice == 'e')
 			{
@@ -118,7 +129,21 @@ void Tile::handleEvent(Player &player, Map &map)
 				int cardChoice;
 				std::cout << "Enter the card number to use (0 to cancel): ";
 				std::cin >> cardChoice;
-				std::cin.ignore();
+
+				// If input fails (non-integer was entered)
+				if (std::cin.fail())
+				{
+					// Clear the error flag
+					std::cin.clear();
+					// Discard invalid input
+					std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+					std::cout << "Invalid input. Please enter a number.\n";
+					cardChoice = 0; // Set a default value to cancel
+				}
+				else
+				{
+					std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+				}
 
 				if (cardChoice > 0 && cardChoice <= player.getCards().size())
 				{
@@ -310,7 +335,19 @@ void Tile::handleEvent(Player &player, Map &map)
 				Utils::displayDialogue("player_action.moved.property_unowned");
 				std::cout << "> ";
 				std::cin >> choice;
-				std::cin.ignore();
+
+				if (std::cin.fail())
+				{
+					// Clear the error flag
+					std::cin.clear();
+					// Discard invalid input
+					std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+				}
+				else
+				{
+					std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+				}
+
 				if (choice == 'R' || choice == 'r')
 				{
 					chose = 1;
@@ -334,7 +371,21 @@ void Tile::handleEvent(Player &player, Map &map)
 					int cardChoice;
 					std::cout << "Enter the card number to use (0 to cancel): ";
 					std::cin >> cardChoice;
-					std::cin.ignore();
+
+					// If input fails (non-integer was entered)
+					if (std::cin.fail())
+					{
+						// Clear the error flag
+						std::cin.clear();
+						// Discard invalid input
+						std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+						std::cout << "Invalid input. Please enter a number.\n";
+						cardChoice = 0; // Set a default value to cancel
+					}
+					else
+					{
+						std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+					}
 
 					if (cardChoice > 0 && cardChoice <= player.getCards().size())
 					{
@@ -388,7 +439,18 @@ void Tile::handleEvent(Player &player, Map &map)
 				Utils::displayDialogue("player_action.moved.property_owned");
 				std::cout << "> ";
 				std::cin >> choice;
-				std::cin.ignore();
+
+				if (std::cin.fail())
+				{
+					// Clear the error flag
+					std::cin.clear();
+					// Discard invalid input
+					std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+				}
+				else
+				{
+					std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+				}
 
 				if (choice == 'R' || choice == 'r')
 				{
@@ -428,7 +490,21 @@ void Tile::handleEvent(Player &player, Map &map)
 					int cardChoice;
 					std::cout << "Enter the card number to use (0 to cancel): ";
 					std::cin >> cardChoice;
-					std::cin.ignore();
+
+					// If input fails (non-integer was entered)
+					if (std::cin.fail())
+					{
+						// Clear the error flag
+						std::cin.clear();
+						// Discard invalid input
+						std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+						std::cout << "Invalid input. Please enter a number.\n";
+						cardChoice = 0; // Set a default value to cancel
+					}
+					else
+					{
+						std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+					}
 
 					if (cardChoice > 0 && cardChoice <= player.getCards().size())
 					{
@@ -488,7 +564,19 @@ void Tile::enterShop(Player &player)
 		int choice;
 		chose = 1;
 		std::cin >> choice;
-		std::cin.ignore();
+
+		if (std::cin.fail())
+		{
+			// Clear the error flag
+			std::cin.clear();
+			// Discard invalid input
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		}
+		else
+		{
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		}
+
 		switch (choice)
 		{
 		case 1:
