@@ -119,6 +119,7 @@ void MiniGame::playDragonGate(Player &player)
 {
 	Utils::clearScreen();
 	srand(static_cast<unsigned>(time(nullptr)));
+
 	std::cout << "--- MiniGame: Dragon Gate ---\n";
 	int card1 = rand() % 13 + 1;
 	int card2 = rand() % 13 + 1;

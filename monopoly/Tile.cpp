@@ -68,6 +68,7 @@ void Tile::handleEvent(Player &player, Map &map)
 {
 	GameConfig &config = GameConfig::getInstance();
 	Game &game = Game::getInstance();
+	srand(static_cast<unsigned>(time(nullptr)));
 
 	auto boardTiles = config.getBoardTiles();
 
@@ -311,7 +312,7 @@ void Tile::handleEvent(Player &player, Map &map)
 			std::cout << "[Chance] But nothing happened...\n\n";
 		}
 
-		Utils::pressEnterToContinue();
+		// Utils::pressEnterToContinue();
 		Utils::clearScreen();
 		game.getMap().drawBoard(game.getPlayers());
 	}

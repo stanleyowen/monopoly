@@ -2,9 +2,13 @@
 #include <iostream>
 #include <cstdlib>
 
-void Event::trigger(Player& player) {  // Random event example
+void Event::trigger(Player &player)
+{
+	srand(static_cast<unsigned>(time(nullptr))); // Seed for random number generation
 	int eventType = rand() % 3;
-	switch (eventType) {
+
+	switch (eventType)
+	{
 	case 0:
 		player.addMoney(500);
 		std::cout << "Lucky! You gained $500!\n";

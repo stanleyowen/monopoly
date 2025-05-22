@@ -53,6 +53,8 @@ std::string Card::getAbbreviatedName() const
 
 void Card::applyEffect(Player &player, std::vector<Player> &players, Map &map)
 {
+	srand(static_cast<unsigned>(time(nullptr)));
+
 	if (type == "Dice Card") // ����d
 	{
 		int diceValue;
@@ -234,7 +236,6 @@ void Card::applyEffect(Player &player, std::vector<Player> &players, Map &map)
 	{ // �R�B�d
 		std::cout << "Triggering a Fate event.\n";
 
-		srand(static_cast<unsigned>(time(nullptr)));
 		int roll = rand() % 100;
 
 		if (roll < 25)
