@@ -429,7 +429,7 @@ void Command::execute(Game &game, const std::string &input)
 			}
 		}
 	}
-	else if (input == "/save")
+	else if (cmd == "/save")
 	{
 		std::string filename;
 		std::cout << "Enter filename to save: ";
@@ -445,7 +445,7 @@ void Command::execute(Game &game, const std::string &input)
 		}
 		return;
 	}
-	else if (input == "/load")
+	else if (cmd == "/load")
 	{
 		std::string filename;
 		std::cout << "Enter filename to load: ";

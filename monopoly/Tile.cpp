@@ -205,32 +205,79 @@ void Tile::handleEvent(Player &player, Map &map)
 				return;
 			}
 
-			int min = it->second.first;
-			int max = it->second.second;
-			int amount = rand() % (max - min + 1) + min;
-			bool gain = rand() % 2;
-			int actualAmount = gain ? amount : -amount;
+			// Determine if this will be a money or card effect
+			int effectType = rand() % 2; // 0 = money, 1 = card
 
-			if (actualAmount > 0)
-				player.addMoney(actualAmount);
+			if (effectType == 0)
+			{
+				int min = it->second.first;
+				int max = it->second.second;
+				int amount = rand() % (max - min + 1) + min;
+				bool gain = rand() % 2;
+				int actualAmount = gain ? amount : -amount;
+
+				if (actualAmount > 0)
+					player.addMoney(actualAmount);
+				else
+					player.subtractMoney(-actualAmount);
+
+				std::vector<std::string> gainMsgs = {
+					"You found $",
+					"You sold old stuff and earned $",
+					"You received a mystery gift worth $"};
+				std::vector<std::string> lossMsgs = {
+					"You paid a fine of $",
+					"You lost your wallet and lost $",
+					"You bought a useless app for $"};
+
+				int msgIndex = rand() % 3;
+				std::string message = gain
+										  ? gainMsgs[msgIndex] + std::to_string(actualAmount) + "."
+										  : lossMsgs[msgIndex] + std::to_string(-actualAmount) + ".";
+
+				std::cout << "[Fate] " << message << "\n\n";
+			}
 			else
-				player.subtractMoney(-actualAmount);
+			{
+				// New card effect
+				std::vector<CardConfig> cards = config.getCards();
+				if (cards.empty())
+				{
+					std::cout << "[Fate] Nothing happened with cards.\n";
+				}
+				else
+				{
+					bool gain = rand() % 2;
 
-			std::vector<std::string> gainMsgs = {
-				"You found $",
-				"You sold old stuff and earned $",
-				"You received a mystery gift worth $"};
-			std::vector<std::string> lossMsgs = {
-				"You paid a fine of $",
-				"You lost your wallet and lost $",
-				"You bought a useless app for $"};
+					if (gain)
+					{
+						// Get a random card
+						int cardIndex = rand() % cards.size();
+						const CardConfig &selectedCard = cards[cardIndex];
 
-			int msgIndex = rand() % 3;
-			std::string message = gain
-									  ? gainMsgs[msgIndex] + std::to_string(actualAmount) + "."
-									  : lossMsgs[msgIndex] + std::to_string(-actualAmount) + ".";
+						// Add the card to player's inventory
+						Card card(selectedCard.name);
+						player.addCard(card);
 
-			std::cout << "[Fate] " << message << "\n\n";
+						std::cout << "[Fate] You found a " << selectedCard.name << " card!\n";
+					}
+					else if (!player.getCards().empty())
+					{
+						// Lose a random card if player has any
+						int cardIndex = rand() % player.getCards().size();
+						std::string cardName = player.getCards()[cardIndex].getType();
+
+						// Remove the card
+						player.removeCard(cardName);
+
+						std::cout << "[Fate] Oh no! You lost your " << cardName << " card!\n";
+					}
+					else
+					{
+						std::cout << "[Fate] You had no cards to lose, lucky this time!\n";
+					}
+				}
+			}
 		}
 		else
 		{
