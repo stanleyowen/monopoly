@@ -640,7 +640,28 @@ $$    $$/ $$    $$ |$$ | $$ | $$ |$$       |      $$    $$/    $$$/   $$       |
 	}
 
 	std::cout << "Congratulations! Thanks for playing.\n";
-	Utils::pressEnterToContinue();
+
+	// Prompt to restart or exit
+	std::cout << "Would you like to start a new game? (Y/N): ";
+	char choice;
+	std::cin >> choice;
+	// Clear the newline character from the input buffer
+	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+	if (std::tolower(choice) == 'y')
+	{
+		// Reset the game state and start a new game
+		gameRunning = true;
+		currentPlayerIndex = 0;
+		players.clear();
+		map.setupBoard();
+		start();
+	}
+	else
+	{
+		std::cout << "Thank you for playing! Exiting the game.\n";
+		gameRunning = false;
+	}
 }
 
 bool Game::saveGame(const std::string &filename)
