@@ -8,6 +8,7 @@ int main()
 	// Load game configuration
 	GameConfig::getInstance().loadConfig();
 	Utils::loadDialogueData();
+	Command::loadCommandData();
 
 	// Display the welcoming screen for the first 3 seconds
 	// WARNING: This part is commented out in development mode to increase efficiency
